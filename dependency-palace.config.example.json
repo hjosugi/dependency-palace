@@ -1,0 +1,6 @@
+{
+  "include": ["**/*"],
+  "exclude": ["generated", "fixtures", "migrations"],
+  "moduleDepth": 1,
+  "maxFileBytes": 1500000
+}
