@@ -5,3 +5,4 @@ artifacts/
 .DS_Store
 dependency-palace.graph.json
 dependency-palace.config.json
+public/dependency-palace.graph.json

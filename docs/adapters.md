@@ -5,11 +5,11 @@ Dependency Palace can now scan source trees directly and emit the viewer JSON.
 ## Quick Start
 
 ```bash
-npm run scan -- /path/to/repo --out dependency-palace.graph.json
+npm run scan -- /path/to/repo
 npm run dev
 ```
 
-Then load `dependency-palace.graph.json` from the left panel.
+By default, the scanner writes `public/dependency-palace.graph.json`. The app fetches that file on startup and opens it automatically.
 
 The scanner reads everything below the requested root. You can point it at a whole repository or a narrower subtree:
 

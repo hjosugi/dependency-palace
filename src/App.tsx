@@ -51,6 +51,24 @@ export default function App() {
   const analysis = useMemo(() => analyzeGraph(graph), [graph]);
 
   useEffect(() => {
+    let cancelled = false;
+    fetch("/dependency-palace.graph.json", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((loaded: RawGraph | null) => {
+        if (cancelled || !loaded?.nodes?.length) return;
+        setRawGraph(loaded);
+        setModeState("focus");
+        setSelectedId(null);
+      })
+      .catch(() => {
+        // No generated graph is present; keep the built-in demo.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     setEdgeTypes(new Set(analysis.edgeTypes));
   }, [analysis.edgeTypes.join("|")]);
 

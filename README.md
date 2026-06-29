@@ -30,10 +30,17 @@ npm run build
 Point the scanner at a repository or subtree:
 
 ```bash
-npm run scan -- /path/to/repo --out dependency-palace.graph.json
+npm run scan -- /path/to/repo
+npm run dev
 ```
 
-Then open the app and load the generated JSON.
+By default this writes `public/dependency-palace.graph.json`, and the app loads it automatically on startup.
+
+You can still write an explicit JSON file and upload it manually:
+
+```bash
+npm run scan -- /path/to/repo --out dependency-palace.graph.json
+```
 
 The first-pass scanner supports Java, Kotlin, Scala, C#, TypeScript, JavaScript, Go, Rust, Python, Ruby, PHP, Swift, C, and C++. See [docs/adapters.md](docs/adapters.md).
 

@@ -34,7 +34,7 @@ Usage:
 
 Options:
   --root <path>          Directory to scan. Defaults to first positional argument or current directory.
-  --out <path>           Output JSON path. Defaults to dependency-palace.graph.json.
+  --out <path>           Output JSON path. Defaults to public/dependency-palace.graph.json.
   --config <path>        Optional config JSON. Defaults to dependency-palace.config.json when present.
   --include <pattern>    Include path substring/glob-ish pattern. Repeatable.
   --exclude <pattern>    Exclude path substring/glob-ish pattern. Repeatable.
@@ -149,7 +149,7 @@ function mergeGraph(nodes: RawNode[], links: RawLink[]) {
 
 function optionsFromArgs(values: Map<string, string[]>, positionals: string[], config: ScanConfig): ScanOptions {
   const root = path.resolve(values.get("root")?.at(-1) ?? positionals[0] ?? ".");
-  const out = path.resolve(values.get("out")?.at(-1) ?? "dependency-palace.graph.json");
+  const out = path.resolve(values.get("out")?.at(-1) ?? "public/dependency-palace.graph.json");
   return {
     root,
     out,
