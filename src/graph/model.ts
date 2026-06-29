@@ -82,6 +82,7 @@ function endpointId(endpoint: RawLink["source"]) {
 }
 
 function normalizeMember(member: CodeMember): CodeMember {
+  const semanticHubs = graph.nodes.filter((node) => !["module", "package", "external"].includes(node.kind));
   return {
     ...member,
     kind: member.kind ?? "method",
@@ -294,7 +295,7 @@ export function analyzeGraph(graph: GraphData): GraphAnalysis {
     totalFields: graph.nodes.reduce((sum, node) => sum + node.fields.length, 0),
     totalMethods: graph.nodes.reduce((sum, node) => sum + node.methods.length, 0),
     kinds,
-    topHubs: [...graph.nodes].sort((a, b) => b.degree - a.degree).slice(0, 8)
+    topHubs: [...(semanticHubs.length ? semanticHubs : graph.nodes)].sort((a, b) => b.degree - a.degree).slice(0, 8)
   };
 }
 
