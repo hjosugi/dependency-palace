@@ -282,7 +282,7 @@ export default function App() {
       <aside className="side-panel left-panel" aria-label="Graph controls">
         <header className="brand-block">
           <div className="brand-mark" aria-hidden="true">
-            <Network size={22} />
+            <img src="/favicon.svg" alt="" width="28" height="28" />
           </div>
           <div>
             <h1>Dependency Palace</h1>

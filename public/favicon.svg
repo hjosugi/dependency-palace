@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Dependency Palace">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#191713" />
+      <stop offset="1" stop-color="#070908" />
+    </linearGradient>
+    <linearGradient id="cyan" x1="10" y1="10" x2="52" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9ff3ff" />
+      <stop offset="1" stop-color="#36a8c7" />
+    </linearGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="1.25" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="64" height="64" rx="10" fill="url(#bg)" />
+  <path d="M8 17h5v2H8zm43 0h5v2h-5zM8 45h5v2H8zm43 0h5v2h-5z" fill="#514b3f" opacity=".75" />
+  <path d="M11 12h42M11 52h42" stroke="#2a2f2f" stroke-width="1" stroke-dasharray="2 4" />
+
+  <g filter="url(#glow)" stroke="url(#cyan)" stroke-linecap="square" stroke-linejoin="round">
+    <path d="M16 43V25l8-5 8 5v18M32 43V18l8-6 8 6v25" fill="none" stroke-width="2.4" />
+    <path d="M19 43h29M24 20v-6M40 12v-5M16 28h32M22 34h20" fill="none" stroke-width="2" />
+    <path d="M24 14l8 11 8-13M24 20l-8 8M40 18l8 10M24 34l8-6 10 6" fill="none" stroke-width="1.6" opacity=".9" />
+  </g>
+
+  <path d="M27 43V33h10v10" fill="#11100e" stroke="#ffd166" stroke-width="2.2" stroke-linejoin="round" />
+  <path d="M30 43v-6h4v6" fill="#ffd166" />
+
+  <g filter="url(#glow)">
+    <circle cx="24" cy="14" r="3.2" fill="#ffd166" />
+    <circle cx="40" cy="12" r="3.2" fill="#69d2e7" />
+    <circle cx="16" cy="28" r="2.6" fill="#69d2e7" />
+    <circle cx="48" cy="28" r="2.6" fill="#69d2e7" />
+    <circle cx="32" cy="28" r="3.2" fill="#ff6b6b" />
+    <circle cx="24" cy="34" r="2.4" fill="#69d2e7" />
+    <circle cx="42" cy="34" r="2.4" fill="#ffd166" />
+  </g>
+
+  <path d="M13 48h38" stroke="#ffd166" stroke-width="2.5" stroke-linecap="square" />
+  <path d="M14 23h4v2h-4zm32 0h4v2h-4zM19 39h5v2h-5zm21 0h5v2h-5z" fill="#f6f0e5" opacity=".88" />
+  <path d="M10 8h44v48H10z" fill="none" stroke="#69d2e7" stroke-width="1" opacity=".22" />
+</svg>
