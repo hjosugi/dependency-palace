@@ -44,6 +44,7 @@ The current scanner is intentionally lightweight and dependency-free. It is mean
 | Language | Extensions | Extracts now |
 | --- | --- | --- |
 | Java | `.java` | package, imports, classes, interfaces, enums, fields, methods, extends, implements |
+| Haskell | `.hs`, `.lhs` | modules, imports, data/newtype/type, record fields, typeclasses, instances, top-level functions, function composition |
 | Kotlin | `.kt`, `.kts` | package, imports, classes, interfaces, objects, enum classes, constructor/type relations |
 | Scala | `.scala` | package, imports, classes, traits, objects, enums, extends |
 | C# | `.cs` | namespace, using, classes, interfaces, enums, structs, records, fields, methods, base types |
@@ -72,7 +73,7 @@ Every native adapter should output the same normalized graph:
 
 - Type nodes: class/interface/enum/struct/trait/protocol/module.
 - Members: fields/properties and methods/constructors/functions.
-- Relations: imports, inherits, implements, uses, calls, creates, tests.
+- Relations: imports, inherits, implements, instance, contains, composes, constrains, derives, uses, calls, creates, tests.
 - `via`: the member that caused the relation.
 - `reason`: a short explanation extracted from source or symbol data.
 - Stable ids: fully qualified names whenever the language can provide them.

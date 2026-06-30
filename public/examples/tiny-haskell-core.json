@@ -1,0 +1,771 @@
+{
+  "nodes": [
+    {
+      "id": "base.Eq",
+      "label": "Eq",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "eq",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "eq :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Show",
+      "label": "Show",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "show",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "show :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Generic",
+      "label": "Generic",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "generic",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "generic :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Functor",
+      "label": "Functor",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "functor",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "functor :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Applicative",
+      "label": "Applicative",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "applicative",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "applicative :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Monad",
+      "label": "Monad",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "monad",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "monad :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "haskell.platform.logging.validatePayment6",
+      "label": "validatePayment6",
+      "module": "platform",
+      "package": "haskell.platform.logging",
+      "kind": "function",
+      "loc": 107,
+      "complexity": 7,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "validatePayment6",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "validatePayment6 :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.api.graphql.CheckoutSnapshot7",
+      "label": "CheckoutSnapshot7",
+      "module": "api",
+      "package": "haskell.api.graphql",
+      "kind": "datatype",
+      "loc": 240,
+      "complexity": 7,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "order",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "audit2",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "charge3",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.identity.users.PolicyPolicy8",
+      "label": "PolicyPolicy8",
+      "module": "identity",
+      "package": "haskell.identity.users",
+      "kind": "typeclass",
+      "loc": 116,
+      "complexity": 6,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "persistPolicyPolicy8",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "persistPolicyPolicy8 :: m a -> m b"
+        },
+        {
+          "name": "validatePolicyPolicy82",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validatePolicyPolicy82 :: m a -> m b"
+        },
+        {
+          "name": "foldPolicyPolicy83",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldPolicyPolicy83 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.inventory.RequestSnapshot9",
+      "label": "RequestSnapshot9",
+      "module": "catalog",
+      "package": "haskell.catalog.inventory",
+      "kind": "datatype",
+      "loc": 182,
+      "complexity": 2,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "snapshot",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        },
+        {
+          "name": "receipt2",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "registry3",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.orders.cart.foldTokena",
+      "label": "foldTokena",
+      "module": "orders",
+      "package": "haskell.orders.cart",
+      "kind": "function",
+      "loc": 237,
+      "complexity": 5,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "foldTokena",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "foldTokena :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.billing.tax.hydrateGatewayb",
+      "label": "hydrateGatewayb",
+      "module": "billing",
+      "package": "haskell.billing.tax",
+      "kind": "function",
+      "loc": 97,
+      "complexity": 3,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "hydrateGatewayb",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "hydrateGatewayb :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.fulfillment.tracking.PolicyStatec",
+      "label": "PolicyStatec",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.tracking",
+      "kind": "datatype",
+      "loc": 214,
+      "complexity": 4,
+      "layer": 3,
+      "fields": [
+        {
+          "name": "receipt",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "session2",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "registry3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "customer4",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "order5",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.analytics.cohorts.AccountSnapshotd",
+      "label": "AccountSnapshotd",
+      "module": "analytics",
+      "package": "haskell.analytics.cohorts",
+      "kind": "datatype",
+      "loc": 285,
+      "complexity": 4,
+      "layer": 4,
+      "fields": [
+        {
+          "name": "snapshot",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "session2",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "token3",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "worker4",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "charge5",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.platform.time.composeResponsee",
+      "label": "composeResponsee",
+      "module": "platform",
+      "package": "haskell.platform.time",
+      "kind": "function",
+      "loc": 112,
+      "complexity": 3,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeResponsee",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeResponsee :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.api.dto.authorizeCustomerf",
+      "label": "authorizeCustomerf",
+      "module": "api",
+      "package": "haskell.api.dto",
+      "kind": "function",
+      "loc": 74,
+      "complexity": 4,
+      "layer": 5,
+      "fields": [],
+      "methods": [
+        {
+          "name": "authorizeCustomerf",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "authorizeCustomerf :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.identity.session.foldOrderg",
+      "label": "foldOrderg",
+      "module": "identity",
+      "package": "haskell.identity.session",
+      "kind": "function",
+      "loc": 143,
+      "complexity": 3,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "foldOrderg",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "foldOrderg :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.product.HistoryResponseh",
+      "label": "HistoryResponseh",
+      "module": "catalog",
+      "package": "haskell.catalog.product",
+      "kind": "datatype",
+      "loc": 224,
+      "complexity": 6,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "worker",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "snapshot2",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "event3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    }
+  ],
+  "links": [
+    {
+      "source": "base.Eq",
+      "target": "base.Functor",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Show",
+      "target": "base.Applicative",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Generic",
+      "target": "haskell.identity.users.PolicyPolicy8",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Functor",
+      "target": "base.Eq",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Applicative",
+      "target": "base.Generic",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Monad",
+      "target": "base.Eq",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.logging.validatePayment6",
+      "target": "haskell.api.dto.authorizeCustomerf",
+      "type": "composes",
+      "via": "validatePayment6",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.logging.validatePayment6",
+      "target": "haskell.catalog.inventory.RequestSnapshot9",
+      "type": "uses",
+      "via": "validatePayment6",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.CheckoutSnapshot7",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.CheckoutSnapshot7",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.CheckoutSnapshot7",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.CheckoutSnapshot7",
+      "target": "base.Generic",
+      "type": "instance",
+      "via": "CheckoutSnapshot7",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.users.PolicyPolicy8",
+      "target": "base.Generic",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.RequestSnapshot9",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.RequestSnapshot9",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.RequestSnapshot9",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.RequestSnapshot9",
+      "target": "base.Generic",
+      "type": "instance",
+      "via": "RequestSnapshot9",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.cart.foldTokena",
+      "target": "haskell.api.dto.authorizeCustomerf",
+      "type": "composes",
+      "via": "foldTokena",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.cart.foldTokena",
+      "target": "haskell.api.graphql.CheckoutSnapshot7",
+      "type": "uses",
+      "via": "foldTokena",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.tax.hydrateGatewayb",
+      "target": "haskell.platform.logging.validatePayment6",
+      "type": "composes",
+      "via": "hydrateGatewayb",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.PolicyStatec",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.PolicyStatec",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.PolicyStatec",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.PolicyStatec",
+      "target": "base.Monad",
+      "type": "instance",
+      "via": "PolicyStatec",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.cohorts.AccountSnapshotd",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.cohorts.AccountSnapshotd",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.cohorts.AccountSnapshotd",
+      "target": "base.Show",
+      "type": "instance",
+      "via": "AccountSnapshotd",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.time.composeResponsee",
+      "target": "haskell.api.dto.authorizeCustomerf",
+      "type": "composes",
+      "via": "composeResponsee",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.authorizeCustomerf",
+      "target": "haskell.platform.logging.validatePayment6",
+      "type": "composes",
+      "via": "authorizeCustomerf",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.session.foldOrderg",
+      "target": "haskell.billing.tax.hydrateGatewayb",
+      "type": "composes",
+      "via": "foldOrderg",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.session.foldOrderg",
+      "target": "haskell.api.graphql.CheckoutSnapshot7",
+      "type": "uses",
+      "via": "foldOrderg",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.product.HistoryResponseh",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.product.HistoryResponseh",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.product.HistoryResponseh",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.product.HistoryResponseh",
+      "target": "base.Applicative",
+      "type": "instance",
+      "via": "HistoryResponseh",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.CheckoutSnapshot7",
+      "target": "haskell.catalog.product.HistoryResponseh",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.RequestSnapshot9",
+      "target": "haskell.catalog.product.HistoryResponseh",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.PolicyStatec",
+      "target": "haskell.catalog.product.HistoryResponseh",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.cohorts.AccountSnapshotd",
+      "target": "haskell.catalog.inventory.RequestSnapshot9",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.product.HistoryResponseh",
+      "target": "haskell.api.graphql.CheckoutSnapshot7",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    }
+  ],
+  "meta": {
+    "name": "Tiny Haskell Core",
+    "generatedAt": "2026-06-30T00:00:00.000Z",
+    "language": "Haskell"
+  }
+}

@@ -5,6 +5,7 @@ export type SourceLanguage =
   | "cpp"
   | "csharp"
   | "go"
+  | "haskell"
   | "java"
   | "javascript"
   | "kotlin"

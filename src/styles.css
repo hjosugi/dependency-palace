@@ -133,7 +133,14 @@ button {
   border-radius: 8px;
 }
 
+.metaphor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
 .segmented button,
+.metaphor-grid button,
 .button-row button,
 .stage-actions button {
   display: inline-flex;
@@ -154,6 +161,14 @@ button {
   font-size: 12px;
 }
 
+.metaphor-grid button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .segmented button:last-child {
   border-right: 0;
 }
@@ -163,10 +178,58 @@ button {
   background: var(--accent);
 }
 
+.metaphor-grid button.is-active {
+  color: #11100e;
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+}
+
 .button-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.example-list {
+  display: grid;
+  gap: 8px;
+}
+
+.example-list button {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 9px 10px;
+  text-align: left;
+  background: #11100e;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.example-list button span,
+.example-list button small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.example-list button span {
+  color: #f6f0e5;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.example-list button small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.example-list button.is-loading {
+  border-color: var(--accent);
 }
 
 .button-row button,
@@ -177,6 +240,8 @@ button {
 }
 
 .button-row button:hover,
+.metaphor-grid button:hover,
+.example-list button:hover,
 .stage-actions button:hover,
 .hub-list button:hover {
   border-color: var(--line-strong);
@@ -417,6 +482,60 @@ button {
   margin: 0;
 }
 
+.signal-card {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  background: #11100e;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.signal-card div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.signal-card span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.signal-card strong {
+  overflow-wrap: anywhere;
+  color: #f6f0e5;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.signal-card ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.signal-card li {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  min-width: 0;
+  color: #d8d1c3;
+  font-size: 11px;
+}
+
+.signal-card b {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
 .semantic-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -539,12 +658,14 @@ button {
 
   .app-shell {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 68vh auto;
+    grid-template-rows: auto minmax(560px, 68vh) auto;
+    height: auto;
     min-height: 100%;
   }
 
   .side-panel {
     max-height: none;
+    overflow: visible;
     border: 0;
   }
 

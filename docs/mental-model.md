@@ -12,6 +12,9 @@ The target image is the structure that appears in your head after you understand
 - Calls and creations are behavioral routes.
 - Imports and type references are weaker knowledge routes.
 - Packages and modules are districts, not just folders.
+- Haskell typeclasses are contracts; instances are implementations of those contracts.
+- Haskell `data`/`newtype`/records are data bodies with composition edges to field types.
+- Functional composition is a visible pipeline, not just another call edge.
 
 ## Spatial Rules
 
@@ -24,6 +27,8 @@ Focus view should use a stable semantic layout:
 | Methods/constructors | Right/upper behavior cluster |
 | Implemented interfaces | Above/front contract surfaces |
 | Base classes | Below/back structural chain |
+| Typeclass constraints | Above/front contract surfaces |
+| Function composition | Curved behavior pipeline between functions |
 | Outgoing dependencies | Right side |
 | Incoming dependencies | Left side |
 | Far context | Outer orbit |
@@ -52,3 +57,7 @@ The first useful screen should answer:
 6. Who depends on it?
 
 If the view only answers "how many edges exist", it is not good enough.
+
+The right panel's Signal block is the compact textual version of this. It gives the selected symbol a voice: contract surface, data body, behavior pipeline, boundary, adapter, or state holder, plus its local relation pressure.
+
+Different metaphors are documented in [metaphors.md](metaphors.md). They are not skins; they are different projections of the same code understanding.

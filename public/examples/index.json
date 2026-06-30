@@ -1,0 +1,172 @@
+[
+  {
+    "id": "tiny-haskell-core",
+    "title": "Tiny Haskell Core",
+    "file": "/examples/tiny-haskell-core.json",
+    "nodes": 18,
+    "links": 40,
+    "complexity": "tiny",
+    "language": "Haskell",
+    "description": "records, typeclasses, instances, deriving, and small FP pipelines",
+    "recommended": {
+      "view": "focus",
+      "form": "atomic",
+      "focusDepth": 1,
+      "minDegree": 0,
+      "module": "all"
+    }
+  },
+  {
+    "id": "tiny-java-service",
+    "title": "Tiny Java Service",
+    "file": "/examples/tiny-java-service.json",
+    "nodes": 24,
+    "links": 72,
+    "complexity": "tiny",
+    "language": "Java",
+    "description": "controller, service, repository, DTO, and interface contracts",
+    "recommended": {
+      "view": "focus",
+      "form": "blocks",
+      "focusDepth": 1,
+      "minDegree": 0,
+      "module": "all"
+    }
+  },
+  {
+    "id": "small-fp-pipeline",
+    "title": "Small FP Pipeline",
+    "file": "/examples/small-fp-pipeline.json",
+    "nodes": 64,
+    "links": 152,
+    "complexity": "small",
+    "language": "Haskell",
+    "description": "function composition, constraints, data bodies, and typeclass instances",
+    "recommended": {
+      "view": "focus",
+      "form": "space",
+      "focusDepth": 2,
+      "minDegree": 0,
+      "module": "all"
+    }
+  },
+  {
+    "id": "small-clean-architecture",
+    "title": "Small Clean Architecture",
+    "file": "/examples/small-clean-architecture.json",
+    "nodes": 96,
+    "links": 387,
+    "complexity": "small",
+    "language": "Java",
+    "description": "ports, adapters, entities, use cases, and boundary classes",
+    "recommended": {
+      "view": "focus",
+      "form": "tree",
+      "focusDepth": 2,
+      "minDegree": 0,
+      "module": "all"
+    }
+  },
+  {
+    "id": "medium-haskell-platform",
+    "title": "Medium Haskell Platform",
+    "file": "/examples/medium-haskell-platform.json",
+    "nodes": 180,
+    "links": 601,
+    "complexity": "medium",
+    "language": "Haskell",
+    "description": "larger algebra/typeclass graph with validation and persistence pipelines",
+    "recommended": {
+      "view": "focus",
+      "form": "atomic",
+      "focusDepth": 2,
+      "minDegree": 1,
+      "module": "all"
+    }
+  },
+  {
+    "id": "medium-polyglot-services",
+    "title": "Medium Polyglot Services",
+    "file": "/examples/medium-polyglot-services.json",
+    "nodes": 320,
+    "links": 1548,
+    "complexity": "medium",
+    "language": "Java, Haskell, Go, Rust, TypeScript",
+    "description": "mixed services, SDKs, adapters, contracts, workers, and DTOs",
+    "recommended": {
+      "view": "overview",
+      "form": "palace",
+      "focusDepth": 1,
+      "minDegree": 1,
+      "module": "all"
+    }
+  },
+  {
+    "id": "large-modular-monolith",
+    "title": "Large Modular Monolith",
+    "file": "/examples/large-modular-monolith.json",
+    "nodes": 750,
+    "links": 4988,
+    "complexity": "large",
+    "language": "Java",
+    "description": "bounded contexts with dense service/repository/entity relationships",
+    "recommended": {
+      "view": "overview",
+      "form": "blocks",
+      "focusDepth": 1,
+      "minDegree": 2,
+      "module": "all"
+    }
+  },
+  {
+    "id": "large-fp-event-system",
+    "title": "Large FP Event System",
+    "file": "/examples/large-fp-event-system.json",
+    "nodes": 1100,
+    "links": 3619,
+    "complexity": "large",
+    "language": "Haskell",
+    "description": "event-sourced FP system with algebras, interpreters, and composition",
+    "recommended": {
+      "view": "overview",
+      "form": "space",
+      "focusDepth": 1,
+      "minDegree": 2,
+      "module": "all"
+    }
+  },
+  {
+    "id": "xlarge-enterprise-platform",
+    "title": "XL Enterprise Platform",
+    "file": "/examples/xlarge-enterprise-platform.json",
+    "nodes": 1800,
+    "links": 12829,
+    "complexity": "xlarge",
+    "language": "Java, Haskell, Go, Rust, TypeScript, Python",
+    "description": "large product platform with cross-module contracts and hot hubs",
+    "recommended": {
+      "view": "overview",
+      "form": "palace",
+      "focusDepth": 1,
+      "minDegree": 3,
+      "module": "all"
+    }
+  },
+  {
+    "id": "stress-dense-cycles",
+    "title": "Stress Dense Cycles",
+    "file": "/examples/stress-dense-cycles.json",
+    "nodes": 2600,
+    "links": 24285,
+    "complexity": "stress",
+    "language": "Polyglot",
+    "description": "dense cyclic dependency stress case for filtering, focus, and rendering",
+    "recommended": {
+      "view": "overview",
+      "form": "atomic",
+      "focusDepth": 1,
+      "minDegree": 5,
+      "module": "all"
+    }
+  }
+]

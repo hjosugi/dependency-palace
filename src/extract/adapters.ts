@@ -34,6 +34,21 @@ function splitTypeList(value: string | undefined) {
     .filter(Boolean) as string[];
 }
 
+function typeWords(value: string | undefined) {
+  return Array.from(
+    new Set(
+      (value ?? "")
+        .match(/\b[A-Z][A-Za-z0-9_'.]*/g)
+        ?.map((item) => item.replace(/^:+|:+$/g, ""))
+        .filter((item) => !["IO", "Maybe", "Either", "List", "String", "Int", "Integer", "Bool", "Double", "Float"].includes(item)) ?? []
+    )
+  );
+}
+
+function resolveImportedType(simpleName: string, imports: string[], namespace: string) {
+  return imports.find((imported) => simpleTypeName(imported) === simpleName) ?? qualifiedName(namespace, simpleName);
+}
+
 function namespaceFor(file: SourceFile, patterns: RegExp[], fallbackDepth: number) {
   for (const pattern of patterns) {
     const match = file.text.match(pattern);
@@ -97,6 +112,20 @@ function braceLanguageAdapter(options: BraceLanguageOptions): LanguageAdapter {
           addLink(links, seenLinks, id, target, "implements", undefined, "declared implementation");
         }
 
+        for (const field of members.fields) {
+          for (const targetType of typeWords(field.type)) {
+            addLink(
+              links,
+              seenLinks,
+              id,
+              resolveImportedType(targetType, imports, namespace),
+              "contains",
+              field.name,
+              "field composition"
+            );
+          }
+        }
+
         for (const imported of imports) {
           const importedName = simpleTypeName(imported);
           if (!importedName) continue;
@@ -109,6 +138,198 @@ function braceLanguageAdapter(options: BraceLanguageOptions): LanguageAdapter {
       return { nodes, links };
     }
   };
+}
+
+function stripHaskellComments(text: string) {
+  return text.replace(/\{-[\s\S]*?-\}/g, " ").replace(/--.*$/gm, " ");
+}
+
+function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFile {
+  const text = stripHaskellComments(file.text);
+  const moduleName = text.match(/^\s*module\s+([A-Z][\w'.]*(?:\.[A-Z][\w'.]*)*)/m)?.[1] ?? packageFromPath(file.relativePath);
+  const module = inferModule(file, context);
+  const namespace = moduleName;
+  const nodes: RawNode[] = [];
+  const links: RawLink[] = [];
+  const seenNodes = new Set<string>();
+  const seenLinks = new Set<string>();
+  const fileNode = createFileNode(file, context.moduleDepth);
+  addNode(nodes, seenNodes, { ...fileNode, package: namespace, module });
+
+  const imports = importTargets(text, [
+    /^\s*import\s+(?:qualified\s+)?([A-Z][\w'.]*(?:\.[A-Z][\w'.]*)*)/gm
+  ]);
+  for (const target of imports) addLink(links, seenLinks, fileNode.id, target, "imports", undefined, "haskell import");
+
+  const signatures = new Map<string, string>();
+  for (const sig of text.matchAll(/^([a-z_][\w']*)\s*::\s*(.+)$/gm)) {
+    signatures.set(sig[1], sig[2].trim());
+  }
+
+  function addTypeRefs(sourceId: string, signature: string | undefined, via: string, reason: string) {
+    for (const typeName of typeWords(signature)) {
+      addLink(links, seenLinks, sourceId, resolveImportedType(typeName, imports, namespace), "uses", via, reason);
+    }
+  }
+
+  function addConstraints(sourceId: string, signature: string | undefined, via: string) {
+    const constraints = signature?.match(/^(?:\(([^)]+)\)|([A-Z][\w'.]*\s+[a-z]))\s*=>/)?.[1];
+    for (const constraint of typeWords(constraints)) {
+      addLink(links, seenLinks, sourceId, resolveImportedType(constraint, imports, namespace), "constrains", via, "typeclass constraint");
+    }
+  }
+
+  function declarationSpan(start: number) {
+    const leading = text.slice(start).match(/^\s*/)?.[0].length ?? 0;
+    const declarationStart = start + leading;
+    const currentLineEnd = text.indexOf("\n", declarationStart);
+    const searchStart = currentLineEnd >= 0 ? currentLineEnd + 1 : declarationStart + 1;
+    const next = text.slice(searchStart).search(/^(?:(?:data|newtype|type|class|instance)\b|[a-z_][\w']*\s*::)/m);
+    return next >= 0 ? text.slice(declarationStart, searchStart + next) : text.slice(declarationStart);
+  }
+
+  for (const match of text.matchAll(/^\s*(data|newtype)\s+([A-Z][\w']*)\b([^\n=]*)(?:=\s*([^\n]+))?/gm)) {
+    const rawKind = match[1];
+    const name = match[2];
+    const declaration = declarationSpan(match.index ?? 0);
+    const body = declaration.split("=").slice(1).join("=").split(/\bderiving\b/)[0] ?? "";
+    const fields: CodeMember[] = [];
+    const recordBody = declaration.match(/\{([\s\S]*?)\}/)?.[1];
+    if (recordBody) {
+      for (const field of recordBody.matchAll(/(?:^|,)\s*([a-z_][\w']*)\s*::\s*([^,}]+)/g)) {
+        fields.push({ name: field[1], kind: "field", type: field[2].trim(), visibility: "public" });
+      }
+    } else {
+      typeWords(body)
+        .filter((typeName) => typeName !== name)
+        .forEach((typeName, index) => {
+        fields.push({ name: `_${index + 1}`, kind: "field", type: typeName, visibility: "public" });
+      });
+    }
+    const id = qualifiedName(namespace, name);
+    addNode(nodes, seenNodes, {
+      id,
+      label: name,
+      module,
+      package: namespace,
+      kind: "datatype",
+      loc: countLoc(declaration),
+      complexity: simpleComplexity(declaration),
+      fields,
+      methods: []
+    });
+    addLink(links, seenLinks, fileNode.id, id, "contains", undefined, `declares ${rawKind}`);
+    for (const field of fields) {
+      for (const typeName of typeWords(field.type)) {
+        addLink(links, seenLinks, id, resolveImportedType(typeName, imports, namespace), "contains", field.name, "record field composition");
+      }
+    }
+    for (const derived of typeWords(declaration.match(/\bderiving\s+(?:stock\s+|newtype\s+|anyclass\s+)?(.+)$/m)?.[1])) {
+      addLink(links, seenLinks, id, resolveImportedType(derived, imports, namespace), "derives", undefined, "deriving clause");
+    }
+  }
+
+  for (const match of text.matchAll(/^\s*type\s+([A-Z][\w']*)\b[^\n=]*=\s*(.+)$/gm)) {
+    const name = match[1];
+    const id = qualifiedName(namespace, name);
+    const aliased = match[2].trim();
+    addNode(nodes, seenNodes, {
+      id,
+      label: name,
+      module,
+      package: namespace,
+      kind: "datatype",
+      loc: 1,
+      complexity: 1,
+      fields: [{ name: "alias", kind: "field", type: aliased, visibility: "public" }],
+      methods: []
+    });
+    addLink(links, seenLinks, fileNode.id, id, "contains", undefined, "declares type alias");
+    addTypeRefs(id, aliased, "alias", "type alias target");
+  }
+
+  for (const match of text.matchAll(/^\s*class\s+(.+?)\s+where\s*$/gm)) {
+    const header = match[1].trim();
+    const name = header.match(/([A-Z][\w']*)\s+(?:[a-z_]\w*)?$/)?.[1] ?? header.match(/([A-Z][\w']*)/)?.[1];
+    if (!name) continue;
+    const body = declarationSpan(match.index ?? 0);
+    const methods = Array.from(body.matchAll(/^\s+([a-z_][\w']*)\s*::\s*(.+)$/gm)).map(
+      (method): CodeMember => ({
+        name: method[1],
+        kind: "method",
+        visibility: "public",
+        abstract: true,
+        signature: `${method[1]} :: ${method[2].trim()}`
+      })
+    );
+    const id = qualifiedName(namespace, name);
+    addNode(nodes, seenNodes, {
+      id,
+      label: name,
+      module,
+      package: namespace,
+      kind: "typeclass",
+      loc: countLoc(body),
+      complexity: simpleComplexity(body),
+      fields: [],
+      methods
+    });
+    addLink(links, seenLinks, fileNode.id, id, "contains", undefined, "declares typeclass");
+    const superclassPart = header.includes("=>") ? header.split("=>")[0] : undefined;
+    for (const superclass of typeWords(superclassPart)) {
+      if (superclass !== name) addLink(links, seenLinks, id, resolveImportedType(superclass, imports, namespace), "constrains", undefined, "superclass constraint");
+    }
+  }
+
+  for (const match of text.matchAll(/^\s*instance\s+(.+?)\s+where\s*$/gm)) {
+    const header = match[1].trim();
+    const classAndType = header.match(/([A-Z][\w'.]*)\s+(.+)$/);
+    if (!classAndType) continue;
+    const className = simpleTypeName(classAndType[1]);
+    const targetType = typeWords(classAndType[2])[0] ?? simpleTypeName(classAndType[2]);
+    if (!className || !targetType) continue;
+    addLink(
+      links,
+      seenLinks,
+      resolveImportedType(targetType, imports, namespace),
+      resolveImportedType(className, imports, namespace),
+      "instance",
+      undefined,
+      "haskell typeclass instance"
+    );
+  }
+
+  for (const [name, signature] of signatures) {
+    const id = qualifiedName(namespace, name);
+    const definition = text.match(new RegExp(`^\\s*${name}\\b[^=]*=\\s*(.+)$`, "m"))?.[1] ?? "";
+    addNode(nodes, seenNodes, {
+      id,
+      label: name,
+      module,
+      package: namespace,
+      kind: "function",
+      loc: 1,
+      complexity: simpleComplexity(definition),
+      fields: [],
+      methods: [{ name, kind: "method", visibility: "public", signature: `${name} :: ${signature}` }]
+    });
+    addLink(links, seenLinks, fileNode.id, id, "contains", name, "declares top-level function");
+    addTypeRefs(id, signature, name, "function signature type reference");
+    addConstraints(id, signature, name);
+
+    const composedNames = new Set<string>();
+    for (const composition of definition.matchAll(/(?:\.|>=>|<=<|<\$>|<\*>|>>=|=<<)\s*([a-z_][\w']*)/g)) {
+      composedNames.add(composition[1]);
+    }
+    for (const composition of definition.matchAll(/([a-z_][\w']*)\s*(?:\.|>=>|<=<|<\$>|<\*>|>>=|=<<)/g)) {
+      composedNames.add(composition[1]);
+    }
+    for (const target of composedNames) {
+      if (target !== name) addLink(links, seenLinks, id, qualifiedName(namespace, target), "composes", name, "function composition pipeline");
+    }
+  }
+
+  return { nodes, links };
 }
 
 function extractPython(file: SourceFile, context: ExtractContext): ExtractedFile {
@@ -363,6 +584,7 @@ function extractPhp(file: SourceFile, context: ExtractContext): ExtractedFile {
 }
 
 const adapters: LanguageAdapter[] = [
+  { language: "haskell", extensions: [".hs", ".lhs"], extract: extractHaskell },
   braceLanguageAdapter({
     language: "java",
     extensions: [".java"],

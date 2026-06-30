@@ -10,6 +10,112 @@ export type DemoSize = 750 | 2500 | 6000;
 
 export const demoSizes: DemoSize[] = [750, 2500, 6000];
 
+export function createStarterGraph(): RawGraph {
+  return {
+    nodes: [
+      {
+        id: "starter.PaymentRequest",
+        label: "PaymentRequest",
+        module: "starter",
+        package: "starter",
+        kind: "datatype",
+        loc: 24,
+        complexity: 2,
+        layer: 1,
+        fields: [
+          { name: "requestUser", kind: "field", type: "Text", visibility: "public" },
+          { name: "requestAmount", kind: "field", type: "Money", visibility: "public" }
+        ],
+        methods: []
+      },
+      {
+        id: "starter.PaymentAlgebra",
+        label: "PaymentAlgebra",
+        module: "starter",
+        package: "starter",
+        kind: "typeclass",
+        loc: 18,
+        complexity: 3,
+        layer: 0,
+        fields: [],
+        methods: [
+          { name: "authorize", kind: "method", visibility: "public", abstract: true, signature: "authorize :: request -> m receipt" },
+          { name: "capture", kind: "method", visibility: "public", abstract: true, signature: "capture :: receipt -> m event" }
+        ]
+      },
+      {
+        id: "starter.validatePayment",
+        label: "validatePayment",
+        module: "starter",
+        package: "starter",
+        kind: "function",
+        loc: 12,
+        complexity: 2,
+        layer: 2,
+        fields: [],
+        methods: [{ name: "validatePayment", kind: "method", visibility: "public", signature: "validatePayment :: PaymentRequest -> Either Error PaymentRequest" }]
+      },
+      {
+        id: "starter.PaymentService",
+        label: "PaymentService",
+        module: "starter",
+        package: "starter",
+        kind: "class",
+        loc: 88,
+        complexity: 8,
+        layer: 2,
+        fields: [
+          { name: "gateway", kind: "field", type: "PaymentGateway", visibility: "private" },
+          { name: "clock", kind: "field", type: "Clock", visibility: "private" }
+        ],
+        methods: [
+          { name: "authorize", kind: "method", visibility: "public", signature: "authorize(request: PaymentRequest): Receipt" },
+          { name: "persist", kind: "method", visibility: "private", signature: "persist(receipt: Receipt): void" }
+        ]
+      },
+      {
+        id: "starter.PaymentGateway",
+        label: "PaymentGateway",
+        module: "starter",
+        package: "starter",
+        kind: "interface",
+        loc: 22,
+        complexity: 3,
+        layer: 1,
+        fields: [],
+        methods: [{ name: "charge", kind: "method", visibility: "public", abstract: true, signature: "charge(request: PaymentRequest): Receipt" }]
+      },
+      {
+        id: "starter.PaymentRepository",
+        label: "PaymentRepository",
+        module: "starter",
+        package: "starter",
+        kind: "class",
+        loc: 72,
+        complexity: 6,
+        layer: 2,
+        fields: [{ name: "client", kind: "field", type: "DatabaseClient", visibility: "private" }],
+        methods: [{ name: "save", kind: "method", visibility: "public", signature: "save(receipt: Receipt): void" }]
+      }
+    ],
+    links: [
+      { source: "starter.PaymentRequest", target: "starter.PaymentAlgebra", type: "instance", reason: "datatype implements contract" },
+      { source: "starter.PaymentRequest", target: "base.Show", type: "derives", via: "deriving", reason: "derived behavior" },
+      { source: "starter.validatePayment", target: "starter.PaymentRequest", type: "uses", via: "validatePayment", reason: "function signature type reference" },
+      { source: "starter.PaymentService", target: "starter.PaymentGateway", type: "implements", via: "class declaration", reason: "fulfills contract" },
+      { source: "starter.PaymentService", target: "starter.PaymentRequest", type: "uses", via: "authorize", reason: "request data body" },
+      { source: "starter.PaymentService", target: "starter.PaymentRepository", type: "calls", via: "persist", reason: "behavior calls collaborator" },
+      { source: "starter.PaymentService", target: "starter.PaymentGateway", type: "contains", via: "gateway", reason: "field composition" },
+      { source: "starter.PaymentRepository", target: "starter.PaymentRequest", type: "uses", via: "save", reason: "stored data type" }
+    ],
+    meta: {
+      name: "Starter graph",
+      generatedAt: "2026-06-30T00:00:00.000Z",
+      language: "Haskell / Java miniature"
+    }
+  };
+}
+
 const modules: ModuleSpec[] = [
   { name: "kernel", layer: 0, areas: ["logging", "config", "events", "time"] },
   { name: "identity", layer: 1, areas: ["users", "auth", "roles", "session"] },

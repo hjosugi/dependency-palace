@@ -1,4 +1,15 @@
-import type { CodeMember, DependencyKind, DisplayLink, DisplayNode, GraphLink, GraphNode, MemberKind, NodeKind, ViewGraph } from "../types";
+import type {
+  CodeMember,
+  DependencyKind,
+  DisplayLink,
+  DisplayNode,
+  GraphLink,
+  GraphNode,
+  MemberKind,
+  NodeKind,
+  ViewGraph,
+  VisualizationMetaphor
+} from "../types";
 
 const modulePalette = [
   "#69d2e7",
@@ -19,6 +30,11 @@ export const edgePalette: Record<DependencyKind, string> = {
   imports: "#74c0fc",
   inherits: "#ff9f1c",
   implements: "#b197fc",
+  instance: "#d0bfff",
+  contains: "#20c997",
+  composes: "#f06595",
+  constrains: "#da77f2",
+  derives: "#ffa94d",
   uses: "#63e6be",
   calls: "#ffd43b",
   creates: "#ff6b6b",
@@ -29,6 +45,9 @@ export const edgePalette: Record<DependencyKind, string> = {
 const kindPalette: Record<NodeKind | MemberKind, string> = {
   class: "#69d2e7",
   interface: "#b197fc",
+  typeclass: "#d0bfff",
+  datatype: "#74c0fc",
+  function: "#ffda6b",
   enum: "#ffd166",
   module: "#8ac926",
   package: "#f2c879",
@@ -46,6 +65,7 @@ const rolePalette = {
   data: "#74c0fc",
   boundary: "#ff922b",
   adapter: "#f783ac",
+  composition: "#f06595",
   test: "#8ce99a",
   unknown: "#69d2e7"
 };
@@ -121,7 +141,8 @@ function visualKindForNode(node: GraphNode): NodeKind {
 function colorForNode(node: GraphNode, modules: string[], dimmed: boolean) {
   if (dimmed) return "#4b4a45";
   if (node.kind === "package") return colorForModule(node.module, modules);
-  if (node.kind === "interface") return kindPalette.interface;
+  if (node.kind === "interface" || node.kind === "typeclass") return kindPalette[node.kind];
+  if (node.kind === "datatype" || node.kind === "function") return kindPalette[node.kind];
   if (node.kind === "enum") return kindPalette.enum;
   if (node.kind === "external") return kindPalette.external;
   return rolePalette[node.role ?? "unknown"];
@@ -133,7 +154,9 @@ function dimensionsForNode(node: GraphNode, radius: number, mode: ViewGraph["mod
     const depth = Math.max(18, radius * 1.8);
     return { x: width, y: Math.max(4, radius * 0.42), z: depth };
   }
-  if (node.kind === "interface") return { x: radius * 2.2, y: radius * 2.2, z: radius * 0.55 };
+  if (node.kind === "interface" || node.kind === "typeclass") return { x: radius * 2.2, y: radius * 2.2, z: radius * 0.55 };
+  if (node.kind === "function") return { x: radius * 2.35, y: radius * 0.9, z: radius * 2.35 };
+  if (node.kind === "datatype") return { x: radius * 2.4, y: radius * 1.85, z: radius * 1.35 };
   if (node.kind === "enum") return { x: radius * 1.8, y: radius * 2.2, z: radius * 1.8 };
   if (mode === "focus") {
     const memberLoad = Math.min(18, node.fields.length + node.methods.length);
@@ -250,10 +273,20 @@ function semanticFocusLayout(view: ViewGraph, selectedId: string, modules: strin
   const outgoing = neighborNodes.filter((node) => directLinks.some((link) => link.source === selectedId && link.target === node.id));
   const incoming = neighborNodes.filter((node) => directLinks.some((link) => link.target === selectedId && link.source === node.id));
   const interfaces = outgoing.filter((node) =>
-    directLinks.some((link) => link.source === selectedId && link.target === node.id && link.type === "implements")
+    directLinks.some(
+      (link) =>
+        link.source === selectedId &&
+        link.target === node.id &&
+        (link.type === "implements" || link.type === "instance" || link.type === "constrains")
+    )
   );
   const inherited = outgoing.filter((node) =>
-    directLinks.some((link) => link.source === selectedId && link.target === node.id && link.type === "inherits")
+    directLinks.some(
+      (link) =>
+        link.source === selectedId &&
+        link.target === node.id &&
+        (link.type === "inherits" || link.type === "derives" || link.type === "contains" || link.type === "composes")
+    )
   );
   const regularOutgoing = outgoing.filter((node) => !interfaces.includes(node) && !inherited.includes(node));
   const regularIncoming = incoming.filter((node) => !regularOutgoing.includes(node));
@@ -309,9 +342,11 @@ function semanticFocusLayout(view: ViewGraph, selectedId: string, modules: strin
       visualKind,
       subtitle:
         side === "contract"
-          ? "contract"
+          ? node.kind === "typeclass"
+            ? "typeclass contract"
+            : "contract"
           : side === "inherit"
-            ? "base type"
+            ? "structure / composition"
             : side === "in"
               ? "depends on selected"
               : side === "out"
@@ -345,11 +380,210 @@ function semanticFocusLayout(view: ViewGraph, selectedId: string, modules: strin
   return { nodes: displayNodes, links: [...displayLinks, ...syntheticLinks] };
 }
 
-export function layoutViewGraph(view: ViewGraph, selectedId: string | null): { nodes: DisplayNode[]; links: DisplayLink[] } {
+function relationTypesFor(nodeId: string, selectedId: string, links: DisplayLink[]) {
+  return links.filter((link) => link.source === selectedId && link.target === nodeId).map((link) => link.type);
+}
+
+function relationClass(node: DisplayNode, selectedId: string, links: DisplayLink[]) {
+  if (node.id === selectedId) return "selected";
+  if (node.isSynthetic && (node.visualKind === "field" || node.visualKind === "property")) return "field";
+  if (node.isSynthetic) return "method";
+  const types = relationTypesFor(node.id, selectedId, links);
+  if (types.some((type) => type === "implements" || type === "instance" || type === "constrains")) return "contract";
+  if (types.some((type) => type === "inherits" || type === "derives")) return "lineage";
+  if (types.some((type) => type === "contains")) return "composition";
+  if (types.some((type) => type === "composes")) return "pipeline";
+  if (links.some((link) => link.target === selectedId && link.source === node.id)) return "incoming";
+  if (types.length > 0) return "outgoing";
+  return "context";
+}
+
+function placeRadial(index: number, total: number, radius: number, y = 0, phase = 0) {
+  const angle = phase + (index / Math.max(1, total)) * Math.PI * 2;
+  return { x: Math.cos(angle) * radius, y, z: Math.sin(angle) * radius };
+}
+
+function applyFocusMetaphor(
+  graph: { nodes: DisplayNode[]; links: DisplayLink[] },
+  selectedId: string,
+  metaphor: VisualizationMetaphor
+) {
+  if (metaphor === "palace") return graph;
+
+  const selected = graph.nodes.find((node) => node.id === selectedId);
+  if (!selected) return graph;
+  const groups = new Map<string, DisplayNode[]>();
+  for (const node of graph.nodes) {
+    const group = relationClass(node, selectedId, graph.links);
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group)?.push(node);
+  }
+
+  const setNode = (node: DisplayNode, patch: Partial<DisplayNode>) => Object.assign(node, patch);
+  const setGroupRadial = (name: string, radius: number, y: number, phase: number, color?: string) => {
+    const nodes = groups.get(name) ?? [];
+    nodes.forEach((node, index) => {
+      const position = placeRadial(index, nodes.length, radius, y, phase);
+      setNode(node, {
+        ...position,
+        color: color ?? node.color,
+        dimensions: node.dimensions
+      });
+    });
+  };
+
+  if (metaphor === "tree") {
+    setNode(selected, {
+      x: 0,
+      y: 0,
+      z: 0,
+      color: "#c9a46a",
+      dimensions: { x: 20, y: 118, z: 20 },
+      subtitle: `${selected.subtitle ?? selected.kind} / trunk`
+    });
+    (groups.get("field") ?? []).forEach((node, index, list) => {
+      const position = placeRadial(index, list.length, 56, -82, -0.7);
+      setNode(node, { ...position, color: "#20c997", dimensions: { x: 9, y: 9, z: 9 } });
+    });
+    (groups.get("method") ?? []).forEach((node, index, list) => {
+      const side = index % 2 === 0 ? -1 : 1;
+      const level = Math.floor(index / 2);
+      setNode(node, {
+        x: side * (72 + level * 14),
+        y: 34 + level * 20,
+        z: (stableUnit(node.id) - 0.5) * 74,
+        color: "#ffd43b",
+        dimensions: { x: 18, y: 6, z: 18 }
+      });
+    });
+    setGroupRadial("contract", 86, 118, 0.4, "#d0bfff");
+    setGroupRadial("lineage", 44, -128, 1.2, "#ffa94d");
+    setGroupRadial("composition", 116, -38, 0.1, "#20c997");
+    setGroupRadial("pipeline", 132, 52, 0.8, "#f06595");
+    setGroupRadial("incoming", 168, 12, 2.6, "#74c0fc");
+    setGroupRadial("outgoing", 168, 12, -0.5, "#63e6be");
+  }
+
+  if (metaphor === "blocks") {
+    setNode(selected, {
+      x: 0,
+      y: 0,
+      z: 0,
+      color: "#ffe8a3",
+      dimensions: { x: 58, y: 72, z: 42 },
+      subtitle: `${selected.subtitle ?? selected.kind} / block`
+    });
+    const ordered = graph.nodes.filter((node) => node.id !== selectedId);
+    ordered.forEach((node, index) => {
+      const column = index % 5;
+      const row = Math.floor(index / 5);
+      const group = relationClass(node, selectedId, graph.links);
+      setNode(node, {
+        x: (column - 2) * 62,
+        y: group === "contract" ? 104 : group === "lineage" ? -92 : row * 28 - 40,
+        z: 92 + row * 46,
+        color:
+          group === "contract"
+            ? "#d0bfff"
+            : group === "composition"
+              ? "#20c997"
+              : group === "pipeline"
+                ? "#f06595"
+                : node.color,
+        dimensions: { x: node.isSynthetic ? 18 : 34, y: node.isSynthetic ? 12 : 24, z: node.isSynthetic ? 18 : 28 }
+      });
+    });
+  }
+
+  if (metaphor === "organism") {
+    setNode(selected, {
+      x: 0,
+      y: 0,
+      z: 0,
+      color: "#ffec99",
+      dimensions: { x: 62, y: 62, z: 62 },
+      subtitle: `${selected.subtitle ?? selected.kind} / nucleus`
+    });
+    setGroupRadial("field", 46, -16, 0.2, "#06d6a0");
+    setGroupRadial("method", 72, 22, 1.4, "#ffd43b");
+    setGroupRadial("contract", 108, 56, 0, "#d0bfff");
+    setGroupRadial("composition", 118, -52, 0.5, "#20c997");
+    setGroupRadial("pipeline", 132, 28, 2.0, "#f06595");
+    setGroupRadial("incoming", 168, 0, 3.1, "#74c0fc");
+    setGroupRadial("outgoing", 168, 0, 0.1, "#63e6be");
+  }
+
+  if (metaphor === "space") {
+    setNode(selected, {
+      x: 0,
+      y: 0,
+      z: 0,
+      color: "#fff3bf",
+      dimensions: { x: 64, y: 64, z: 64 },
+      subtitle: `${selected.subtitle ?? selected.kind} / star`
+    });
+    setGroupRadial("field", 58, 0, 0.1, "#06d6a0");
+    setGroupRadial("method", 96, 16, 0.6, "#ffd43b");
+    setGroupRadial("contract", 138, 44, 1.2, "#d0bfff");
+    setGroupRadial("composition", 172, -24, 1.9, "#20c997");
+    setGroupRadial("pipeline", 204, 30, 2.6, "#f06595");
+    setGroupRadial("incoming", 246, -10, 3.2, "#74c0fc");
+    setGroupRadial("outgoing", 246, -10, 0.2, "#63e6be");
+  }
+
+  if (metaphor === "atomic") {
+    setNode(selected, {
+      x: 0,
+      y: 0,
+      z: 0,
+      color: "#ffe066",
+      dimensions: { x: 44, y: 44, z: 44 },
+      subtitle: `${selected.subtitle ?? selected.kind} / nucleus`
+    });
+    const shells = [
+      ...(groups.get("field") ?? []),
+      ...(groups.get("method") ?? []),
+      ...(groups.get("contract") ?? []),
+      ...(groups.get("composition") ?? []),
+      ...(groups.get("pipeline") ?? [])
+    ];
+    shells.forEach((node, index) => {
+      const shell = 1 + (index % 3);
+      const position = placeRadial(index, shells.length, 42 + shell * 34, (index % 2 === 0 ? 1 : -1) * shell * 13, shell * 0.7);
+      setNode(node, {
+        ...position,
+        color:
+          relationClass(node, selectedId, graph.links) === "pipeline"
+            ? "#f06595"
+            : relationClass(node, selectedId, graph.links) === "contract"
+              ? "#d0bfff"
+              : node.color,
+        dimensions: { x: node.isSynthetic ? 8 : 18, y: node.isSynthetic ? 8 : 18, z: node.isSynthetic ? 8 : 18 }
+      });
+    });
+    setGroupRadial("incoming", 202, -12, 2.8, "#74c0fc");
+    setGroupRadial("outgoing", 202, 12, -0.2, "#63e6be");
+    setGroupRadial("lineage", 156, -48, 1.6, "#ffa94d");
+  }
+
+  graph.links.forEach((link) => {
+    if (metaphor === "tree") link.opacity *= link.type === "contains" || link.type === "inherits" ? 1.2 : 0.82;
+    if (metaphor === "space") link.opacity *= link.type === "composes" ? 1.35 : 0.92;
+    if (metaphor === "atomic") link.opacity *= link.type === "contains" || link.type === "composes" ? 1.25 : 0.76;
+  });
+
+  return graph;
+}
+
+export function layoutViewGraph(
+  view: ViewGraph,
+  selectedId: string | null,
+  metaphor: VisualizationMetaphor = "palace"
+): { nodes: DisplayNode[]; links: DisplayLink[] } {
   const { centers, modules } = packageCenters(view.nodes);
   if (view.mode === "focus" && selectedId) {
     const semantic = semanticFocusLayout(view, selectedId, modules);
-    if (semantic) return semantic;
+    if (semantic) return applyFocusMetaphor(semantic, selectedId, metaphor);
   }
 
   const packageGroups = new Map<string, GraphNode[]>();

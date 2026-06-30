@@ -59,6 +59,7 @@
 - 初期表示はclass全部ではなくpackage overviewにする。
 - class全部の描画は可能にするが、基本操作はsearchとfocusで絞る。
 - layoutは毎回安定させ、force simulationは補助的な探索機能に留める。
-- WebGL前提で、ノードはinstancing、エッジはbufferにまとめる。
+- WebGPU-first、WebGL fallbackにする。ノードはinstancing、エッジはbufferにまとめる。
 - 循環依存はSCCとして検出し、色・サイズ・詳細ペインで目立たせる。
 - extractorはviewerから分離し、言語別にJSONへ正規化する。
+- 宮殿、木、ブロック、生命体、宇宙、原子のような複数の3D比喩を、同じ意味グラフのprojectionとして切り替えられるようにする。

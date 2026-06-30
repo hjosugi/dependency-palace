@@ -1,24 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Atom,
   Box,
+  Boxes,
   Braces,
   Camera,
   CircleDot,
   Crosshair,
+  Dna,
   FileUp,
   Layers3,
   Network,
+  Orbit,
   RotateCcw,
   Search,
   SlidersHorizontal,
   Sparkles,
+  TreePine,
   Waypoints
 } from "lucide-react";
 import { GraphScene, type GraphSceneHandle } from "./GraphScene";
-import { createDemoGraph, demoSizes, type DemoSize } from "./data/sampleGraph";
+import { createDemoGraph, createStarterGraph, demoSizes, type DemoSize } from "./data/sampleGraph";
 import { analyzeGraph, buildViewGraph, normalizeGraph } from "./graph/model";
 import { edgePalette, layoutViewGraph } from "./graph/layout";
-import type { DependencyKind, DisplayNode, RawGraph, ViewMode } from "./types";
+import type { DependencyKind, DisplayNode, RawGraph, ViewMode, VisualizationMetaphor } from "./types";
 
 const numberFormat = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 
@@ -32,9 +37,48 @@ function viewLabel(mode: ViewMode) {
   return "Types";
 }
 
+function nodeVoice(node: DisplayNode | NonNullable<ReturnType<typeof normalizeGraph>["nodes"][number]>) {
+  if (node.kind === "typeclass" || node.kind === "interface") return "contract surface";
+  if (node.kind === "datatype") return "data body";
+  if (node.kind === "function") return "behavior pipeline";
+  if (node.role === "boundary") return "boundary";
+  if (node.role === "adapter") return "adapter";
+  if (node.role === "state") return "state holder";
+  if (node.role === "behavior") return "behavior";
+  return node.kind;
+}
+
+const metaphorOptions: Array<{ id: VisualizationMetaphor; label: string; icon: typeof Box }> = [
+  { id: "palace", label: "Palace", icon: Box },
+  { id: "tree", label: "Tree", icon: TreePine },
+  { id: "blocks", label: "Blocks", icon: Boxes },
+  { id: "organism", label: "Life", icon: Dna },
+  { id: "space", label: "Space", icon: Orbit },
+  { id: "atomic", label: "Atomic", icon: Atom }
+];
+
+type ExampleDescriptor = {
+  id: string;
+  title: string;
+  file: string;
+  nodes: number;
+  links: number;
+  complexity: string;
+  language: string;
+  description: string;
+  recommended?: {
+    view?: ViewMode;
+    form?: VisualizationMetaphor;
+    focusDepth?: number;
+    minDegree?: number;
+    module?: string;
+  };
+};
+
 export default function App() {
-  const [rawGraph, setRawGraph] = useState<RawGraph>(() => createDemoGraph(2500));
+  const [rawGraph, setRawGraph] = useState<RawGraph>(() => createStarterGraph());
   const [mode, setModeState] = useState<ViewMode>("focus");
+  const [metaphor, setMetaphor] = useState<VisualizationMetaphor>("palace");
   const [query, setQuery] = useState("");
   const [moduleFilter, setModuleFilter] = useState("all");
   const [minDegree, setMinDegree] = useState(0);
@@ -44,6 +88,8 @@ export default function App() {
   const [autoRotate, setAutoRotate] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [edgeTypes, setEdgeTypes] = useState<Set<DependencyKind>>(new Set());
+  const [examples, setExamples] = useState<ExampleDescriptor[]>([]);
+  const [loadingExample, setLoadingExample] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const sceneRef = useRef<GraphSceneHandle | null>(null);
 
@@ -62,6 +108,21 @@ export default function App() {
       })
       .catch(() => {
         // No generated graph is present; keep the built-in demo.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/examples/index.json", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : []))
+      .then((items: ExampleDescriptor[]) => {
+        if (!cancelled && Array.isArray(items)) setExamples(items);
+      })
+      .catch(() => {
+        // Examples are optional in development.
       });
     return () => {
       cancelled = true;
@@ -103,6 +164,31 @@ export default function App() {
       }));
   }, [graph.links, graph.nodes, selectedId]);
 
+  const selectedSignal = useMemo(() => {
+    if (!selectedNode) return null;
+    const linksForNode = graph.links.filter((link) => link.source === selectedNode.id || link.target === selectedNode.id);
+    const counts = new Map<DependencyKind, number>();
+    for (const link of linksForNode) counts.set(link.type, (counts.get(link.type) ?? 0) + 1);
+    const strongest = Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4);
+    const cycleText =
+      selectedNode.sccSize > 1
+        ? `cycle group ${formatNumber(selectedNode.sccSize)}`
+        : selectedNode.degree >= 24
+          ? "hot hub"
+          : selectedNode.degree >= 10
+            ? "busy local hub"
+            : "local symbol";
+
+    return {
+      voice: nodeVoice(selectedNode),
+      members: `${formatNumber(selectedNode.fields.length)} state / ${formatNumber(selectedNode.methods.length)} behavior`,
+      pressure: `${cycleText} / ${selectedNode.inbound} in / ${selectedNode.outbound} out`,
+      strongest
+    };
+  }, [graph.links, selectedNode]);
+
   const view = useMemo(
     () =>
       buildViewGraph(graph, {
@@ -117,7 +203,7 @@ export default function App() {
     [edgeTypes, focusDepth, graph, minDegree, mode, moduleFilter, query, selectedId]
   );
 
-  const displayGraph = useMemo(() => layoutViewGraph(view, selectedId), [selectedId, view]);
+  const displayGraph = useMemo(() => layoutViewGraph(view, selectedId, metaphor), [metaphor, selectedId, view]);
 
   function setMode(nextMode: ViewMode) {
     if (nextMode === "focus" && !selectedId) {
@@ -165,6 +251,30 @@ export default function App() {
     }
   }
 
+  async function loadExample(example: ExampleDescriptor) {
+    try {
+      setLoadingExample(example.id);
+      const response = await fetch(example.file, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Could not load ${example.title}.`);
+      const parsed = (await response.json()) as RawGraph;
+      if (!Array.isArray(parsed.nodes)) throw new Error("Example JSON must contain a nodes array.");
+      const recommended = example.recommended;
+      setRawGraph(parsed);
+      setModeState(recommended?.view ?? "focus");
+      setSelectedId(null);
+      setQuery("");
+      setModuleFilter(recommended?.module ?? "all");
+      setMinDegree(recommended?.minDegree ?? 0);
+      setFocusDepth(recommended?.focusDepth ?? 1);
+      setMetaphor(recommended?.form ?? "palace");
+      setLoadError(null);
+    } catch (error) {
+      setLoadError(error instanceof Error ? error.message : "Could not load the example.");
+    } finally {
+      setLoadingExample(null);
+    }
+  }
+
   const density = view.nodes.length > 0 ? view.links.length / view.nodes.length : 0;
 
   return (
@@ -197,6 +307,30 @@ export default function App() {
                 {viewLabel(item)}
               </button>
             ))}
+          </div>
+        </section>
+
+        <section className="panel-section">
+          <div className="section-title">
+            <Sparkles size={16} />
+            Form
+          </div>
+          <div className="metaphor-grid" role="group" aria-label="Visualization metaphor">
+            {metaphorOptions.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  className={metaphor === item.id ? "is-active" : ""}
+                  type="button"
+                  onClick={() => setMetaphor(item.id)}
+                  title={`${item.label} form`}
+                >
+                  <Icon size={15} />
+                  {item.label}
+                </button>
+              );
+            })}
           </div>
         </section>
 
@@ -292,6 +426,31 @@ export default function App() {
           />
           {loadError ? <p className="error-text">{loadError}</p> : null}
         </section>
+
+        {examples.length > 0 ? (
+          <section className="panel-section">
+            <div className="section-title">
+              <Sparkles size={16} />
+              Examples
+            </div>
+            <div className="example-list">
+              {examples.map((example) => (
+                <button
+                  key={example.id}
+                  className={loadingExample === example.id ? "is-loading" : ""}
+                  type="button"
+                  onClick={() => void loadExample(example)}
+                  title={example.description}
+                >
+                  <span>{example.title}</span>
+                  <small>
+                    {example.complexity} / {formatNumber(example.nodes)} nodes / {example.recommended?.form ?? "palace"}
+                  </small>
+                </button>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </aside>
 
       <main className="stage">
@@ -320,6 +479,9 @@ export default function App() {
             </span>
             <span>
               <strong>{density.toFixed(1)}</strong> density
+            </span>
+            <span>
+              <strong>{metaphor}</strong> form
             </span>
           </div>
           <div className="stage-actions">
@@ -353,8 +515,8 @@ export default function App() {
               <dd>{formatNumber(graph.nodes.length)}</dd>
             </div>
             <div>
-              <dt>Interfaces</dt>
-              <dd>{formatNumber(analysis.kinds.interface)}</dd>
+              <dt>Contracts</dt>
+              <dd>{formatNumber(analysis.kinds.interface + analysis.kinds.typeclass)}</dd>
             </div>
             <div>
               <dt>Fields</dt>
@@ -400,6 +562,35 @@ export default function App() {
                   <dd>{selectedNode.fields.length + selectedNode.methods.length}</dd>
                 </div>
               </dl>
+              {selectedSignal ? (
+                <div className="signal-card">
+                  <div>
+                    <span>Voice</span>
+                    <strong>{selectedSignal.voice}</strong>
+                  </div>
+                  <div>
+                    <span>Shape</span>
+                    <strong>{selectedSignal.members}</strong>
+                  </div>
+                  <div>
+                    <span>Pressure</span>
+                    <strong>{selectedSignal.pressure}</strong>
+                  </div>
+                  {selectedSignal.strongest.length > 0 ? (
+                    <div>
+                      <span>Edges</span>
+                      <ul>
+                        {selectedSignal.strongest.map(([type, count]) => (
+                          <li key={type}>
+                            <b style={{ background: edgePalette[type] }} />
+                            {type} {count}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
               <div className="semantic-columns">
                 <div>
                   <h3>State</h3>

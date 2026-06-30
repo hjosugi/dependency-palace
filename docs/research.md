@@ -28,6 +28,7 @@ The explicit research target list is maintained in [research-targets.md](researc
 4. Metrics drive visibility. Degree, SCC size, LOC, complexity, and package size are available for sizing and prioritization.
 5. Rendering is intentionally low-level. Nodes are one `InstancedMesh`; links are one `LineSegments`; labels live in DOM only for hover/selection.
 6. A useful focus view must show class internals. Fields and methods are rendered as owned objects instead of hidden metadata.
+7. Multiple 3D forms are useful when they preserve semantics: Palace for architecture, Tree for hierarchy, Blocks for construction, Life for state/behavior, Space for scale, Atomic for local internals.
 
 ## Performance Strategy
 

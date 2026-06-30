@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import type { WebGPURenderer } from "three/webgpu";
 import type { DisplayLink, DisplayNode } from "./types";
 
 export interface GraphSceneHandle {
@@ -16,6 +17,8 @@ interface GraphSceneProps {
 }
 
 const background = new THREE.Color("#11100e");
+
+type PalaceRenderer = THREE.WebGLRenderer | WebGPURenderer;
 
 function disposeObject(object: THREE.Object3D) {
   object.traverse((child) => {
@@ -34,9 +37,41 @@ function fadedColor(hex: string, opacity: number) {
   return new THREE.Color(hex).lerp(background, Math.max(0, Math.min(1, 1 - opacity)));
 }
 
+async function createRenderer(): Promise<{ renderer: PalaceRenderer; backend: "webgpu" | "webgl" }> {
+  const preferWebGPU = typeof navigator !== "undefined" && "gpu" in navigator;
+  if (preferWebGPU) {
+    try {
+      const { WebGPURenderer } = await import("three/webgpu");
+      const renderer = new WebGPURenderer({
+        antialias: true,
+        powerPreference: "high-performance"
+      });
+      renderer.setClearColor(background);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      await renderer.init();
+      return { renderer, backend: "webgpu" };
+    } catch (error) {
+      console.warn("Dependency Palace: WebGPU renderer unavailable, falling back to WebGL.", error);
+    }
+  }
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    powerPreference: "high-performance"
+  });
+  renderer.setClearColor(background);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  return { renderer, backend: "webgl" };
+}
+
 function geometryForKind(kind: DisplayNode["visualKind"]) {
   if (kind === "package") return new THREE.BoxGeometry(1, 1, 1);
   if (kind === "interface") return new THREE.BoxGeometry(1, 1, 1);
+  if (kind === "typeclass") return new THREE.BoxGeometry(1, 1, 1);
+  if (kind === "datatype") return new THREE.BoxGeometry(1, 1, 1);
+  if (kind === "function") return new THREE.CylinderGeometry(1, 1, 0.45, 20, 1);
   if (kind === "field" || kind === "property") return new THREE.SphereGeometry(1, 10, 8);
   if (kind === "method" || kind === "constructor") return new THREE.CylinderGeometry(1, 1, 0.45, 18, 1);
   if (kind === "enum") return new THREE.ConeGeometry(1, 1.7, 5);
@@ -45,17 +80,21 @@ function geometryForKind(kind: DisplayNode["visualKind"]) {
 }
 
 function materialForKind(kind: DisplayNode["visualKind"]) {
-  const transparent = kind === "package" || kind === "interface";
+  const transparent = kind === "package" || kind === "interface" || kind === "typeclass";
   return new THREE.MeshBasicMaterial({
     vertexColors: true,
     transparent,
-    opacity: kind === "package" ? 0.48 : kind === "interface" ? 0.82 : 1
+    opacity: kind === "package" ? 0.48 : kind === "interface" || kind === "typeclass" ? 0.82 : 1
   });
 }
 
 function linkCurveHeight(type: DisplayLink["type"]) {
   if (type === "implements") return 48;
+  if (type === "instance" || type === "constrains") return 58;
   if (type === "inherits") return -34;
+  if (type === "contains") return -22;
+  if (type === "composes") return 30;
+  if (type === "derives") return 42;
   if (type === "calls") return 22;
   if (type === "creates") return -18;
   return 10;
@@ -98,7 +137,7 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
   const sceneRef = useRef<THREE.Scene | null>(null);
   const worldRef = useRef<THREE.Group | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const rendererRef = useRef<PalaceRenderer | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   const pickablesRef = useRef<THREE.InstancedMesh[]>([]);
   const nodeByIdRef = useRef<Map<string, DisplayNode>>(new Map());
@@ -138,125 +177,133 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
-
-    const scene = new THREE.Scene();
-    scene.background = background;
-    scene.fog = new THREE.Fog(background, 700, 1700);
-    const world = new THREE.Group();
-    scene.add(world);
-
-    const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 4000);
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      powerPreference: "high-performance"
-    });
-    renderer.setClearColor(background);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.domElement.className = "graph-canvas";
-    mount.appendChild(renderer.domElement);
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.enablePan = true;
-    controls.autoRotateSpeed = 0.32;
-    controls.minDistance = 60;
-    controls.maxDistance = 2500;
-
-    const grid = new THREE.GridHelper(880, 22, "#3a372f", "#25231f");
-    grid.position.y = -205;
-    world.add(grid);
-
-    const ambient = new THREE.AmbientLight("#f4ead5", 1.35);
-    scene.add(ambient);
-    const key = new THREE.DirectionalLight("#ffffff", 1.8);
-    key.position.set(160, 250, 140);
-    scene.add(key);
-    const rim = new THREE.DirectionalLight("#8bd3ff", 0.75);
-    rim.position.set(-260, 90, -160);
-    scene.add(rim);
-
-    sceneRef.current = scene;
-    worldRef.current = world;
-    cameraRef.current = camera;
-    rendererRef.current = renderer;
-    controlsRef.current = controls;
-
-    const resize = () => {
-      const rect = mount.getBoundingClientRect();
-      const width = Math.max(1, rect.width);
-      const height = Math.max(1, rect.height);
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    };
-
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-
-    const pickNode = (event: PointerEvent) => {
-      const cameraForPick = cameraRef.current;
-      const rendererForPick = rendererRef.current;
-      if (!cameraForPick || !rendererForPick || pickablesRef.current.length === 0) return null;
-      const rect = rendererForPick.domElement.getBoundingClientRect();
-      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-      raycaster.setFromCamera(pointer, cameraForPick);
-      const hit = raycaster.intersectObjects(pickablesRef.current, false)[0];
-      const instanceId = hit?.instanceId;
-      if (typeof instanceId !== "number") return null;
-      const ids = hit.object.userData.nodeIds as string[] | undefined;
-      const id = ids?.[instanceId];
-      return id ? nodeByIdRef.current.get(id) ?? null : null;
-    };
-
-    let pendingPointer: PointerEvent | null = null;
-    let pickFrame = 0;
-    const onPointerMove = (event: PointerEvent) => {
-      pendingPointer = event;
-      if (pickFrame) return;
-      pickFrame = window.requestAnimationFrame(() => {
-        pickFrame = 0;
-        if (!pendingPointer) return;
-        const node = pickNode(pendingPointer);
-        hoverRef.current(node, node ? { x: pendingPointer.clientX, y: pendingPointer.clientY } : null);
-      });
-    };
-
-    const onPointerLeave = () => hoverRef.current(null, null);
-    const onClick = (event: PointerEvent) => {
-      const node = pickNode(event);
-      selectRef.current(node?.ownerId ?? node?.id ?? null);
-    };
-
-    renderer.domElement.addEventListener("pointermove", onPointerMove);
-    renderer.domElement.addEventListener("pointerleave", onPointerLeave);
-    renderer.domElement.addEventListener("click", onClick);
-    window.addEventListener("resize", resize);
-    resize();
-
+    let disposed = false;
     let raf = 0;
-    const animate = () => {
-      raf = window.requestAnimationFrame(animate);
-      controls.autoRotate = autoRotateRef.current;
-      controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
-    frameGraph();
+    let pickFrame = 0;
+    let cleanupRenderer: (() => void) | null = null;
+
+    void (async () => {
+      const scene = new THREE.Scene();
+      scene.background = background;
+      scene.fog = new THREE.Fog(background, 700, 1700);
+      const world = new THREE.Group();
+      scene.add(world);
+
+      const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 4000);
+      const { renderer, backend } = await createRenderer();
+      if (disposed) {
+        renderer.dispose();
+        return;
+      }
+      renderer.domElement.className = "graph-canvas";
+      renderer.domElement.dataset.backend = backend;
+      mount.appendChild(renderer.domElement);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.enablePan = true;
+      controls.autoRotateSpeed = 0.32;
+      controls.minDistance = 60;
+      controls.maxDistance = 2500;
+
+      const grid = new THREE.GridHelper(880, 22, "#3a372f", "#25231f");
+      grid.position.y = -205;
+      world.add(grid);
+
+      const ambient = new THREE.AmbientLight("#f4ead5", 1.35);
+      scene.add(ambient);
+      const key = new THREE.DirectionalLight("#ffffff", 1.8);
+      key.position.set(160, 250, 140);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight("#8bd3ff", 0.75);
+      rim.position.set(-260, 90, -160);
+      scene.add(rim);
+
+      sceneRef.current = scene;
+      worldRef.current = world;
+      cameraRef.current = camera;
+      rendererRef.current = renderer;
+      controlsRef.current = controls;
+
+      const resize = () => {
+        const rect = mount.getBoundingClientRect();
+        const width = Math.max(1, rect.width);
+        const height = Math.max(1, rect.height);
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      };
+
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+
+      const pickNode = (event: PointerEvent) => {
+        const cameraForPick = cameraRef.current;
+        const rendererForPick = rendererRef.current;
+        if (!cameraForPick || !rendererForPick || pickablesRef.current.length === 0) return null;
+        const rect = rendererForPick.domElement.getBoundingClientRect();
+        pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(pointer, cameraForPick);
+        const hit = raycaster.intersectObjects(pickablesRef.current, false)[0];
+        const instanceId = hit?.instanceId;
+        if (typeof instanceId !== "number") return null;
+        const ids = hit.object.userData.nodeIds as string[] | undefined;
+        const id = ids?.[instanceId];
+        return id ? nodeByIdRef.current.get(id) ?? null : null;
+      };
+
+      let pendingPointer: PointerEvent | null = null;
+      const onPointerMove = (event: PointerEvent) => {
+        pendingPointer = event;
+        if (pickFrame) return;
+        pickFrame = window.requestAnimationFrame(() => {
+          pickFrame = 0;
+          if (!pendingPointer) return;
+          const node = pickNode(pendingPointer);
+          hoverRef.current(node, node ? { x: pendingPointer.clientX, y: pendingPointer.clientY } : null);
+        });
+      };
+
+      const onPointerLeave = () => hoverRef.current(null, null);
+      const onClick = (event: PointerEvent) => {
+        const node = pickNode(event);
+        selectRef.current(node?.ownerId ?? node?.id ?? null);
+      };
+
+      renderer.domElement.addEventListener("pointermove", onPointerMove);
+      renderer.domElement.addEventListener("pointerleave", onPointerLeave);
+      renderer.domElement.addEventListener("click", onClick);
+      window.addEventListener("resize", resize);
+      resize();
+
+      const animate = () => {
+        raf = window.requestAnimationFrame(animate);
+        controls.autoRotate = autoRotateRef.current;
+        controls.update();
+        renderer.render(scene, camera);
+      };
+      animate();
+      frameGraph();
+
+      cleanupRenderer = () => {
+        window.cancelAnimationFrame(raf);
+        if (pickFrame) window.cancelAnimationFrame(pickFrame);
+        window.removeEventListener("resize", resize);
+        renderer.domElement.removeEventListener("pointermove", onPointerMove);
+        renderer.domElement.removeEventListener("pointerleave", onPointerLeave);
+        renderer.domElement.removeEventListener("click", onClick);
+        controls.dispose();
+        disposeObject(scene);
+        renderer.dispose();
+        renderer.domElement.remove();
+      };
+    })();
 
     return () => {
-      window.cancelAnimationFrame(raf);
-      if (pickFrame) window.cancelAnimationFrame(pickFrame);
-      window.removeEventListener("resize", resize);
-      renderer.domElement.removeEventListener("pointermove", onPointerMove);
-      renderer.domElement.removeEventListener("pointerleave", onPointerLeave);
-      renderer.domElement.removeEventListener("click", onClick);
-      controls.dispose();
-      disposeObject(scene);
-      renderer.dispose();
-      renderer.domElement.remove();
+      disposed = true;
+      cleanupRenderer?.();
     };
   }, []);
 
@@ -303,7 +350,7 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
         const dimensions = node.dimensions ?? { x: node.radius * 2, y: node.radius * 2, z: node.radius * 2 };
         dummy.position.set(node.x, node.y, node.z);
         dummy.rotation.set(0, 0, 0);
-        if (kind === "method" || kind === "constructor") dummy.rotation.z = Math.PI / 2;
+        if (kind === "method" || kind === "constructor" || kind === "function") dummy.rotation.z = Math.PI / 2;
         dummy.scale.set(dimensions.x, dimensions.y, dimensions.z);
         dummy.updateMatrix();
         mesh.setMatrixAt(index, dummy.matrix);

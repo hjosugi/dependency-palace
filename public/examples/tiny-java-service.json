@@ -1,0 +1,2270 @@
+{
+  "nodes": [
+    {
+      "id": "java.identity.users.RequestController0",
+      "label": "RequestController0",
+      "module": "identity",
+      "package": "java.identity.users",
+      "kind": "class",
+      "loc": 76,
+      "complexity": 3,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "auditLedger",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "private"
+        },
+        {
+          "name": "currentProjection2",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "package"
+        },
+        {
+          "name": "pendingInvoice3",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "package"
+        }
+      ],
+      "methods": [
+        {
+          "name": "composeRequestController0",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "composeRequestController0(context: Context): Result"
+        },
+        {
+          "name": "applyRequestController02",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "applyRequestController02(context: Context): void"
+        },
+        {
+          "name": "loadRequestController03",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "loadRequestController03(context: Context): void"
+        },
+        {
+          "name": "hydrateRequestController04",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "hydrateRequestController04(context: Context): void"
+        },
+        {
+          "name": "resolveRequestController05",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "resolveRequestController05(input: Request): Result"
+        },
+        {
+          "name": "persistRequestController06",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "persistRequestController06(context: Context): void"
+        },
+        {
+          "name": "authorizeRequestController07",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "authorizeRequestController07(input: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.catalog.inventory.CustomerPort1",
+      "label": "CustomerPort1",
+      "module": "catalog",
+      "package": "java.catalog.inventory",
+      "kind": "interface",
+      "loc": 232,
+      "complexity": 7,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "persistCustomerPort1",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "persistCustomerPort1(request: Request): Result"
+        },
+        {
+          "name": "validateCustomerPort12",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateCustomerPort12(request: Request): Result"
+        },
+        {
+          "name": "validateCustomerPort13",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateCustomerPort13(request: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.orders.checkout.TokenModel2",
+      "label": "TokenModel2",
+      "module": "orders",
+      "package": "java.orders.checkout",
+      "kind": "class",
+      "loc": 175,
+      "complexity": 6,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "cachedAllocation",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "protected"
+        },
+        {
+          "name": "primaryMessage2",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "private"
+        },
+        {
+          "name": "pendingRule3",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "protected"
+        },
+        {
+          "name": "pendingContext4",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "composeTokenModel2",
+          "kind": "constructor",
+          "visibility": "protected",
+          "signature": "composeTokenModel2(input: Request): Result"
+        },
+        {
+          "name": "authorizeTokenModel22",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "authorizeTokenModel22(input: Request): void"
+        },
+        {
+          "name": "validateTokenModel23",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "validateTokenModel23(context: Context): Result"
+        },
+        {
+          "name": "loadTokenModel24",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadTokenModel24(input: Request): Result"
+        },
+        {
+          "name": "composeTokenModel25",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "composeTokenModel25(context: Context): Result"
+        },
+        {
+          "name": "hydrateTokenModel26",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "hydrateTokenModel26(input: Request): Result"
+        },
+        {
+          "name": "resolveTokenModel27",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "resolveTokenModel27(context: Context): Result"
+        },
+        {
+          "name": "loadTokenModel28",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "loadTokenModel28(context: Context): Result"
+        },
+        {
+          "name": "authorizeTokenModel29",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "authorizeTokenModel29(input: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.billing.tax.CustomerPort3",
+      "label": "CustomerPort3",
+      "module": "billing",
+      "package": "java.billing.tax",
+      "kind": "interface",
+      "loc": 264,
+      "complexity": 3,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "hydrateCustomerPort3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateCustomerPort3(request: Request): Result"
+        },
+        {
+          "name": "applyCustomerPort32",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "applyCustomerPort32(request: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.fulfillment.routing.InvoiceModel4",
+      "label": "InvoiceModel4",
+      "module": "fulfillment",
+      "package": "java.fulfillment.routing",
+      "kind": "class",
+      "loc": 337,
+      "complexity": 5,
+      "layer": 3,
+      "fields": [
+        {
+          "name": "currentProjection",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "private"
+        },
+        {
+          "name": "currentAccount2",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "private"
+        },
+        {
+          "name": "pendingSession3",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "validateInvoiceModel4",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validateInvoiceModel4(input: Request): void"
+        },
+        {
+          "name": "projectInvoiceModel42",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "projectInvoiceModel42(input: Request): Result"
+        },
+        {
+          "name": "validateInvoiceModel43",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "validateInvoiceModel43(context: Context): Result"
+        },
+        {
+          "name": "resolveInvoiceModel44",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "resolveInvoiceModel44(context: Context): void"
+        },
+        {
+          "name": "loadInvoiceModel45",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadInvoiceModel45(input: Request): Result"
+        },
+        {
+          "name": "persistInvoiceModel46",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "persistInvoiceModel46(context: Context): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.analytics.cohorts.RegistryView5",
+      "label": "RegistryView5",
+      "module": "analytics",
+      "package": "java.analytics.cohorts",
+      "kind": "class",
+      "loc": 269,
+      "complexity": 6,
+      "layer": 4,
+      "fields": [
+        {
+          "name": "auditRegistry",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "protected"
+        },
+        {
+          "name": "pendingEvent2",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "package"
+        },
+        {
+          "name": "currentProjection3",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "protected"
+        },
+        {
+          "name": "primaryReceipt4",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "resolveRegistryView5",
+          "kind": "constructor",
+          "visibility": "protected",
+          "signature": "resolveRegistryView5(context: Context): void"
+        },
+        {
+          "name": "loadRegistryView52",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "loadRegistryView52(input: Request): Result"
+        },
+        {
+          "name": "loadRegistryView53",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadRegistryView53(input: Request): Result"
+        },
+        {
+          "name": "composeRegistryView54",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "composeRegistryView54(input: Request): void"
+        }
+      ]
+    },
+    {
+      "id": "java.platform.config.LedgerFactory6",
+      "label": "LedgerFactory6",
+      "module": "platform",
+      "package": "java.platform.config",
+      "kind": "class",
+      "loc": 243,
+      "complexity": 3,
+      "layer": 0,
+      "fields": [
+        {
+          "name": "primaryCatalog",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "protected"
+        },
+        {
+          "name": "cachedRule2",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "package"
+        },
+        {
+          "name": "pendingRegistry3",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "package"
+        },
+        {
+          "name": "cachedHistory4",
+          "kind": "field",
+          "type": "Policy",
+          "visibility": "private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "publishLedgerFactory6",
+          "kind": "constructor",
+          "visibility": "package",
+          "signature": "publishLedgerFactory6(input: Request): Result"
+        },
+        {
+          "name": "resolveLedgerFactory62",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "resolveLedgerFactory62(input: Request): void"
+        },
+        {
+          "name": "applyLedgerFactory63",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "applyLedgerFactory63(input: Request): Result"
+        },
+        {
+          "name": "loadLedgerFactory64",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadLedgerFactory64(input: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.api.gateway.AddressResolver7",
+      "label": "AddressResolver7",
+      "module": "api",
+      "package": "java.api.gateway",
+      "kind": "class",
+      "loc": 365,
+      "complexity": 6,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "auditSession",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "protected"
+        },
+        {
+          "name": "cachedAddress2",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "package"
+        },
+        {
+          "name": "currentCustomer3",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "loadAddressResolver7",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadAddressResolver7(input: Request): Result"
+        },
+        {
+          "name": "persistAddressResolver72",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "persistAddressResolver72(context: Context): Result"
+        },
+        {
+          "name": "validateAddressResolver73",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validateAddressResolver73(context: Context): Result"
+        },
+        {
+          "name": "authorizeAddressResolver74",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "authorizeAddressResolver74(input: Request): void"
+        },
+        {
+          "name": "composeAddressResolver75",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "composeAddressResolver75(input: Request): void"
+        },
+        {
+          "name": "composeAddressResolver76",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "composeAddressResolver76(input: Request): Result"
+        },
+        {
+          "name": "loadAddressResolver77",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadAddressResolver77(input: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.identity.session.EventValidator8",
+      "label": "EventValidator8",
+      "module": "identity",
+      "package": "java.identity.session",
+      "kind": "class",
+      "loc": 299,
+      "complexity": 4,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "currentAllocation",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "protected"
+        },
+        {
+          "name": "primaryRule2",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "package"
+        },
+        {
+          "name": "pendingProjection3",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "package"
+        },
+        {
+          "name": "cachedWorker4",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "validateEventValidator8",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "validateEventValidator8(context: Context): Result"
+        },
+        {
+          "name": "applyEventValidator82",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "applyEventValidator82(input: Request): Result"
+        },
+        {
+          "name": "resolveEventValidator83",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "resolveEventValidator83(context: Context): void"
+        },
+        {
+          "name": "loadEventValidator84",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "loadEventValidator84(input: Request): Result"
+        },
+        {
+          "name": "validateEventValidator85",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "validateEventValidator85(input: Request): void"
+        },
+        {
+          "name": "applyEventValidator86",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "applyEventValidator86(input: Request): Result"
+        },
+        {
+          "name": "applyEventValidator87",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "applyEventValidator87(input: Request): void"
+        },
+        {
+          "name": "validateEventValidator88",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validateEventValidator88(input: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.catalog.media.PaymentValidator9",
+      "label": "PaymentValidator9",
+      "module": "catalog",
+      "package": "java.catalog.media",
+      "kind": "class",
+      "loc": 332,
+      "complexity": 7,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "currentAudit",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "package"
+        },
+        {
+          "name": "pendingMessage2",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "private"
+        },
+        {
+          "name": "cachedCustomer3",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "package"
+        },
+        {
+          "name": "primaryProjection4",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "validatePaymentValidator9",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validatePaymentValidator9(input: Request): void"
+        },
+        {
+          "name": "validatePaymentValidator92",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validatePaymentValidator92(context: Context): Result"
+        },
+        {
+          "name": "projectPaymentValidator93",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "projectPaymentValidator93(context: Context): Result"
+        },
+        {
+          "name": "authorizePaymentValidator94",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "authorizePaymentValidator94(context: Context): void"
+        },
+        {
+          "name": "projectPaymentValidator95",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "projectPaymentValidator95(context: Context): void"
+        },
+        {
+          "name": "authorizePaymentValidator96",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "authorizePaymentValidator96(input: Request): Result"
+        },
+        {
+          "name": "publishPaymentValidator97",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "publishPaymentValidator97(context: Context): void"
+        }
+      ]
+    },
+    {
+      "id": "java.orders.checkout.EventHandlera",
+      "label": "EventHandlera",
+      "module": "orders",
+      "package": "java.orders.checkout",
+      "kind": "class",
+      "loc": 351,
+      "complexity": 6,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "currentProjection",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "package"
+        },
+        {
+          "name": "primaryWorker2",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "protected"
+        },
+        {
+          "name": "pendingCatalog3",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "private"
+        },
+        {
+          "name": "currentLedger4",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "private"
+        },
+        {
+          "name": "cachedCustomer5",
+          "kind": "field",
+          "type": "Policy",
+          "visibility": "private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "composeEventHandlera",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeEventHandlera(input: Request): Result"
+        },
+        {
+          "name": "loadEventHandlera2",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadEventHandlera2(context: Context): Result"
+        },
+        {
+          "name": "loadEventHandlera3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadEventHandlera3(context: Context): Result"
+        },
+        {
+          "name": "loadEventHandlera4",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadEventHandlera4(input: Request): void"
+        },
+        {
+          "name": "authorizeEventHandlera5",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "authorizeEventHandlera5(input: Request): Result"
+        },
+        {
+          "name": "composeEventHandlera6",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeEventHandlera6(context: Context): Result"
+        },
+        {
+          "name": "loadEventHandlera7",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadEventHandlera7(context: Context): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.billing.ledger.DocumentValidatorb",
+      "label": "DocumentValidatorb",
+      "module": "billing",
+      "package": "java.billing.ledger",
+      "kind": "class",
+      "loc": 273,
+      "complexity": 3,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "currentCustomer",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "package"
+        },
+        {
+          "name": "pendingToken2",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "private"
+        },
+        {
+          "name": "currentMessage3",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "protected"
+        },
+        {
+          "name": "auditRule4",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "projectDocumentValidatorb",
+          "kind": "constructor",
+          "visibility": "protected",
+          "signature": "projectDocumentValidatorb(context: Context): void"
+        },
+        {
+          "name": "authorizeDocumentValidatorb2",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "authorizeDocumentValidatorb2(input: Request): Result"
+        },
+        {
+          "name": "composeDocumentValidatorb3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeDocumentValidatorb3(context: Context): void"
+        },
+        {
+          "name": "validateDocumentValidatorb4",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "validateDocumentValidatorb4(input: Request): void"
+        },
+        {
+          "name": "authorizeDocumentValidatorb5",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "authorizeDocumentValidatorb5(context: Context): void"
+        },
+        {
+          "name": "persistDocumentValidatorb6",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "persistDocumentValidatorb6(context: Context): void"
+        },
+        {
+          "name": "composeDocumentValidatorb7",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "composeDocumentValidatorb7(input: Request): Result"
+        },
+        {
+          "name": "projectDocumentValidatorb8",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "projectDocumentValidatorb8(context: Context): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.fulfillment.shipment.AccountAdapterc",
+      "label": "AccountAdapterc",
+      "module": "fulfillment",
+      "package": "java.fulfillment.shipment",
+      "kind": "class",
+      "loc": 289,
+      "complexity": 7,
+      "layer": 3,
+      "fields": [
+        {
+          "name": "primaryRule",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "package"
+        },
+        {
+          "name": "cachedCustomer2",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "package"
+        },
+        {
+          "name": "auditRequest3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "authorizeAccountAdapterc",
+          "kind": "constructor",
+          "visibility": "public",
+          "signature": "authorizeAccountAdapterc(input: Request): void"
+        },
+        {
+          "name": "validateAccountAdapterc2",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validateAccountAdapterc2(context: Context): void"
+        },
+        {
+          "name": "applyAccountAdapterc3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "applyAccountAdapterc3(input: Request): void"
+        },
+        {
+          "name": "loadAccountAdapterc4",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "loadAccountAdapterc4(input: Request): void"
+        },
+        {
+          "name": "projectAccountAdapterc5",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "projectAccountAdapterc5(context: Context): Result"
+        },
+        {
+          "name": "publishAccountAdapterc6",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "publishAccountAdapterc6(context: Context): Result"
+        },
+        {
+          "name": "projectAccountAdapterc7",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "projectAccountAdapterc7(input: Request): Result"
+        },
+        {
+          "name": "validateAccountAdapterc8",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "validateAccountAdapterc8(input: Request): Result"
+        },
+        {
+          "name": "projectAccountAdapterc9",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "projectAccountAdapterc9(context: Context): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.analytics.events.SnapshotFactoryd",
+      "label": "SnapshotFactoryd",
+      "module": "analytics",
+      "package": "java.analytics.events",
+      "kind": "class",
+      "loc": 285,
+      "complexity": 3,
+      "layer": 4,
+      "fields": [
+        {
+          "name": "primaryAddress",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "package"
+        },
+        {
+          "name": "currentGateway2",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "protected"
+        },
+        {
+          "name": "auditHistory3",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hydrateSnapshotFactoryd",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "hydrateSnapshotFactoryd(input: Request): void"
+        },
+        {
+          "name": "loadSnapshotFactoryd2",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "loadSnapshotFactoryd2(input: Request): Result"
+        },
+        {
+          "name": "loadSnapshotFactoryd3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadSnapshotFactoryd3(context: Context): void"
+        }
+      ]
+    },
+    {
+      "id": "java.platform.config.AccountAdaptere",
+      "label": "AccountAdaptere",
+      "module": "platform",
+      "package": "java.platform.config",
+      "kind": "class",
+      "loc": 169,
+      "complexity": 6,
+      "layer": 0,
+      "fields": [
+        {
+          "name": "pendingEvent",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "private"
+        },
+        {
+          "name": "pendingMessage2",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "package"
+        },
+        {
+          "name": "currentEvent3",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "protected"
+        },
+        {
+          "name": "auditCustomer4",
+          "kind": "field",
+          "type": "Policy",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "composeAccountAdaptere",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "composeAccountAdaptere(input: Request): Result"
+        },
+        {
+          "name": "resolveAccountAdaptere2",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "resolveAccountAdaptere2(context: Context): void"
+        },
+        {
+          "name": "authorizeAccountAdaptere3",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "authorizeAccountAdaptere3(context: Context): void"
+        },
+        {
+          "name": "composeAccountAdaptere4",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "composeAccountAdaptere4(context: Context): Result"
+        },
+        {
+          "name": "persistAccountAdaptere5",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "persistAccountAdaptere5(input: Request): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.api.dto.AuditEntityf",
+      "label": "AuditEntityf",
+      "module": "api",
+      "package": "java.api.dto",
+      "kind": "class",
+      "loc": 188,
+      "complexity": 6,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "primaryPayment",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "private"
+        },
+        {
+          "name": "auditRegistry2",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "protected"
+        },
+        {
+          "name": "auditOrder3",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "loadAuditEntityf",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadAuditEntityf(input: Request): void"
+        },
+        {
+          "name": "loadAuditEntityf2",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadAuditEntityf2(input: Request): Result"
+        },
+        {
+          "name": "loadAuditEntityf3",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "loadAuditEntityf3(context: Context): void"
+        },
+        {
+          "name": "validateAuditEntityf4",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "validateAuditEntityf4(context: Context): void"
+        }
+      ]
+    },
+    {
+      "id": "java.identity.users.AllocationGatewayg",
+      "label": "AllocationGatewayg",
+      "module": "identity",
+      "package": "java.identity.users",
+      "kind": "class",
+      "loc": 259,
+      "complexity": 3,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "primaryOrder",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "package"
+        },
+        {
+          "name": "pendingAddress2",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "package"
+        },
+        {
+          "name": "pendingPayment3",
+          "kind": "field",
+          "type": "Policy",
+          "visibility": "private"
+        },
+        {
+          "name": "pendingRegistry4",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "package"
+        }
+      ],
+      "methods": [
+        {
+          "name": "composeAllocationGatewayg",
+          "kind": "constructor",
+          "visibility": "public",
+          "signature": "composeAllocationGatewayg(context: Context): Result"
+        },
+        {
+          "name": "authorizeAllocationGatewayg2",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "authorizeAllocationGatewayg2(context: Context): void"
+        },
+        {
+          "name": "resolveAllocationGatewayg3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "resolveAllocationGatewayg3(input: Request): Result"
+        },
+        {
+          "name": "publishAllocationGatewayg4",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "publishAllocationGatewayg4(input: Request): Result"
+        },
+        {
+          "name": "projectAllocationGatewayg5",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "projectAllocationGatewayg5(context: Context): Result"
+        },
+        {
+          "name": "applyAllocationGatewayg6",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "applyAllocationGatewayg6(input: Request): void"
+        },
+        {
+          "name": "hydrateAllocationGatewayg7",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "hydrateAllocationGatewayg7(context: Context): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.catalog.media.LedgerResolverh",
+      "label": "LedgerResolverh",
+      "module": "catalog",
+      "package": "java.catalog.media",
+      "kind": "class",
+      "loc": 155,
+      "complexity": 5,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "primaryToken",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "package"
+        },
+        {
+          "name": "auditCustomer2",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "package"
+        },
+        {
+          "name": "primaryWorker3",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "package"
+        }
+      ],
+      "methods": [
+        {
+          "name": "persistLedgerResolverh",
+          "kind": "constructor",
+          "visibility": "public",
+          "signature": "persistLedgerResolverh(input: Request): void"
+        },
+        {
+          "name": "resolveLedgerResolverh2",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "resolveLedgerResolverh2(input: Request): void"
+        },
+        {
+          "name": "composeLedgerResolverh3",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "composeLedgerResolverh3(input: Request): Result"
+        },
+        {
+          "name": "projectLedgerResolverh4",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "projectLedgerResolverh4(input: Request): void"
+        },
+        {
+          "name": "applyLedgerResolverh5",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "applyLedgerResolverh5(input: Request): Result"
+        },
+        {
+          "name": "composeLedgerResolverh6",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeLedgerResolverh6(context: Context): Result"
+        },
+        {
+          "name": "validateLedgerResolverh7",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "validateLedgerResolverh7(input: Request): void"
+        },
+        {
+          "name": "validateLedgerResolverh8",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "validateLedgerResolverh8(context: Context): void"
+        }
+      ]
+    },
+    {
+      "id": "java.orders.workflow.InvoiceModeli",
+      "label": "InvoiceModeli",
+      "module": "orders",
+      "package": "java.orders.workflow",
+      "kind": "class",
+      "loc": 179,
+      "complexity": 2,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "primarySession",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "private"
+        },
+        {
+          "name": "auditAllocation2",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "private"
+        },
+        {
+          "name": "cachedOrder3",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "package"
+        },
+        {
+          "name": "currentCharge4",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "package"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hydrateInvoiceModeli",
+          "kind": "constructor",
+          "visibility": "protected",
+          "signature": "hydrateInvoiceModeli(context: Context): Result"
+        },
+        {
+          "name": "resolveInvoiceModeli2",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "resolveInvoiceModeli2(input: Request): void"
+        },
+        {
+          "name": "loadInvoiceModeli3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadInvoiceModeli3(context: Context): Result"
+        },
+        {
+          "name": "loadInvoiceModeli4",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadInvoiceModeli4(context: Context): void"
+        },
+        {
+          "name": "loadInvoiceModeli5",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadInvoiceModeli5(input: Request): void"
+        }
+      ]
+    },
+    {
+      "id": "java.billing.invoice.TokenViewj",
+      "label": "TokenViewj",
+      "module": "billing",
+      "package": "java.billing.invoice",
+      "kind": "class",
+      "loc": 215,
+      "complexity": 4,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "auditRegistry",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "private"
+        },
+        {
+          "name": "primaryToken2",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "loadTokenViewj",
+          "kind": "constructor",
+          "visibility": "protected",
+          "signature": "loadTokenViewj(input: Request): void"
+        },
+        {
+          "name": "composeTokenViewj2",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "composeTokenViewj2(input: Request): Result"
+        },
+        {
+          "name": "resolveTokenViewj3",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "resolveTokenViewj3(input: Request): void"
+        },
+        {
+          "name": "persistTokenViewj4",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "persistTokenViewj4(context: Context): Result"
+        },
+        {
+          "name": "authorizeTokenViewj5",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "authorizeTokenViewj5(input: Request): void"
+        },
+        {
+          "name": "validateTokenViewj6",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validateTokenViewj6(context: Context): void"
+        },
+        {
+          "name": "validateTokenViewj7",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "validateTokenViewj7(input: Request): void"
+        },
+        {
+          "name": "persistTokenViewj8",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "persistTokenViewj8(context: Context): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.fulfillment.warehouse.CheckoutViewk",
+      "label": "CheckoutViewk",
+      "module": "fulfillment",
+      "package": "java.fulfillment.warehouse",
+      "kind": "class",
+      "loc": 239,
+      "complexity": 4,
+      "layer": 3,
+      "fields": [
+        {
+          "name": "auditReceipt",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "private"
+        },
+        {
+          "name": "pendingResponse2",
+          "kind": "field",
+          "type": "Config",
+          "visibility": "protected"
+        },
+        {
+          "name": "primaryWorker3",
+          "kind": "field",
+          "type": "Cache",
+          "visibility": "private"
+        },
+        {
+          "name": "auditDocument4",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "package"
+        }
+      ],
+      "methods": [
+        {
+          "name": "composeCheckoutViewk",
+          "kind": "constructor",
+          "visibility": "public",
+          "signature": "composeCheckoutViewk(input: Request): Result"
+        },
+        {
+          "name": "resolveCheckoutViewk2",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "resolveCheckoutViewk2(context: Context): void"
+        },
+        {
+          "name": "publishCheckoutViewk3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "publishCheckoutViewk3(context: Context): Result"
+        },
+        {
+          "name": "hydrateCheckoutViewk4",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "hydrateCheckoutViewk4(context: Context): void"
+        },
+        {
+          "name": "authorizeCheckoutViewk5",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "authorizeCheckoutViewk5(context: Context): Result"
+        }
+      ]
+    },
+    {
+      "id": "java.analytics.events.ReceiptHandlerl",
+      "label": "ReceiptHandlerl",
+      "module": "analytics",
+      "package": "java.analytics.events",
+      "kind": "class",
+      "loc": 123,
+      "complexity": 5,
+      "layer": 4,
+      "fields": [
+        {
+          "name": "pendingWorker",
+          "kind": "field",
+          "type": "Policy",
+          "visibility": "protected"
+        },
+        {
+          "name": "auditRequest2",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "private"
+        }
+      ],
+      "methods": [
+        {
+          "name": "persistReceiptHandlerl",
+          "kind": "constructor",
+          "visibility": "public",
+          "signature": "persistReceiptHandlerl(input: Request): Result"
+        },
+        {
+          "name": "validateReceiptHandlerl2",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "validateReceiptHandlerl2(input: Request): void"
+        },
+        {
+          "name": "validateReceiptHandlerl3",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "validateReceiptHandlerl3(input: Request): void"
+        },
+        {
+          "name": "projectReceiptHandlerl4",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "projectReceiptHandlerl4(context: Context): Result"
+        },
+        {
+          "name": "publishReceiptHandlerl5",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "publishReceiptHandlerl5(input: Request): Result"
+        },
+        {
+          "name": "composeReceiptHandlerl6",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeReceiptHandlerl6(context: Context): void"
+        },
+        {
+          "name": "authorizeReceiptHandlerl7",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "authorizeReceiptHandlerl7(input: Request): void"
+        }
+      ]
+    },
+    {
+      "id": "java.platform.logging.ResponseControllerm",
+      "label": "ResponseControllerm",
+      "module": "platform",
+      "package": "java.platform.logging",
+      "kind": "class",
+      "loc": 283,
+      "complexity": 5,
+      "layer": 0,
+      "fields": [
+        {
+          "name": "cachedContext",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "package"
+        },
+        {
+          "name": "cachedAudit2",
+          "kind": "field",
+          "type": "Policy",
+          "visibility": "private"
+        },
+        {
+          "name": "currentReceipt3",
+          "kind": "field",
+          "type": "Client",
+          "visibility": "protected"
+        },
+        {
+          "name": "pendingGateway4",
+          "kind": "field",
+          "type": "Clock",
+          "visibility": "protected"
+        },
+        {
+          "name": "pendingOrder5",
+          "kind": "field",
+          "type": "Repository",
+          "visibility": "protected"
+        }
+      ],
+      "methods": [
+        {
+          "name": "persistResponseControllerm",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "persistResponseControllerm(context: Context): void"
+        },
+        {
+          "name": "loadResponseControllerm2",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "loadResponseControllerm2(context: Context): void"
+        },
+        {
+          "name": "persistResponseControllerm3",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "persistResponseControllerm3(input: Request): Result"
+        },
+        {
+          "name": "loadResponseControllerm4",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "loadResponseControllerm4(context: Context): Result"
+        },
+        {
+          "name": "publishResponseControllerm5",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "publishResponseControllerm5(context: Context): void"
+        },
+        {
+          "name": "resolveResponseControllerm6",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "resolveResponseControllerm6(context: Context): void"
+        },
+        {
+          "name": "loadResponseControllerm7",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "loadResponseControllerm7(input: Request): void"
+        }
+      ]
+    },
+    {
+      "id": "java.api.gateway.AuditViewn",
+      "label": "AuditViewn",
+      "module": "api",
+      "package": "java.api.gateway",
+      "kind": "class",
+      "loc": 326,
+      "complexity": 5,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "cachedResponse",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "private"
+        },
+        {
+          "name": "primarySnapshot2",
+          "kind": "field",
+          "type": "EventBus",
+          "visibility": "package"
+        }
+      ],
+      "methods": [
+        {
+          "name": "loadAuditViewn",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "loadAuditViewn(context: Context): Result"
+        },
+        {
+          "name": "composeAuditViewn2",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeAuditViewn2(input: Request): void"
+        },
+        {
+          "name": "resolveAuditViewn3",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "resolveAuditViewn3(input: Request): Result"
+        },
+        {
+          "name": "projectAuditViewn4",
+          "kind": "method",
+          "visibility": "package",
+          "signature": "projectAuditViewn4(input: Request): Result"
+        },
+        {
+          "name": "resolveAuditViewn5",
+          "kind": "method",
+          "visibility": "private",
+          "signature": "resolveAuditViewn5(context: Context): void"
+        },
+        {
+          "name": "applyAuditViewn6",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "applyAuditViewn6(input: Request): Result"
+        },
+        {
+          "name": "persistAuditViewn7",
+          "kind": "method",
+          "visibility": "protected",
+          "signature": "persistAuditViewn7(input: Request): Result"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "source": "java.identity.users.RequestController0",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.users.RequestController0",
+      "target": "java.identity.users.AllocationGatewayg",
+      "type": "uses",
+      "via": "currentProjection2",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.users.RequestController0",
+      "target": "java.identity.users.AllocationGatewayg",
+      "type": "contains",
+      "via": "auditLedger",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.catalog.inventory.CustomerPort1",
+      "target": "java.analytics.events.SnapshotFactoryd",
+      "type": "uses",
+      "via": "validateCustomerPort12",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.checkout.TokenModel2",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.checkout.TokenModel2",
+      "target": "java.orders.workflow.InvoiceModeli",
+      "type": "uses",
+      "via": "cachedAllocation",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.tax.CustomerPort3",
+      "target": "java.catalog.media.LedgerResolverh",
+      "type": "uses",
+      "via": "hydrateCustomerPort3",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.tax.CustomerPort3",
+      "target": "java.billing.ledger.DocumentValidatorb",
+      "type": "creates",
+      "via": "applyCustomerPort32",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.routing.InvoiceModel4",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.routing.InvoiceModel4",
+      "target": "java.fulfillment.shipment.AccountAdapterc",
+      "type": "creates",
+      "via": "validateInvoiceModel43",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.routing.InvoiceModel4",
+      "target": "java.fulfillment.shipment.AccountAdapterc",
+      "type": "creates",
+      "via": "projectInvoiceModel42",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.routing.InvoiceModel4",
+      "target": "java.fulfillment.shipment.AccountAdapterc",
+      "type": "contains",
+      "via": "currentProjection",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.cohorts.RegistryView5",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.cohorts.RegistryView5",
+      "target": "java.analytics.events.SnapshotFactoryd",
+      "type": "imports",
+      "via": "resolveRegistryView5",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.cohorts.RegistryView5",
+      "target": "java.orders.checkout.TokenModel2",
+      "type": "imports",
+      "via": "auditRegistry",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.platform.config.LedgerFactory6",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.platform.config.LedgerFactory6",
+      "target": "java.platform.config.AccountAdaptere",
+      "type": "imports",
+      "via": "primaryCatalog",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.api.gateway.AddressResolver7",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.api.gateway.AddressResolver7",
+      "target": "java.api.dto.AuditEntityf",
+      "type": "imports",
+      "via": "persistAddressResolver72",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.session.EventValidator8",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.session.EventValidator8",
+      "target": "java.analytics.events.ReceiptHandlerl",
+      "type": "uses",
+      "via": "currentAllocation",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.session.EventValidator8",
+      "target": "java.analytics.events.ReceiptHandlerl",
+      "type": "contains",
+      "via": "pendingProjection3",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.catalog.media.PaymentValidator9",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.catalog.media.PaymentValidator9",
+      "target": "java.catalog.media.LedgerResolverh",
+      "type": "uses",
+      "via": "pendingMessage2",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.checkout.EventHandlera",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.checkout.EventHandlera",
+      "target": "java.orders.checkout.TokenModel2",
+      "type": "imports",
+      "via": "loadEventHandlera3",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.checkout.EventHandlera",
+      "target": "java.orders.checkout.TokenModel2",
+      "type": "creates",
+      "via": "currentLedger4",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.ledger.DocumentValidatorb",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.ledger.DocumentValidatorb",
+      "target": "java.billing.invoice.TokenViewj",
+      "type": "creates",
+      "via": "projectDocumentValidatorb8",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.ledger.DocumentValidatorb",
+      "target": "java.billing.invoice.TokenViewj",
+      "type": "contains",
+      "via": "pendingToken2",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.shipment.AccountAdapterc",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.events.SnapshotFactoryd",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.events.SnapshotFactoryd",
+      "target": "java.analytics.events.ReceiptHandlerl",
+      "type": "uses",
+      "via": "loadSnapshotFactoryd3",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.events.SnapshotFactoryd",
+      "target": "java.analytics.events.ReceiptHandlerl",
+      "type": "contains",
+      "via": "auditHistory3",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.platform.config.AccountAdaptere",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.platform.config.AccountAdaptere",
+      "target": "java.orders.checkout.TokenModel2",
+      "type": "inherits",
+      "via": "extends",
+      "reason": "inherits behavior",
+      "weight": 1
+    },
+    {
+      "source": "java.platform.config.AccountAdaptere",
+      "target": "java.platform.config.LedgerFactory6",
+      "type": "calls",
+      "via": "persistAccountAdaptere5",
+      "reason": "behavior calls collaborator",
+      "weight": 2
+    },
+    {
+      "source": "java.platform.config.AccountAdaptere",
+      "target": "java.platform.config.LedgerFactory6",
+      "type": "contains",
+      "via": "pendingEvent",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.api.dto.AuditEntityf",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.api.dto.AuditEntityf",
+      "target": "java.fulfillment.warehouse.CheckoutViewk",
+      "type": "inherits",
+      "via": "extends",
+      "reason": "inherits behavior",
+      "weight": 1
+    },
+    {
+      "source": "java.api.dto.AuditEntityf",
+      "target": "java.fulfillment.routing.InvoiceModel4",
+      "type": "creates",
+      "via": "loadAuditEntityf",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.users.AllocationGatewayg",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.users.AllocationGatewayg",
+      "target": "java.identity.users.RequestController0",
+      "type": "uses",
+      "via": "pendingPayment3",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.identity.users.AllocationGatewayg",
+      "target": "java.identity.users.RequestController0",
+      "type": "uses",
+      "via": "composeAllocationGatewayg",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.catalog.media.LedgerResolverh",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.catalog.media.LedgerResolverh",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "calls",
+      "via": "primaryToken",
+      "reason": "behavior calls collaborator",
+      "weight": 2
+    },
+    {
+      "source": "java.orders.workflow.InvoiceModeli",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.workflow.InvoiceModeli",
+      "target": "java.platform.config.LedgerFactory6",
+      "type": "inherits",
+      "via": "extends",
+      "reason": "inherits behavior",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.workflow.InvoiceModeli",
+      "target": "java.orders.checkout.EventHandlera",
+      "type": "calls",
+      "via": "auditAllocation2",
+      "reason": "behavior calls collaborator",
+      "weight": 2
+    },
+    {
+      "source": "java.orders.workflow.InvoiceModeli",
+      "target": "java.analytics.events.SnapshotFactoryd",
+      "type": "creates",
+      "via": "cachedOrder3",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.workflow.InvoiceModeli",
+      "target": "java.analytics.events.SnapshotFactoryd",
+      "type": "contains",
+      "via": "cachedOrder3",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.invoice.TokenViewj",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.invoice.TokenViewj",
+      "target": "java.api.gateway.AuditViewn",
+      "type": "inherits",
+      "via": "extends",
+      "reason": "inherits behavior",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.invoice.TokenViewj",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "imports",
+      "via": "persistTokenViewj8",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.billing.invoice.TokenViewj",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "contains",
+      "via": "auditRegistry",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.warehouse.CheckoutViewk",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.warehouse.CheckoutViewk",
+      "target": "java.platform.logging.ResponseControllerm",
+      "type": "imports",
+      "via": "publishCheckoutViewk3",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.fulfillment.warehouse.CheckoutViewk",
+      "target": "java.platform.logging.ResponseControllerm",
+      "type": "contains",
+      "via": "auditReceipt",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.events.ReceiptHandlerl",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.events.ReceiptHandlerl",
+      "target": "java.analytics.events.SnapshotFactoryd",
+      "type": "creates",
+      "via": "auditRequest2",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.events.ReceiptHandlerl",
+      "target": "java.analytics.events.SnapshotFactoryd",
+      "type": "contains",
+      "via": "pendingWorker",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.analytics.events.ReceiptHandlerl",
+      "target": "java.analytics.cohorts.RegistryView5",
+      "type": "calls",
+      "via": "authorizeReceiptHandlerl7",
+      "reason": "behavior calls collaborator",
+      "weight": 2
+    },
+    {
+      "source": "java.analytics.events.ReceiptHandlerl",
+      "target": "java.analytics.cohorts.RegistryView5",
+      "type": "contains",
+      "via": "auditRequest2",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.platform.logging.ResponseControllerm",
+      "target": "java.billing.tax.CustomerPort3",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.platform.logging.ResponseControllerm",
+      "target": "java.api.gateway.AddressResolver7",
+      "type": "uses",
+      "via": "publishResponseControllerm5",
+      "reason": "state/type reference",
+      "weight": 1
+    },
+    {
+      "source": "java.api.gateway.AuditViewn",
+      "target": "java.catalog.inventory.CustomerPort1",
+      "type": "implements",
+      "via": "class declaration",
+      "reason": "fulfills contract",
+      "weight": 1
+    },
+    {
+      "source": "java.api.gateway.AuditViewn",
+      "target": "java.api.dto.AuditEntityf",
+      "type": "calls",
+      "via": "persistAuditViewn7",
+      "reason": "behavior calls collaborator",
+      "weight": 2
+    },
+    {
+      "source": "java.api.gateway.AuditViewn",
+      "target": "java.api.dto.AuditEntityf",
+      "type": "contains",
+      "via": "primarySnapshot2",
+      "reason": "field composition",
+      "weight": 1
+    },
+    {
+      "source": "java.api.gateway.AuditViewn",
+      "target": "java.api.gateway.AddressResolver7",
+      "type": "creates",
+      "via": "composeAuditViewn2",
+      "reason": "constructs collaborator",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.checkout.EventHandlera",
+      "target": "java.orders.checkout.TokenModel2",
+      "type": "uses",
+      "via": "cycleA",
+      "reason": "intentional example cycle",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.checkout.TokenModel2",
+      "target": "java.orders.workflow.InvoiceModeli",
+      "type": "uses",
+      "via": "cycleB",
+      "reason": "intentional example cycle",
+      "weight": 1
+    },
+    {
+      "source": "java.orders.workflow.InvoiceModeli",
+      "target": "java.orders.checkout.EventHandlera",
+      "type": "uses",
+      "via": "cycleC",
+      "reason": "intentional example cycle",
+      "weight": 1
+    }
+  ],
+  "meta": {
+    "name": "Tiny Java Service",
+    "generatedAt": "2026-06-30T00:00:00.000Z",
+    "language": "Java"
+  }
+}

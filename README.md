@@ -4,10 +4,11 @@ Dependency Palace is an interactive 3D class-dependency viewer for codebases tha
 
 The app is built for thousands of classes:
 
+- Startup uses a tiny starter graph; large demos and examples load only when selected.
 - Package overview mode collapses classes into package nodes.
 - Class mode renders every visible class as a GPU-instanced mesh.
 - Focus mode expands the selected type into state, behavior, contracts, inheritance, callers, and callees.
-- Edges are packed into a single WebGL line geometry.
+- Edges are packed into a shared GPU line buffer.
 - The layout is deterministic, clustered by module/package, and does not run a force simulation in the render loop.
 
 ## Run
@@ -43,6 +44,21 @@ npm run scan -- /path/to/repo --out dependency-palace.graph.json
 ```
 
 The first-pass scanner supports Java, Kotlin, Scala, C#, TypeScript, JavaScript, Go, Rust, Python, Ruby, PHP, Swift, C, and C++. See [docs/adapters.md](docs/adapters.md).
+
+Haskell and Java are the P0 languages:
+
+- Haskell: `data`/`newtype` records, typeclasses, instances, constraints, deriving, top-level functions, and FP composition pipelines.
+- Java: classes, interfaces, inheritance, implementations, fields, methods, and field-based composition.
+
+## Examples
+
+The app includes generated examples from tiny to stress size. They appear in the left panel when the dev server is running.
+
+```bash
+npm run generate:examples
+```
+
+See [docs/examples.md](docs/examples.md).
 
 ## Input Format
 
@@ -81,13 +97,15 @@ See [docs/input-schema.md](docs/input-schema.md) for the full schema notes.
 
 ## Design Notes
 
-The mental model is in [docs/mental-model.md](docs/mental-model.md), the research target list is in [docs/research-targets.md](docs/research-targets.md), and the analysis notes are in [docs/research.md](docs/research.md). The short version:
+The mental model is in [docs/mental-model.md](docs/mental-model.md), the rendering architecture is in [docs/rendering-architecture.md](docs/rendering-architecture.md), the examples are in [docs/examples.md](docs/examples.md), the research target list is in [docs/research-targets.md](docs/research-targets.md), and the analysis notes are in [docs/research.md](docs/research.md). The short version:
 
 - Borrow orientation from CodeCity: modules/packages act like districts.
 - Borrow navigation from Sourcetrail and NDepend: search, hubs, caller/callee focus, and collapse/expand.
-- Borrow rendering discipline from large WebGL graph tools: minimize draw calls and avoid per-node React/DOM elements.
+- Borrow rendering discipline from large graph tools: minimize draw calls and avoid per-node React/DOM elements.
+- Use WebGPU-first rendering with WebGL fallback.
 - Avoid an always-on force simulation for the main view; large class graphs should stay stable and navigable.
 - Avoid the hairball. The focus view must show state, behavior, contracts, and dependency reasons.
+- Switch between Palace, Tree, Blocks, Life, Space, and Atomic forms for different mental models. See [docs/metaphors.md](docs/metaphors.md).
 
 ## Current Limits
 

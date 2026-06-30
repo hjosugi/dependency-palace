@@ -1,6 +1,6 @@
 # Roadmap: Native Source Adapters For Major Languages
 
-Labels: `roadmap`, `adapters`, `source-indexing`, `performance`
+Labels: `roadmap`, `adapters`, `source-indexing`, `performance`, `priority:P0`, `status:ready`
 
 ## Problem
 
@@ -22,7 +22,9 @@ Build native adapters for all major ecosystems while keeping one normalized view
 
 ## Scope
 
-- Java/JVM: Java first, then Kotlin/Scala.
+- Haskell and Java/JVM are P0.
+- Haskell: typeclasses, instances, records, functions, FP composition.
+- Java/JVM: inheritance, interface implementation, field composition, method call graph.
 - Rust.
 - Go.
 - TypeScript/JavaScript.
@@ -53,12 +55,13 @@ Build native adapters for all major ecosystems while keeping one normalized view
 ## Implementation Order
 
 1. Adapter contract, fixtures, and diagnostics.
-2. Java/JVM adapter.
-3. Rust adapter.
-4. Go adapter.
-5. TypeScript/JavaScript adapter.
-6. Python adapter.
-7. C# adapter.
-8. C/C++ adapter.
-9. Swift/Ruby/PHP/Kotlin/Scala completion.
-10. Incremental indexing and cache.
+2. Haskell native adapter.
+3. Java/JVM native adapter.
+4. Rust adapter.
+5. Go adapter.
+6. TypeScript/JavaScript adapter.
+7. Python adapter.
+8. C# adapter.
+9. C/C++ adapter.
+10. Swift/Ruby/PHP/Kotlin/Scala completion.
+11. Incremental indexing and cache.

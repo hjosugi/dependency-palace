@@ -2,13 +2,27 @@ export type DependencyKind =
   | "imports"
   | "inherits"
   | "implements"
+  | "instance"
+  | "contains"
+  | "composes"
+  | "constrains"
+  | "derives"
   | "uses"
   | "calls"
   | "creates"
   | "tests"
   | "unknown";
 
-export type NodeKind = "class" | "interface" | "enum" | "module" | "package" | "external";
+export type NodeKind =
+  | "class"
+  | "interface"
+  | "typeclass"
+  | "datatype"
+  | "function"
+  | "enum"
+  | "module"
+  | "package"
+  | "external";
 
 export type MemberKind = "field" | "method" | "constructor" | "property";
 
@@ -79,7 +93,7 @@ export interface GraphNode {
   fields: CodeMember[];
   methods: CodeMember[];
   childCount?: number;
-  role?: "state" | "behavior" | "contract" | "data" | "boundary" | "adapter" | "test" | "unknown";
+  role?: "state" | "behavior" | "contract" | "data" | "boundary" | "adapter" | "composition" | "test" | "unknown";
 }
 
 export interface GraphLink {
@@ -95,6 +109,9 @@ export interface GraphLink {
 export interface GraphData {
   nodes: GraphNode[];
   links: GraphLink[];
+  sccCount: number;
+  cyclicNodeCount: number;
+  largestScc: number;
   meta: {
     name: string;
     generatedAt: string;
@@ -129,6 +146,8 @@ export interface DisplayLink extends GraphLink {
 }
 
 export type ViewMode = "overview" | "classes" | "focus";
+
+export type VisualizationMetaphor = "palace" | "tree" | "blocks" | "organism" | "space" | "atomic";
 
 export interface ViewGraph {
   nodes: GraphNode[];

@@ -1,6 +1,6 @@
 # Adapter Contract, Golden Fixtures, And Diagnostics
 
-Labels: `adapters`, `testing`, `developer-experience`
+Labels: `adapters`, `testing`, `developer-experience`, `priority:P0`, `status:ready`
 
 ## Problem
 

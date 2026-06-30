@@ -1,0 +1,3242 @@
+{
+  "nodes": [
+    {
+      "id": "base.Eq",
+      "label": "Eq",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "eq",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "eq :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Show",
+      "label": "Show",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "show",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "show :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Generic",
+      "label": "Generic",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "generic",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "generic :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Functor",
+      "label": "Functor",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "functor",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "functor :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Applicative",
+      "label": "Applicative",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "applicative",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "applicative :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "base.Monad",
+      "label": "Monad",
+      "module": "base",
+      "package": "base",
+      "kind": "typeclass",
+      "loc": 1,
+      "complexity": 1,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "monad",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "monad :: a -> a"
+        }
+      ]
+    },
+    {
+      "id": "haskell.platform.logging.MessageSnapshot6",
+      "label": "MessageSnapshot6",
+      "module": "platform",
+      "package": "haskell.platform.logging",
+      "kind": "datatype",
+      "loc": 145,
+      "complexity": 6,
+      "layer": 0,
+      "fields": [
+        {
+          "name": "policy",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "charge2",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "ledger3",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "history4",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "response5",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.api.dto.AuditConfig7",
+      "label": "AuditConfig7",
+      "module": "api",
+      "package": "haskell.api.dto",
+      "kind": "datatype",
+      "loc": 143,
+      "complexity": 5,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "projection",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "request2",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "projection3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "invoice4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "request5",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.identity.roles.composeRequest8",
+      "label": "composeRequest8",
+      "module": "identity",
+      "package": "haskell.identity.roles",
+      "kind": "function",
+      "loc": 252,
+      "complexity": 7,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeRequest8",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeRequest8 :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.inventory.foldPayment9",
+      "label": "foldPayment9",
+      "module": "catalog",
+      "package": "haskell.catalog.inventory",
+      "kind": "function",
+      "loc": 186,
+      "complexity": 11,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "foldPayment9",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "foldPayment9 :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.orders.workflow.CatalogResponsea",
+      "label": "CatalogResponsea",
+      "module": "orders",
+      "package": "haskell.orders.workflow",
+      "kind": "datatype",
+      "loc": 183,
+      "complexity": 10,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "snapshot",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "token2",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "receipt3",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "order4",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "checkout5",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "invoice6",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.billing.tax.WorkerConfigb",
+      "label": "WorkerConfigb",
+      "module": "billing",
+      "package": "haskell.billing.tax",
+      "kind": "datatype",
+      "loc": 293,
+      "complexity": 10,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "policy",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "receipt2",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "registry3",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "response4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "history5",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "worker6",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.fulfillment.tracking.ContextCommandc",
+      "label": "ContextCommandc",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.tracking",
+      "kind": "datatype",
+      "loc": 188,
+      "complexity": 11,
+      "layer": 3,
+      "fields": [
+        {
+          "name": "context",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "registry2",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "worker3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "catalog4",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "policy5",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.analytics.reporting.PolicyPolicyd",
+      "label": "PolicyPolicyd",
+      "module": "analytics",
+      "package": "haskell.analytics.reporting",
+      "kind": "typeclass",
+      "loc": 175,
+      "complexity": 13,
+      "layer": 4,
+      "fields": [],
+      "methods": [
+        {
+          "name": "validatePolicyPolicyd",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validatePolicyPolicyd :: m a -> m b"
+        },
+        {
+          "name": "composePolicyPolicyd2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composePolicyPolicyd2 :: m a -> m b"
+        },
+        {
+          "name": "persistPolicyPolicyd3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "persistPolicyPolicyd3 :: m a -> m b"
+        },
+        {
+          "name": "projectPolicyPolicyd4",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectPolicyPolicyd4 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.platform.config.AllocationPolicye",
+      "label": "AllocationPolicye",
+      "module": "platform",
+      "package": "haskell.platform.config",
+      "kind": "typeclass",
+      "loc": 219,
+      "complexity": 7,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "validateAllocationPolicye",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateAllocationPolicye :: m a -> m b"
+        },
+        {
+          "name": "foldAllocationPolicye2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldAllocationPolicye2 :: m a -> m b"
+        },
+        {
+          "name": "hydrateAllocationPolicye3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateAllocationPolicye3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.api.gateway.composeRegistryf",
+      "label": "composeRegistryf",
+      "module": "api",
+      "package": "haskell.api.gateway",
+      "kind": "function",
+      "loc": 205,
+      "complexity": 9,
+      "layer": 5,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeRegistryf",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeRegistryf :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.identity.session.TokenStoreg",
+      "label": "TokenStoreg",
+      "module": "identity",
+      "package": "haskell.identity.session",
+      "kind": "typeclass",
+      "loc": 141,
+      "complexity": 11,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "projectTokenStoreg",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectTokenStoreg :: m a -> m b"
+        },
+        {
+          "name": "composeTokenStoreg2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composeTokenStoreg2 :: m a -> m b"
+        },
+        {
+          "name": "foldTokenStoreg3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldTokenStoreg3 :: m a -> m b"
+        },
+        {
+          "name": "foldTokenStoreg4",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldTokenStoreg4 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.pricing.CustomerMonadh",
+      "label": "CustomerMonadh",
+      "module": "catalog",
+      "package": "haskell.catalog.pricing",
+      "kind": "typeclass",
+      "loc": 277,
+      "complexity": 5,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "publishCustomerMonadh",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishCustomerMonadh :: m a -> m b"
+        },
+        {
+          "name": "persistCustomerMonadh2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "persistCustomerMonadh2 :: m a -> m b"
+        },
+        {
+          "name": "foldCustomerMonadh3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldCustomerMonadh3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.orders.workflow.AccountStatei",
+      "label": "AccountStatei",
+      "module": "orders",
+      "package": "haskell.orders.workflow",
+      "kind": "datatype",
+      "loc": 253,
+      "complexity": 12,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "checkout",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "customer2",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "worker3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "worker4",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "token5",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.billing.ledger.GatewayCodecj",
+      "label": "GatewayCodecj",
+      "module": "billing",
+      "package": "haskell.billing.ledger",
+      "kind": "typeclass",
+      "loc": 135,
+      "complexity": 6,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "projectGatewayCodecj",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectGatewayCodecj :: m a -> m b"
+        },
+        {
+          "name": "validateGatewayCodecj2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateGatewayCodecj2 :: m a -> m b"
+        },
+        {
+          "name": "projectGatewayCodecj3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectGatewayCodecj3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.fulfillment.shipment.HistoryCodeck",
+      "label": "HistoryCodeck",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.shipment",
+      "kind": "typeclass",
+      "loc": 220,
+      "complexity": 11,
+      "layer": 3,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeHistoryCodeck",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composeHistoryCodeck :: m a -> m b"
+        },
+        {
+          "name": "publishHistoryCodeck2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishHistoryCodeck2 :: m a -> m b"
+        },
+        {
+          "name": "foldHistoryCodeck3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldHistoryCodeck3 :: m a -> m b"
+        },
+        {
+          "name": "publishHistoryCodeck4",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishHistoryCodeck4 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.analytics.reporting.HistoryStatel",
+      "label": "HistoryStatel",
+      "module": "analytics",
+      "package": "haskell.analytics.reporting",
+      "kind": "datatype",
+      "loc": 142,
+      "complexity": 12,
+      "layer": 4,
+      "fields": [
+        {
+          "name": "history",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "payment2",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "invoice3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "checkout4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "response5",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.platform.config.CheckoutRequestm",
+      "label": "CheckoutRequestm",
+      "module": "platform",
+      "package": "haskell.platform.config",
+      "kind": "datatype",
+      "loc": 123,
+      "complexity": 12,
+      "layer": 0,
+      "fields": [
+        {
+          "name": "gateway",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "payment2",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "payment3",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        },
+        {
+          "name": "response4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "gateway5",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        },
+        {
+          "name": "message6",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.api.gateway.CheckoutEventn",
+      "label": "CheckoutEventn",
+      "module": "api",
+      "package": "haskell.api.gateway",
+      "kind": "datatype",
+      "loc": 141,
+      "complexity": 8,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "allocation",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        },
+        {
+          "name": "account2",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "allocation3",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "worker4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.identity.auth.RegistryPolicyo",
+      "label": "RegistryPolicyo",
+      "module": "identity",
+      "package": "haskell.identity.auth",
+      "kind": "typeclass",
+      "loc": 114,
+      "complexity": 10,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "validateRegistryPolicyo",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateRegistryPolicyo :: m a -> m b"
+        },
+        {
+          "name": "authorizeRegistryPolicyo2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizeRegistryPolicyo2 :: m a -> m b"
+        },
+        {
+          "name": "projectRegistryPolicyo3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectRegistryPolicyo3 :: m a -> m b"
+        },
+        {
+          "name": "foldRegistryPolicyo4",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldRegistryPolicyo4 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.media.hydrateLedgerp",
+      "label": "hydrateLedgerp",
+      "module": "catalog",
+      "package": "haskell.catalog.media",
+      "kind": "function",
+      "loc": 225,
+      "complexity": 10,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "hydrateLedgerp",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "hydrateLedgerp :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.orders.returns.RuleRepositoryq",
+      "label": "RuleRepositoryq",
+      "module": "orders",
+      "package": "haskell.orders.returns",
+      "kind": "typeclass",
+      "loc": 169,
+      "complexity": 5,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "authorizeRuleRepositoryq",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizeRuleRepositoryq :: m a -> m b"
+        },
+        {
+          "name": "validateRuleRepositoryq2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateRuleRepositoryq2 :: m a -> m b"
+        },
+        {
+          "name": "foldRuleRepositoryq3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldRuleRepositoryq3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.billing.ledger.ResponseCommandr",
+      "label": "ResponseCommandr",
+      "module": "billing",
+      "package": "haskell.billing.ledger",
+      "kind": "datatype",
+      "loc": 127,
+      "complexity": 12,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "account",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        },
+        {
+          "name": "snapshot2",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        },
+        {
+          "name": "policy3",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "address4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "snapshot5",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "event6",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.fulfillment.warehouse.authorizeDocuments",
+      "label": "authorizeDocuments",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.warehouse",
+      "kind": "function",
+      "loc": 303,
+      "complexity": 10,
+      "layer": 3,
+      "fields": [],
+      "methods": [
+        {
+          "name": "authorizeDocuments",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "authorizeDocuments :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.analytics.events.RequestSnapshott",
+      "label": "RequestSnapshott",
+      "module": "analytics",
+      "package": "haskell.analytics.events",
+      "kind": "datatype",
+      "loc": 87,
+      "complexity": 7,
+      "layer": 4,
+      "fields": [
+        {
+          "name": "audit",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "address2",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.platform.events.OrderSnapshotu",
+      "label": "OrderSnapshotu",
+      "module": "platform",
+      "package": "haskell.platform.events",
+      "kind": "datatype",
+      "loc": 159,
+      "complexity": 9,
+      "layer": 0,
+      "fields": [
+        {
+          "name": "rule",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "worker2",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "token3",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "customer4",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.api.dto.hydrateRequestv",
+      "label": "hydrateRequestv",
+      "module": "api",
+      "package": "haskell.api.dto",
+      "kind": "function",
+      "loc": 264,
+      "complexity": 8,
+      "layer": 5,
+      "fields": [],
+      "methods": [
+        {
+          "name": "hydrateRequestv",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "hydrateRequestv :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.identity.auth.persistReceiptw",
+      "label": "persistReceiptw",
+      "module": "identity",
+      "package": "haskell.identity.auth",
+      "kind": "function",
+      "loc": 225,
+      "complexity": 5,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "persistReceiptw",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "persistReceiptw :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.media.AuditAlgebrax",
+      "label": "AuditAlgebrax",
+      "module": "catalog",
+      "package": "haskell.catalog.media",
+      "kind": "typeclass",
+      "loc": 305,
+      "complexity": 9,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "foldAuditAlgebrax",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldAuditAlgebrax :: m a -> m b"
+        },
+        {
+          "name": "publishAuditAlgebrax2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishAuditAlgebrax2 :: m a -> m b"
+        },
+        {
+          "name": "projectAuditAlgebrax3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectAuditAlgebrax3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.orders.returns.RuleResponsey",
+      "label": "RuleResponsey",
+      "module": "orders",
+      "package": "haskell.orders.returns",
+      "kind": "datatype",
+      "loc": 168,
+      "complexity": 12,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "request",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "snapshot2",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "customer3",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.billing.invoice.publishSnapshotz",
+      "label": "publishSnapshotz",
+      "module": "billing",
+      "package": "haskell.billing.invoice",
+      "kind": "function",
+      "loc": 296,
+      "complexity": 6,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "publishSnapshotz",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "publishSnapshotz :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.fulfillment.shipment.publishReceipt10",
+      "label": "publishReceipt10",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.shipment",
+      "kind": "function",
+      "loc": 110,
+      "complexity": 10,
+      "layer": 3,
+      "fields": [],
+      "methods": [
+        {
+          "name": "publishReceipt10",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "publishReceipt10 :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.analytics.cohorts.composeCharge11",
+      "label": "composeCharge11",
+      "module": "analytics",
+      "package": "haskell.analytics.cohorts",
+      "kind": "function",
+      "loc": 163,
+      "complexity": 11,
+      "layer": 4,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeCharge11",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeCharge11 :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.platform.events.CheckoutMonad12",
+      "label": "CheckoutMonad12",
+      "module": "platform",
+      "package": "haskell.platform.events",
+      "kind": "typeclass",
+      "loc": 145,
+      "complexity": 8,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "projectCheckoutMonad12",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectCheckoutMonad12 :: m a -> m b"
+        },
+        {
+          "name": "publishCheckoutMonad122",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishCheckoutMonad122 :: m a -> m b"
+        },
+        {
+          "name": "hydrateCheckoutMonad123",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateCheckoutMonad123 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.api.graphql.PaymentEvent13",
+      "label": "PaymentEvent13",
+      "module": "api",
+      "package": "haskell.api.graphql",
+      "kind": "datatype",
+      "loc": 273,
+      "complexity": 8,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "charge",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "request2",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "invoice3",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.identity.users.publishResponse14",
+      "label": "publishResponse14",
+      "module": "identity",
+      "package": "haskell.identity.users",
+      "kind": "function",
+      "loc": 58,
+      "complexity": 5,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "publishResponse14",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "publishResponse14 :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.inventory.CustomerCommand15",
+      "label": "CustomerCommand15",
+      "module": "catalog",
+      "package": "haskell.catalog.inventory",
+      "kind": "datatype",
+      "loc": 197,
+      "complexity": 10,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "session",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "invoice2",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "gateway3",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "invoice4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "snapshot5",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.orders.returns.ReceiptStore16",
+      "label": "ReceiptStore16",
+      "module": "orders",
+      "package": "haskell.orders.returns",
+      "kind": "typeclass",
+      "loc": 220,
+      "complexity": 6,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "authorizeReceiptStore16",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizeReceiptStore16 :: m a -> m b"
+        },
+        {
+          "name": "authorizeReceiptStore162",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizeReceiptStore162 :: m a -> m b"
+        },
+        {
+          "name": "authorizeReceiptStore163",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizeReceiptStore163 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.billing.tax.TokenPolicy17",
+      "label": "TokenPolicy17",
+      "module": "billing",
+      "package": "haskell.billing.tax",
+      "kind": "typeclass",
+      "loc": 105,
+      "complexity": 7,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "persistTokenPolicy17",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "persistTokenPolicy17 :: m a -> m b"
+        },
+        {
+          "name": "composeTokenPolicy172",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composeTokenPolicy172 :: m a -> m b"
+        },
+        {
+          "name": "composeTokenPolicy173",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composeTokenPolicy173 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.fulfillment.tracking.PaymentMonad18",
+      "label": "PaymentMonad18",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.tracking",
+      "kind": "typeclass",
+      "loc": 278,
+      "complexity": 11,
+      "layer": 3,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composePaymentMonad18",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composePaymentMonad18 :: m a -> m b"
+        },
+        {
+          "name": "hydratePaymentMonad182",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydratePaymentMonad182 :: m a -> m b"
+        },
+        {
+          "name": "projectPaymentMonad183",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectPaymentMonad183 :: m a -> m b"
+        },
+        {
+          "name": "projectPaymentMonad184",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectPaymentMonad184 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.analytics.export.GatewayPolicy19",
+      "label": "GatewayPolicy19",
+      "module": "analytics",
+      "package": "haskell.analytics.export",
+      "kind": "typeclass",
+      "loc": 188,
+      "complexity": 12,
+      "layer": 4,
+      "fields": [],
+      "methods": [
+        {
+          "name": "validateGatewayPolicy19",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateGatewayPolicy19 :: m a -> m b"
+        },
+        {
+          "name": "publishGatewayPolicy192",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishGatewayPolicy192 :: m a -> m b"
+        },
+        {
+          "name": "publishGatewayPolicy193",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishGatewayPolicy193 :: m a -> m b"
+        },
+        {
+          "name": "authorizeGatewayPolicy194",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizeGatewayPolicy194 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.platform.config.composeAddress1a",
+      "label": "composeAddress1a",
+      "module": "platform",
+      "package": "haskell.platform.config",
+      "kind": "function",
+      "loc": 237,
+      "complexity": 8,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeAddress1a",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeAddress1a :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.api.dto.PaymentResponse1b",
+      "label": "PaymentResponse1b",
+      "module": "api",
+      "package": "haskell.api.dto",
+      "kind": "datatype",
+      "loc": 98,
+      "complexity": 11,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "policy",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "account2",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "audit3",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "message4",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.identity.users.persistRequest1c",
+      "label": "persistRequest1c",
+      "module": "identity",
+      "package": "haskell.identity.users",
+      "kind": "function",
+      "loc": 263,
+      "complexity": 12,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "persistRequest1c",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "persistRequest1c :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.inventory.OrderError1d",
+      "label": "OrderError1d",
+      "module": "catalog",
+      "package": "haskell.catalog.inventory",
+      "kind": "datatype",
+      "loc": 321,
+      "complexity": 11,
+      "layer": 1,
+      "fields": [
+        {
+          "name": "response",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "response2",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "checkout3",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "charge4",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "session5",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.orders.workflow.TokenSnapshot1e",
+      "label": "TokenSnapshot1e",
+      "module": "orders",
+      "package": "haskell.orders.workflow",
+      "kind": "datatype",
+      "loc": 186,
+      "complexity": 7,
+      "layer": 2,
+      "fields": [
+        {
+          "name": "catalog",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "registry2",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "catalog3",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.billing.invoice.TokenMonad1f",
+      "label": "TokenMonad1f",
+      "module": "billing",
+      "package": "haskell.billing.invoice",
+      "kind": "typeclass",
+      "loc": 241,
+      "complexity": 7,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeTokenMonad1f",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composeTokenMonad1f :: m a -> m b"
+        },
+        {
+          "name": "publishTokenMonad1f2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishTokenMonad1f2 :: m a -> m b"
+        },
+        {
+          "name": "projectTokenMonad1f3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "projectTokenMonad1f3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.fulfillment.shipment.ContextState1g",
+      "label": "ContextState1g",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.shipment",
+      "kind": "datatype",
+      "loc": 213,
+      "complexity": 9,
+      "layer": 3,
+      "fields": [
+        {
+          "name": "account",
+          "kind": "field",
+          "type": "Map Text Value",
+          "visibility": "public"
+        },
+        {
+          "name": "policy2",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "catalog3",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.analytics.export.RuleError1h",
+      "label": "RuleError1h",
+      "module": "analytics",
+      "package": "haskell.analytics.export",
+      "kind": "datatype",
+      "loc": 332,
+      "complexity": 13,
+      "layer": 4,
+      "fields": [
+        {
+          "name": "charge",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "catalog2",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "snapshot3",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "history4",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        },
+        {
+          "name": "rule5",
+          "kind": "field",
+          "type": "UTCTime",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.platform.config.OrderAlgebra1i",
+      "label": "OrderAlgebra1i",
+      "module": "platform",
+      "package": "haskell.platform.config",
+      "kind": "typeclass",
+      "loc": 203,
+      "complexity": 9,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "validateOrderAlgebra1i",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateOrderAlgebra1i :: m a -> m b"
+        },
+        {
+          "name": "composeOrderAlgebra1i2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composeOrderAlgebra1i2 :: m a -> m b"
+        },
+        {
+          "name": "validateOrderAlgebra1i3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateOrderAlgebra1i3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.api.gateway.WorkerMonad1j",
+      "label": "WorkerMonad1j",
+      "module": "api",
+      "package": "haskell.api.gateway",
+      "kind": "typeclass",
+      "loc": 175,
+      "complexity": 12,
+      "layer": 5,
+      "fields": [],
+      "methods": [
+        {
+          "name": "persistWorkerMonad1j",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "persistWorkerMonad1j :: m a -> m b"
+        },
+        {
+          "name": "hydrateWorkerMonad1j2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateWorkerMonad1j2 :: m a -> m b"
+        },
+        {
+          "name": "hydrateWorkerMonad1j3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateWorkerMonad1j3 :: m a -> m b"
+        },
+        {
+          "name": "hydrateWorkerMonad1j4",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateWorkerMonad1j4 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.identity.auth.InvoiceAlgebra1k",
+      "label": "InvoiceAlgebra1k",
+      "module": "identity",
+      "package": "haskell.identity.auth",
+      "kind": "typeclass",
+      "loc": 204,
+      "complexity": 7,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "authorizeInvoiceAlgebra1k",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizeInvoiceAlgebra1k :: m a -> m b"
+        },
+        {
+          "name": "foldInvoiceAlgebra1k2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldInvoiceAlgebra1k2 :: m a -> m b"
+        },
+        {
+          "name": "validateInvoiceAlgebra1k3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validateInvoiceAlgebra1k3 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.catalog.pricing.composeLedger1l",
+      "label": "composeLedger1l",
+      "module": "catalog",
+      "package": "haskell.catalog.pricing",
+      "kind": "function",
+      "loc": 100,
+      "complexity": 7,
+      "layer": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "composeLedger1l",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "composeLedger1l :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.orders.cart.persistAccount1m",
+      "label": "persistAccount1m",
+      "module": "orders",
+      "package": "haskell.orders.cart",
+      "kind": "function",
+      "loc": 170,
+      "complexity": 13,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "persistAccount1m",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "persistAccount1m :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.billing.ledger.authorizeAudit1n",
+      "label": "authorizeAudit1n",
+      "module": "billing",
+      "package": "haskell.billing.ledger",
+      "kind": "function",
+      "loc": 174,
+      "complexity": 11,
+      "layer": 2,
+      "fields": [],
+      "methods": [
+        {
+          "name": "authorizeAudit1n",
+          "kind": "method",
+          "visibility": "public",
+          "signature": "authorizeAudit1n :: (Monad m, HasCallStack) => input -> m output"
+        }
+      ]
+    },
+    {
+      "id": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "label": "ProjectionResponse1o",
+      "module": "fulfillment",
+      "package": "haskell.fulfillment.tracking",
+      "kind": "datatype",
+      "loc": 128,
+      "complexity": 5,
+      "layer": 3,
+      "fields": [
+        {
+          "name": "worker",
+          "kind": "field",
+          "type": "UUID",
+          "visibility": "public"
+        },
+        {
+          "name": "message2",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        },
+        {
+          "name": "audit3",
+          "kind": "field",
+          "type": "NonEmpty Event",
+          "visibility": "public"
+        },
+        {
+          "name": "rule4",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "response5",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "id": "haskell.analytics.export.PolicyAlgebra1p",
+      "label": "PolicyAlgebra1p",
+      "module": "analytics",
+      "package": "haskell.analytics.export",
+      "kind": "typeclass",
+      "loc": 336,
+      "complexity": 12,
+      "layer": 4,
+      "fields": [],
+      "methods": [
+        {
+          "name": "validatePolicyAlgebra1p",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "validatePolicyAlgebra1p :: m a -> m b"
+        },
+        {
+          "name": "authorizePolicyAlgebra1p2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "authorizePolicyAlgebra1p2 :: m a -> m b"
+        },
+        {
+          "name": "foldPolicyAlgebra1p3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldPolicyAlgebra1p3 :: m a -> m b"
+        },
+        {
+          "name": "publishPolicyAlgebra1p4",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "publishPolicyAlgebra1p4 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.platform.logging.GatewayStore1q",
+      "label": "GatewayStore1q",
+      "module": "platform",
+      "package": "haskell.platform.logging",
+      "kind": "typeclass",
+      "loc": 105,
+      "complexity": 10,
+      "layer": 0,
+      "fields": [],
+      "methods": [
+        {
+          "name": "hydrateGatewayStore1q",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateGatewayStore1q :: m a -> m b"
+        },
+        {
+          "name": "foldGatewayStore1q2",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "foldGatewayStore1q2 :: m a -> m b"
+        },
+        {
+          "name": "composeGatewayStore1q3",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "composeGatewayStore1q3 :: m a -> m b"
+        },
+        {
+          "name": "hydrateGatewayStore1q4",
+          "kind": "method",
+          "visibility": "public",
+          "abstract": true,
+          "signature": "hydrateGatewayStore1q4 :: m a -> m b"
+        }
+      ]
+    },
+    {
+      "id": "haskell.api.dto.RegistryEvent1r",
+      "label": "RegistryEvent1r",
+      "module": "api",
+      "package": "haskell.api.dto",
+      "kind": "datatype",
+      "loc": 238,
+      "complexity": 8,
+      "layer": 5,
+      "fields": [
+        {
+          "name": "registry",
+          "kind": "field",
+          "type": "Natural",
+          "visibility": "public"
+        },
+        {
+          "name": "message2",
+          "kind": "field",
+          "type": "Money",
+          "visibility": "public"
+        },
+        {
+          "name": "address3",
+          "kind": "field",
+          "type": "Text",
+          "visibility": "public"
+        }
+      ],
+      "methods": []
+    }
+  ],
+  "links": [
+    {
+      "source": "base.Eq",
+      "target": "haskell.platform.config.AllocationPolicye",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Show",
+      "target": "haskell.identity.session.TokenStoreg",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Generic",
+      "target": "haskell.billing.ledger.GatewayCodecj",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Functor",
+      "target": "haskell.billing.tax.TokenPolicy17",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Applicative",
+      "target": "base.Generic",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "base.Monad",
+      "target": "haskell.analytics.export.GatewayPolicy19",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.logging.MessageSnapshot6",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.logging.MessageSnapshot6",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.logging.MessageSnapshot6",
+      "target": "base.Monad",
+      "type": "instance",
+      "via": "MessageSnapshot6",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.AuditConfig7",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.AuditConfig7",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.AuditConfig7",
+      "target": "base.Monad",
+      "type": "instance",
+      "via": "AuditConfig7",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.roles.composeRequest8",
+      "target": "haskell.identity.auth.persistReceiptw",
+      "type": "composes",
+      "via": "composeRequest8",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.roles.composeRequest8",
+      "target": "haskell.api.dto.AuditConfig7",
+      "type": "uses",
+      "via": "composeRequest8",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.roles.composeRequest8",
+      "target": "haskell.billing.tax.TokenPolicy17",
+      "type": "constrains",
+      "via": "composeRequest8",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.foldPayment9",
+      "target": "haskell.api.dto.hydrateRequestv",
+      "type": "composes",
+      "via": "foldPayment9",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.foldPayment9",
+      "target": "haskell.orders.workflow.CatalogResponsea",
+      "type": "uses",
+      "via": "foldPayment9",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.foldPayment9",
+      "target": "haskell.billing.tax.TokenPolicy17",
+      "type": "constrains",
+      "via": "foldPayment9",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.CatalogResponsea",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.CatalogResponsea",
+      "target": "haskell.catalog.pricing.CustomerMonadh",
+      "type": "instance",
+      "via": "CatalogResponsea",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.tax.WorkerConfigb",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.tax.WorkerConfigb",
+      "target": "haskell.billing.tax.TokenPolicy17",
+      "type": "instance",
+      "via": "WorkerConfigb",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ContextCommandc",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ContextCommandc",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ContextCommandc",
+      "target": "haskell.identity.auth.InvoiceAlgebra1k",
+      "type": "instance",
+      "via": "ContextCommandc",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.reporting.PolicyPolicyd",
+      "target": "haskell.identity.auth.RegistryPolicyo",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.AllocationPolicye",
+      "target": "haskell.identity.auth.InvoiceAlgebra1k",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.composeRegistryf",
+      "target": "haskell.identity.users.publishResponse14",
+      "type": "composes",
+      "via": "composeRegistryf",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.composeRegistryf",
+      "target": "haskell.catalog.inventory.OrderError1d",
+      "type": "uses",
+      "via": "composeRegistryf",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.session.TokenStoreg",
+      "target": "haskell.orders.returns.ReceiptStore16",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.pricing.CustomerMonadh",
+      "target": "haskell.billing.ledger.GatewayCodecj",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.AccountStatei",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.AccountStatei",
+      "target": "haskell.orders.returns.RuleRepositoryq",
+      "type": "instance",
+      "via": "AccountStatei",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.ledger.GatewayCodecj",
+      "target": "haskell.catalog.pricing.CustomerMonadh",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.HistoryCodeck",
+      "target": "base.Monad",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.reporting.HistoryStatel",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.reporting.HistoryStatel",
+      "target": "base.Show",
+      "type": "instance",
+      "via": "HistoryStatel",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.CheckoutRequestm",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.CheckoutRequestm",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.CheckoutRequestm",
+      "target": "haskell.identity.auth.InvoiceAlgebra1k",
+      "type": "instance",
+      "via": "CheckoutRequestm",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.CheckoutEventn",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.CheckoutEventn",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.CheckoutEventn",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.CheckoutEventn",
+      "target": "haskell.platform.events.CheckoutMonad12",
+      "type": "instance",
+      "via": "CheckoutEventn",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.auth.RegistryPolicyo",
+      "target": "haskell.analytics.reporting.PolicyPolicyd",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.media.hydrateLedgerp",
+      "target": "haskell.identity.roles.composeRequest8",
+      "type": "composes",
+      "via": "hydrateLedgerp",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.media.hydrateLedgerp",
+      "target": "haskell.orders.workflow.CatalogResponsea",
+      "type": "uses",
+      "via": "hydrateLedgerp",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.media.hydrateLedgerp",
+      "target": "base.Generic",
+      "type": "constrains",
+      "via": "hydrateLedgerp",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.returns.RuleRepositoryq",
+      "target": "base.Eq",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.ledger.ResponseCommandr",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.ledger.ResponseCommandr",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.ledger.ResponseCommandr",
+      "target": "haskell.billing.ledger.GatewayCodecj",
+      "type": "instance",
+      "via": "ResponseCommandr",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.warehouse.authorizeDocuments",
+      "target": "haskell.catalog.pricing.composeLedger1l",
+      "type": "composes",
+      "via": "authorizeDocuments",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.warehouse.authorizeDocuments",
+      "target": "haskell.catalog.inventory.OrderError1d",
+      "type": "uses",
+      "via": "authorizeDocuments",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.warehouse.authorizeDocuments",
+      "target": "haskell.identity.auth.InvoiceAlgebra1k",
+      "type": "constrains",
+      "via": "authorizeDocuments",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.events.RequestSnapshott",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.events.RequestSnapshott",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.events.RequestSnapshott",
+      "target": "haskell.api.gateway.WorkerMonad1j",
+      "type": "instance",
+      "via": "RequestSnapshott",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.events.OrderSnapshotu",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.events.OrderSnapshotu",
+      "target": "haskell.identity.auth.InvoiceAlgebra1k",
+      "type": "instance",
+      "via": "OrderSnapshotu",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.hydrateRequestv",
+      "target": "haskell.identity.auth.persistReceiptw",
+      "type": "composes",
+      "via": "hydrateRequestv",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.hydrateRequestv",
+      "target": "haskell.fulfillment.tracking.ContextCommandc",
+      "type": "uses",
+      "via": "hydrateRequestv",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.hydrateRequestv",
+      "target": "base.Eq",
+      "type": "constrains",
+      "via": "hydrateRequestv",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.auth.persistReceiptw",
+      "target": "haskell.identity.users.persistRequest1c",
+      "type": "composes",
+      "via": "persistReceiptw",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.auth.persistReceiptw",
+      "target": "haskell.fulfillment.tracking.ContextCommandc",
+      "type": "uses",
+      "via": "persistReceiptw",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.media.AuditAlgebrax",
+      "target": "haskell.identity.auth.RegistryPolicyo",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.returns.RuleResponsey",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.returns.RuleResponsey",
+      "target": "haskell.billing.tax.TokenPolicy17",
+      "type": "instance",
+      "via": "RuleResponsey",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.invoice.publishSnapshotz",
+      "target": "haskell.billing.ledger.authorizeAudit1n",
+      "type": "composes",
+      "via": "publishSnapshotz",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.invoice.publishSnapshotz",
+      "target": "haskell.orders.workflow.AccountStatei",
+      "type": "uses",
+      "via": "publishSnapshotz",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.publishReceipt10",
+      "target": "haskell.billing.ledger.authorizeAudit1n",
+      "type": "composes",
+      "via": "publishReceipt10",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.publishReceipt10",
+      "target": "haskell.orders.workflow.AccountStatei",
+      "type": "uses",
+      "via": "publishReceipt10",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.cohorts.composeCharge11",
+      "target": "haskell.identity.users.publishResponse14",
+      "type": "composes",
+      "via": "composeCharge11",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.cohorts.composeCharge11",
+      "target": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "type": "uses",
+      "via": "composeCharge11",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.events.CheckoutMonad12",
+      "target": "haskell.billing.ledger.GatewayCodecj",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.PaymentEvent13",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.PaymentEvent13",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.PaymentEvent13",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.PaymentEvent13",
+      "target": "haskell.billing.ledger.GatewayCodecj",
+      "type": "instance",
+      "via": "PaymentEvent13",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.users.publishResponse14",
+      "target": "haskell.billing.ledger.authorizeAudit1n",
+      "type": "composes",
+      "via": "publishResponse14",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.users.publishResponse14",
+      "target": "haskell.platform.events.OrderSnapshotu",
+      "type": "uses",
+      "via": "publishResponse14",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.CustomerCommand15",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.CustomerCommand15",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.CustomerCommand15",
+      "target": "haskell.identity.auth.RegistryPolicyo",
+      "type": "instance",
+      "via": "CustomerCommand15",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.returns.ReceiptStore16",
+      "target": "haskell.api.gateway.WorkerMonad1j",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.tax.TokenPolicy17",
+      "target": "base.Show",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.PaymentMonad18",
+      "target": "haskell.identity.auth.RegistryPolicyo",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.export.GatewayPolicy19",
+      "target": "haskell.fulfillment.tracking.PaymentMonad18",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.composeAddress1a",
+      "target": "haskell.analytics.cohorts.composeCharge11",
+      "type": "composes",
+      "via": "composeAddress1a",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.composeAddress1a",
+      "target": "haskell.orders.workflow.CatalogResponsea",
+      "type": "uses",
+      "via": "composeAddress1a",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.composeAddress1a",
+      "target": "base.Show",
+      "type": "constrains",
+      "via": "composeAddress1a",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.PaymentResponse1b",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.PaymentResponse1b",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.PaymentResponse1b",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.PaymentResponse1b",
+      "target": "base.Monad",
+      "type": "instance",
+      "via": "PaymentResponse1b",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.users.persistRequest1c",
+      "target": "haskell.identity.auth.persistReceiptw",
+      "type": "composes",
+      "via": "persistRequest1c",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.users.persistRequest1c",
+      "target": "haskell.platform.config.CheckoutRequestm",
+      "type": "uses",
+      "via": "persistRequest1c",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.OrderError1d",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.OrderError1d",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.OrderError1d",
+      "target": "haskell.platform.config.OrderAlgebra1i",
+      "type": "instance",
+      "via": "OrderError1d",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.TokenSnapshot1e",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.TokenSnapshot1e",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.TokenSnapshot1e",
+      "target": "base.Show",
+      "type": "instance",
+      "via": "TokenSnapshot1e",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.invoice.TokenMonad1f",
+      "target": "haskell.analytics.export.GatewayPolicy19",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.ContextState1g",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.ContextState1g",
+      "target": "haskell.platform.config.AllocationPolicye",
+      "type": "instance",
+      "via": "ContextState1g",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.export.RuleError1h",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.export.RuleError1h",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.export.RuleError1h",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.export.RuleError1h",
+      "target": "base.Generic",
+      "type": "instance",
+      "via": "RuleError1h",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.OrderAlgebra1i",
+      "target": "base.Generic",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.WorkerMonad1j",
+      "target": "haskell.billing.ledger.GatewayCodecj",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.identity.auth.InvoiceAlgebra1k",
+      "target": "haskell.api.gateway.WorkerMonad1j",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.pricing.composeLedger1l",
+      "target": "haskell.fulfillment.warehouse.authorizeDocuments",
+      "type": "composes",
+      "via": "composeLedger1l",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.pricing.composeLedger1l",
+      "target": "haskell.api.dto.AuditConfig7",
+      "type": "uses",
+      "via": "composeLedger1l",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.cart.persistAccount1m",
+      "target": "haskell.billing.invoice.publishSnapshotz",
+      "type": "composes",
+      "via": "persistAccount1m",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.cart.persistAccount1m",
+      "target": "haskell.platform.config.CheckoutRequestm",
+      "type": "uses",
+      "via": "persistAccount1m",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.ledger.authorizeAudit1n",
+      "target": "haskell.identity.users.publishResponse14",
+      "type": "composes",
+      "via": "authorizeAudit1n",
+      "reason": "function composition pipeline",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.ledger.authorizeAudit1n",
+      "target": "haskell.analytics.export.RuleError1h",
+      "type": "uses",
+      "via": "authorizeAudit1n",
+      "reason": "function signature type reference",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "target": "base.Generic",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "target": "haskell.identity.auth.InvoiceAlgebra1k",
+      "type": "instance",
+      "via": "ProjectionResponse1o",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.export.PolicyAlgebra1p",
+      "target": "haskell.catalog.media.AuditAlgebrax",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.logging.GatewayStore1q",
+      "target": "haskell.billing.tax.TokenPolicy17",
+      "type": "constrains",
+      "reason": "superclass or capability constraint",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.RegistryEvent1r",
+      "target": "base.Eq",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.RegistryEvent1r",
+      "target": "base.Show",
+      "type": "derives",
+      "via": "deriving",
+      "reason": "derived behavior",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.RegistryEvent1r",
+      "target": "base.Eq",
+      "type": "instance",
+      "via": "RegistryEvent1r",
+      "reason": "datatype implements typeclass",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.ContextState1g",
+      "target": "haskell.fulfillment.shipment.publishReceipt10",
+      "type": "composes",
+      "via": "cycleA",
+      "reason": "intentional example cycle",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.publishReceipt10",
+      "target": "haskell.fulfillment.shipment.ContextState1g",
+      "type": "composes",
+      "via": "cycleB",
+      "reason": "intentional example cycle",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.logging.MessageSnapshot6",
+      "target": "haskell.orders.workflow.AccountStatei",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.AuditConfig7",
+      "target": "haskell.analytics.export.RuleError1h",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.CatalogResponsea",
+      "target": "haskell.platform.config.CheckoutRequestm",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.tax.WorkerConfigb",
+      "target": "haskell.api.dto.PaymentResponse1b",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ContextCommandc",
+      "target": "haskell.api.dto.AuditConfig7",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.AccountStatei",
+      "target": "haskell.analytics.export.RuleError1h",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.reporting.HistoryStatel",
+      "target": "haskell.fulfillment.shipment.ContextState1g",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.config.CheckoutRequestm",
+      "target": "haskell.fulfillment.tracking.ContextCommandc",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.gateway.CheckoutEventn",
+      "target": "haskell.catalog.inventory.CustomerCommand15",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.billing.ledger.ResponseCommandr",
+      "target": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.events.RequestSnapshott",
+      "target": "haskell.orders.workflow.AccountStatei",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.platform.events.OrderSnapshotu",
+      "target": "haskell.orders.returns.RuleResponsey",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.returns.RuleResponsey",
+      "target": "haskell.orders.workflow.CatalogResponsea",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.graphql.PaymentEvent13",
+      "target": "haskell.platform.events.OrderSnapshotu",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.CustomerCommand15",
+      "target": "haskell.billing.ledger.ResponseCommandr",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.PaymentResponse1b",
+      "target": "haskell.orders.workflow.AccountStatei",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.catalog.inventory.OrderError1d",
+      "target": "haskell.platform.config.CheckoutRequestm",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.orders.workflow.TokenSnapshot1e",
+      "target": "haskell.analytics.export.RuleError1h",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.shipment.ContextState1g",
+      "target": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.analytics.export.RuleError1h",
+      "target": "haskell.platform.events.OrderSnapshotu",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.fulfillment.tracking.ProjectionResponse1o",
+      "target": "haskell.analytics.events.RequestSnapshott",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    },
+    {
+      "source": "haskell.api.dto.RegistryEvent1r",
+      "target": "haskell.api.dto.AuditConfig7",
+      "type": "contains",
+      "via": "record field",
+      "reason": "record field composition",
+      "weight": 1
+    }
+  ],
+  "meta": {
+    "name": "Small FP Pipeline",
+    "generatedAt": "2026-06-30T00:00:00.000Z",
+    "language": "Haskell"
+  }
+}

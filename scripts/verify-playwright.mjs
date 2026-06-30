@@ -11,6 +11,20 @@ const viewports = [
   { name: "mobile", width: 390, height: 844, isMobile: true }
 ];
 
+const forms = [
+  { label: "Palace", id: "palace" },
+  { label: "Tree", id: "tree" },
+  { label: "Blocks", id: "blocks" },
+  { label: "Life", id: "organism" },
+  { label: "Space", id: "space" },
+  { label: "Atomic", id: "atomic" }
+];
+
+const desktopExamples = [
+  { title: "Tiny Haskell Core", id: "tiny-haskell-core" },
+  { title: "Stress Dense Cycles", id: "stress-dense-cycles" }
+];
+
 function nonBackgroundRatio(buffer) {
   const png = PNG.sync.read(buffer);
   let sampled = 0;
@@ -86,6 +100,8 @@ try {
     await page.waitForTimeout(1200);
 
     const canvas = page.locator("canvas.graph-canvas");
+    await canvas.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
     const box = await canvas.boundingBox();
     if (!box) throw new Error(`Canvas was not measurable for ${viewport.name}`);
 
@@ -125,14 +141,66 @@ try {
       const canvas = document.querySelector("canvas.graph-canvas");
       return {
         stats,
+        backend: canvas?.dataset.backend ?? "unknown",
         canvasWidth: canvas?.clientWidth ?? 0,
         canvasHeight: canvas?.clientHeight ?? 0
       };
     });
 
     console.log(
-      `${viewport.name}: ${metrics.canvasWidth}x${metrics.canvasHeight}, non-background=${ratio.toFixed(3)}, moving=${movement.toFixed(3)}, ${metrics.stats.join(" | ")}`
+      `${viewport.name}: ${metrics.canvasWidth}x${metrics.canvasHeight}, backend=${metrics.backend}, non-background=${ratio.toFixed(3)}, moving=${movement.toFixed(3)}, ${metrics.stats.join(" | ")}`
     );
+
+    if (!viewport.isMobile) {
+      for (const form of forms) {
+        await page
+          .getByRole("group", { name: "Visualization metaphor" })
+          .getByRole("button", { name: form.label, exact: true })
+          .click();
+        await page.waitForFunction(
+          (id) => [...document.querySelectorAll(".metric-strip span")].some((node) => node.textContent?.trim() === `${id} form`),
+          form.id
+        );
+        await page.waitForTimeout(250);
+        const formShot = await page.screenshot({
+          path: new URL(`${viewport.name}-${form.id}-canvas.png`, outputDir).pathname,
+          clip: {
+            x: Math.max(0, box.x),
+            y: Math.max(0, box.y),
+            width: Math.max(1, Math.min(box.width, viewport.width - box.x)),
+            height: Math.max(1, Math.min(box.height, viewport.height - box.y))
+          }
+        });
+        const formRatio = nonBackgroundRatio(formShot);
+        if (formRatio < 0.015) {
+          throw new Error(`${viewport.name} ${form.id} form looked blank: non-background ratio ${formRatio.toFixed(4)}`);
+        }
+      }
+      console.log(`desktop forms: ${forms.map((form) => form.id).join(", ")}`);
+
+      for (const example of desktopExamples) {
+        await page.getByRole("button", { name: new RegExp(example.title) }).click();
+        await page.waitForFunction(
+          (title) => document.querySelector(".brand-block p")?.textContent?.trim() === title,
+          example.title
+        );
+        await page.waitForTimeout(example.id.includes("stress") ? 1600 : 600);
+        const exampleShot = await page.screenshot({
+          path: new URL(`${viewport.name}-example-${example.id}-canvas.png`, outputDir).pathname,
+          clip: {
+            x: Math.max(0, box.x),
+            y: Math.max(0, box.y),
+            width: Math.max(1, Math.min(box.width, viewport.width - box.x)),
+            height: Math.max(1, Math.min(box.height, viewport.height - box.y))
+          }
+        });
+        const exampleRatio = nonBackgroundRatio(exampleShot);
+        if (exampleRatio < 0.015) {
+          throw new Error(`${viewport.name} ${example.id} example looked blank: non-background ratio ${exampleRatio.toFixed(4)}`);
+        }
+      }
+      console.log(`desktop examples: ${desktopExamples.map((example) => example.id).join(", ")}`);
+    }
 
     await context.close();
   }

@@ -12,7 +12,7 @@ type Node = {
   module?: string;
   package?: string;
   namespace?: string;
-  kind?: "class" | "interface" | "enum" | "external";
+  kind?: "class" | "interface" | "typeclass" | "datatype" | "function" | "enum" | "external";
   loc?: number;
   complexity?: number;
   layer?: number;
@@ -49,7 +49,20 @@ Notes:
 type Link = {
   source: string | { id: string };
   target: string | { id: string };
-  type?: "imports" | "inherits" | "implements" | "uses" | "calls" | "creates" | "tests" | "unknown";
+  type?:
+    | "imports"
+    | "inherits"
+    | "implements"
+    | "instance"
+    | "contains"
+    | "composes"
+    | "constrains"
+    | "derives"
+    | "uses"
+    | "calls"
+    | "creates"
+    | "tests"
+    | "unknown";
   weight?: number;
   via?: string;
   reason?: string;
@@ -62,6 +75,11 @@ Use `via` for the member that causes the dependency, and `reason` for a short ex
 Recommended mapping:
 
 - `imports`: file or namespace import.
+- `contains`: structural ownership or has-a composition, such as Java fields or Haskell record fields.
+- `composes`: function/pipeline composition, especially FP chains such as Haskell `(.)`, `(>=>)`, `<$>`, or `<*>`.
+- `constrains`: typeclass or generic constraints.
+- `derives`: derived/generated behavior such as Haskell `deriving`.
+- `instance`: typeclass/protocol/trait instance relation.
 - `uses`: field, parameter, annotation, or generic type reference.
 - `calls`: method call or constructor call.
 - `creates`: direct construction.

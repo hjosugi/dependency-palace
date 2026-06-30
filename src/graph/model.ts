@@ -23,11 +23,31 @@ export interface BuildViewOptions {
   edgeTypes: Set<DependencyKind>;
 }
 
-const nodeKinds: NodeKind[] = ["class", "interface", "enum", "module", "package", "external"];
+const classNodeBudget = 4000;
+const classLinkBudget = 14000;
+const focusNodeBudget = 260;
+const focusLinkBudget = 1600;
+
+const nodeKinds: NodeKind[] = [
+  "class",
+  "interface",
+  "typeclass",
+  "datatype",
+  "function",
+  "enum",
+  "module",
+  "package",
+  "external"
+];
 const dependencyKinds: DependencyKind[] = [
   "imports",
   "inherits",
   "implements",
+  "instance",
+  "contains",
+  "composes",
+  "constrains",
+  "derives",
   "uses",
   "calls",
   "creates",
@@ -38,6 +58,11 @@ const dependencyKinds: DependencyKind[] = [
 function normalizeNodeKind(kind: string | undefined): NodeKind {
   const lower = kind?.toLowerCase();
   if (lower && nodeKinds.includes(lower as NodeKind)) return lower as NodeKind;
+  if (lower?.includes("typeclass") || lower === "trait" || lower === "protocol") return "typeclass";
+  if (lower?.includes("datatype") || lower === "data" || lower === "newtype" || lower === "struct" || lower === "record") {
+    return "datatype";
+  }
+  if (lower?.includes("function") || lower === "fn") return "function";
   if (lower?.includes("interface")) return "interface";
   if (lower?.includes("enum")) return "enum";
   return "class";
@@ -47,6 +72,9 @@ function normalizeDependencyKind(kind: string | undefined): DependencyKind {
   const lower = kind?.toLowerCase();
   if (lower && dependencyKinds.includes(lower as DependencyKind)) return lower as DependencyKind;
   if (lower === "extends") return "inherits";
+  if (lower === "has" || lower === "has-a" || lower === "owns") return "contains";
+  if (lower === "instanceof" || lower === "instance-of") return "instance";
+  if (lower === "constraint" || lower === "requires") return "constrains";
   if (lower === "references") return "uses";
   if (lower === "depends_on" || lower === "dependency") return "imports";
   return "unknown";
@@ -82,7 +110,6 @@ function endpointId(endpoint: RawLink["source"]) {
 }
 
 function normalizeMember(member: CodeMember): CodeMember {
-  const semanticHubs = graph.nodes.filter((node) => !["module", "package", "external"].includes(node.kind));
   return {
     ...member,
     kind: member.kind ?? "method",
@@ -105,7 +132,9 @@ function membersFromNode(rawNode: RawNode) {
 
 function roleFromNode(rawNode: RawNode, kind: NodeKind) {
   const haystack = `${rawNode.id} ${rawNode.label ?? ""} ${rawNode.name ?? ""}`.toLowerCase();
-  if (kind === "interface") return "contract";
+  if (kind === "interface" || kind === "typeclass") return "contract";
+  if (kind === "function") return "behavior";
+  if (kind === "datatype") return "data";
   if (haystack.includes("controller") || haystack.includes("resolver") || haystack.includes("gateway")) return "boundary";
   if (haystack.includes("adapter") || haystack.includes("mapper")) return "adapter";
   if (haystack.includes("entity") || haystack.includes("model") || haystack.includes("state")) return "state";
@@ -268,6 +297,9 @@ export function normalizeGraph(raw: RawGraph): GraphData {
   return {
     nodes,
     links,
+    sccCount: scc.sccCount,
+    cyclicNodeCount: scc.cyclicNodeCount,
+    largestScc: scc.largestScc,
     meta: {
       name: raw.meta?.name ?? "Dependency graph",
       generatedAt: raw.meta?.generatedAt ?? new Date().toISOString(),
@@ -277,21 +309,31 @@ export function normalizeGraph(raw: RawGraph): GraphData {
 }
 
 export function analyzeGraph(graph: GraphData): GraphAnalysis {
-  const scc = computeSccSizes(graph.nodes, graph.links);
+  const semanticHubs = graph.nodes.filter((node) => !["module", "package", "external"].includes(node.kind));
   const kinds = graph.nodes.reduce(
     (counts, node) => {
       counts[node.kind] += 1;
       return counts;
     },
-    { class: 0, interface: 0, enum: 0, module: 0, package: 0, external: 0 }
+    {
+      class: 0,
+      interface: 0,
+      typeclass: 0,
+      datatype: 0,
+      function: 0,
+      enum: 0,
+      module: 0,
+      package: 0,
+      external: 0
+    }
   );
   return {
     modules: Array.from(new Set(graph.nodes.map((node) => node.module))).sort(),
     packages: Array.from(new Set(graph.nodes.map((node) => node.packageName))).sort(),
     edgeTypes: Array.from(new Set(graph.links.map((link) => link.type))).sort(),
-    sccCount: scc.sccCount,
-    cyclicNodeCount: scc.cyclicNodeCount,
-    largestScc: scc.largestScc,
+    sccCount: graph.sccCount,
+    cyclicNodeCount: graph.cyclicNodeCount,
+    largestScc: graph.largestScc,
     totalFields: graph.nodes.reduce((sum, node) => sum + node.fields.length, 0),
     totalMethods: graph.nodes.reduce((sum, node) => sum + node.methods.length, 0),
     kinds,
@@ -308,6 +350,63 @@ function buildSubgraph(nodes: GraphNode[], links: GraphLink[], mode: ViewMode, t
   return {
     nodes,
     links: links.filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target)),
+    mode,
+    title
+  };
+}
+
+function relationPriority(type: DependencyKind) {
+  if (type === "implements" || type === "instance" || type === "constrains") return 6;
+  if (type === "inherits" || type === "derives") return 5;
+  if (type === "contains" || type === "composes") return 4;
+  if (type === "calls") return 3;
+  if (type === "creates" || type === "uses") return 2;
+  if (type === "imports") return 1;
+  return 0;
+}
+
+function budgetNodes(nodes: GraphNode[], limit: number, selectedId: string | null) {
+  if (nodes.length <= limit) return nodes;
+  return [...nodes]
+    .sort((a, b) => {
+      if (a.id === selectedId) return -1;
+      if (b.id === selectedId) return 1;
+      return b.degree - a.degree || b.sccSize - a.sccSize || b.complexity - a.complexity || a.label.localeCompare(b.label);
+    })
+    .slice(0, limit);
+}
+
+function budgetLinks(links: GraphLink[], limit: number, selectedId: string | null) {
+  if (links.length <= limit) return links;
+  return [...links]
+    .sort((a, b) => {
+      const aSelected = a.source === selectedId || a.target === selectedId ? 1 : 0;
+      const bSelected = b.source === selectedId || b.target === selectedId ? 1 : 0;
+      return bSelected - aSelected || b.weight - a.weight || relationPriority(b.type) - relationPriority(a.type);
+    })
+    .slice(0, limit);
+}
+
+function buildBudgetedSubgraph(
+  nodes: GraphNode[],
+  links: GraphLink[],
+  mode: ViewMode,
+  title: string,
+  selectedId: string | null,
+  nodeBudget: number,
+  linkBudget: number
+): ViewGraph {
+  const visibleNodes = budgetNodes(nodes, nodeBudget, selectedId);
+  const nodeIds = new Set(visibleNodes.map((node) => node.id));
+  const visibleLinks = budgetLinks(
+    links.filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target)),
+    linkBudget,
+    selectedId
+  );
+
+  return {
+    nodes: visibleNodes,
+    links: visibleLinks,
     mode,
     title
   };
@@ -487,5 +586,20 @@ export function buildViewGraph(graph: GraphData, options: BuildViewOptions): Vie
   }
 
   const nodes = graph.nodes.filter((node) => allowed.has(node.id));
-  return buildSubgraph(nodes, links, options.mode, options.mode === "focus" ? "Focused neighborhood" : "Class graph");
+  if (options.mode === "focus") {
+    return buildBudgetedSubgraph(
+      nodes,
+      links,
+      options.mode,
+      "Focused neighborhood",
+      options.selectedId,
+      focusNodeBudget,
+      focusLinkBudget
+    );
+  }
+  if (options.mode === "classes") {
+    return buildBudgetedSubgraph(nodes, links, options.mode, "Class graph", options.selectedId, classNodeBudget, classLinkBudget);
+  }
+
+  return buildSubgraph(nodes, links, options.mode, "Class graph");
 }
