@@ -3,10 +3,23 @@ import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises"
 import crypto from "node:crypto";
 import path from "node:path";
 import { adapterForPath, supportedLanguages } from "../extract/adapters";
-import type { AdapterWarning, RawGraph, RawLink, RawNode, ScanConfig, ScanDiagnostics, ScanOptions, SkippedFile, SourceLanguage } from "../extract/types";
+import { adapterContractVersion, cachedAdapterResult, runLanguageAdapter } from "../extract/framework";
+import type {
+  AdapterFileDiagnostics,
+  AdapterScanDiagnostics,
+  AdapterWarning,
+  LanguageScanDiagnostics,
+  LanguageAdapter,
+  RawGraph,
+  RawLink,
+  RawNode,
+  ScanConfig,
+  ScanDiagnostics,
+  ScanOptions,
+  SkippedFile,
+  SourceLanguage
+} from "../extract/types";
 import { encodeCompactGraph } from "../graph/compact";
-
-const adapterVersion = "adapter-contract-v1.1.0";
 
 const defaultExclude = [
   ".git",
@@ -55,6 +68,7 @@ Options:
   --watch                Rescan repeatedly so the viewer can refresh.
   --watch-interval-ms <n>
                          Watch polling interval. Defaults to 1500.
+  --no-native            Skip native tool probing and use first-pass adapters only.
   --languages            Print supported languages.
   --help                 Print this message.
 `;
@@ -73,7 +87,7 @@ function readArgs(argv: string[]) {
       continue;
     }
     const key = item.slice(2);
-    if (key === "help" || key === "languages" || key === "watch" || key === "no-cache" || key === "clear-cache") {
+    if (key === "help" || key === "languages" || key === "watch" || key === "no-cache" || key === "clear-cache" || key === "no-native") {
       values.set(key, ["true"]);
       continue;
     }
@@ -179,10 +193,27 @@ function hashText(text: string) {
   return crypto.createHash("sha256").update(text).digest("hex");
 }
 
-function cachePathForFile(options: ScanOptions, relativePath: string, contentHash: string, language: SourceLanguage) {
+function cachePathForFile(
+  options: ScanOptions,
+  adapter: LanguageAdapter,
+  relativePath: string,
+  contentHash: string,
+  language: SourceLanguage
+) {
   const key = crypto
     .createHash("sha256")
-    .update([adapterVersion, language, options.moduleDepth, relativePath, contentHash].join("\u0000"))
+    .update(
+      [
+        adapterContractVersion,
+        adapter.id,
+        adapter.version,
+        language,
+        options.native ? "native" : "first-pass",
+        options.moduleDepth,
+        relativePath,
+        contentHash
+      ].join("\u0000")
+    )
     .digest("hex");
   return path.join(options.cacheDir, `${key}.json`);
 }
@@ -222,16 +253,60 @@ function optionsFromArgs(values: Map<string, string[]>, positionals: string[], c
     cache: !values.has("no-cache") && (config.cache ?? true),
     cacheDir: path.resolve(values.get("cache-dir")?.at(-1) ?? config.cacheDir ?? ".dependency-palace/cache"),
     clearCache: values.has("clear-cache"),
+    native: !values.has("no-native") && (config.native ?? true),
     format: formatValue as ScanOptions["format"],
     watch: values.has("watch"),
     watchIntervalMs: Number(values.get("watch-interval-ms")?.at(-1) ?? config.watchIntervalMs ?? 1500)
   };
 }
 
+function emptyLanguageDiagnostics(): LanguageScanDiagnostics {
+  return { files: 0, cached: 0, nodes: 0, links: 0, warnings: 0, backends: {} };
+}
+
+function adapterDiagnosticsKey(run: AdapterFileDiagnostics) {
+  return run.adapterId;
+}
+
+function addAdapterDiagnostics(adapters: Record<string, AdapterScanDiagnostics>, run: AdapterFileDiagnostics) {
+  const key = adapterDiagnosticsKey(run);
+  const current =
+    adapters[key] ??
+    ({
+      adapterId: run.adapterId,
+      language: run.language,
+      version: run.adapterVersion,
+      files: 0,
+      cached: 0,
+      nodes: 0,
+      links: 0,
+      warnings: 0,
+      backends: {},
+      tools: []
+    } satisfies AdapterScanDiagnostics);
+
+  current.files += 1;
+  if (run.cached) current.cached += 1;
+  current.nodes += run.nodes;
+  current.links += run.links;
+  current.warnings += run.warnings;
+  current.backends[run.backendId] = (current.backends[run.backendId] ?? 0) + 1;
+
+  const toolKeys = new Set(current.tools.map((tool) => `${tool.name}\u0000${tool.command}\u0000${tool.args?.join(" ") ?? ""}`));
+  for (const tool of run.tools) {
+    const toolKey = `${tool.name}\u0000${tool.command}\u0000${tool.args?.join(" ") ?? ""}`;
+    if (!toolKeys.has(toolKey)) current.tools.push(tool);
+  }
+
+  adapters[key] = current;
+}
+
 async function extractFile(
   absolutePath: string,
   options: ScanOptions,
-  languageDiagnostics: ScanDiagnostics["languages"]
+  languageDiagnostics: ScanDiagnostics["languages"],
+  adapterDiagnostics: Record<string, AdapterScanDiagnostics>,
+  adapterRuns: AdapterFileDiagnostics[]
 ) {
   const adapter = adapterForPath(absolutePath);
   if (!adapter) return null;
@@ -239,40 +314,46 @@ async function extractFile(
   const relativePath = path.relative(options.root, absolutePath);
   const contentHash = hashText(text);
   const language = adapter.language as SourceLanguage;
-  const current = languageDiagnostics[language] ?? { files: 0, cached: 0, nodes: 0, links: 0 };
+  const current = languageDiagnostics[language] ?? emptyLanguageDiagnostics();
   current.files += 1;
   languageDiagnostics[language] = current;
+  const sourceFile = {
+    absolutePath,
+    relativePath,
+    language,
+    text,
+    contentHash
+  };
 
   if (options.cache) {
-    const cachePath = cachePathForFile(options, relativePath, contentHash, language);
+    const cachePath = cachePathForFile(options, adapter, relativePath, contentHash, language);
     if (existsSync(cachePath)) {
-      const cached = JSON.parse(await readFile(cachePath, "utf8")) as {
-        nodes: RawNode[];
-        links: RawLink[];
-        warnings?: AdapterWarning[];
-      };
+      const cached = cachedAdapterResult(adapter, sourceFile, JSON.parse(await readFile(cachePath, "utf8")));
       current.cached += 1;
       current.nodes += cached.nodes.length;
       current.links += cached.links.length;
+      current.warnings += cached.warnings?.length ?? 0;
+      current.backends[cached.diagnostics.backendId] = (current.backends[cached.diagnostics.backendId] ?? 0) + 1;
+      addAdapterDiagnostics(adapterDiagnostics, cached.diagnostics);
+      adapterRuns.push(cached.diagnostics);
       return { ...cached, language, cacheHit: true };
     }
   }
 
-  const extracted = adapter.extract(
-    {
-      absolutePath,
-      relativePath,
-      language,
-      text,
-      contentHash
-    },
-    { root: options.root, moduleDepth: options.moduleDepth }
-  );
+  const extracted = await runLanguageAdapter(adapter, sourceFile, {
+    root: options.root,
+    moduleDepth: options.moduleDepth,
+    native: options.native
+  });
   current.nodes += extracted.nodes.length;
   current.links += extracted.links.length;
+  current.warnings += extracted.warnings?.length ?? 0;
+  current.backends[extracted.diagnostics.backendId] = (current.backends[extracted.diagnostics.backendId] ?? 0) + 1;
+  addAdapterDiagnostics(adapterDiagnostics, extracted.diagnostics);
+  adapterRuns.push(extracted.diagnostics);
 
   if (options.cache) {
-    const cachePath = cachePathForFile(options, relativePath, contentHash, language);
+    const cachePath = cachePathForFile(options, adapter, relativePath, contentHash, language);
     await mkdir(path.dirname(cachePath), { recursive: true });
     await writeFile(cachePath, `${JSON.stringify(extracted)}\n`, "utf8");
   }
@@ -288,12 +369,14 @@ async function scanOnce(options: ScanOptions) {
   const languages = new Set<string>();
   const warnings: AdapterWarning[] = [];
   const languageDiagnostics: ScanDiagnostics["languages"] = {};
+  const adapterDiagnostics: Record<string, AdapterScanDiagnostics> = {};
+  const adapterRuns: AdapterFileDiagnostics[] = [];
   let cacheHits = 0;
   let cacheMisses = 0;
   let cacheWrites = 0;
 
   for (const absolutePath of files) {
-    const extracted = await extractFile(absolutePath, options, languageDiagnostics);
+    const extracted = await extractFile(absolutePath, options, languageDiagnostics, adapterDiagnostics, adapterRuns);
     if (!extracted) continue;
     languages.add(extracted.language);
     allNodes.push(...extracted.nodes);
@@ -355,12 +438,19 @@ async function scanOnce(options: ScanOptions) {
     cache: {
       enabled: options.cache,
       dir: options.cache ? options.cacheDir : undefined,
-      adapterVersion,
+      adapterVersion: adapterContractVersion,
       hits: cacheHits,
       misses: cacheMisses,
       writes: cacheWrites
     },
+    native: {
+      enabled: options.native,
+      availableBackends: adapterRuns.filter((run) => run.backendKind !== "first-pass").length,
+      fallbackRuns: adapterRuns.filter((run) => run.fallbackReason).length
+    },
     languages: languageDiagnostics,
+    adapters: adapterDiagnostics,
+    adapterRuns,
     skipped,
     warnings
   };

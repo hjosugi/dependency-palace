@@ -36,6 +36,19 @@ export interface SourceLocation {
   endColumn?: number;
 }
 
+export interface GraphProvenance {
+  adapterId: string;
+  adapterVersion: string;
+  language: string;
+  backendId: string;
+  backendKind: string;
+  backendName: string;
+  path: string;
+  confidence?: "high" | "medium" | "low";
+  source?: "native" | "fallback" | "cache";
+  notes?: string[];
+}
+
 export interface CodeMember {
   name: string;
   kind: MemberKind;
@@ -64,6 +77,7 @@ export interface RawNode {
   methods?: CodeMember[];
   members?: CodeMember[];
   source?: SourceLocation;
+  provenance?: GraphProvenance;
 }
 
 export interface RawLink {
@@ -75,6 +89,7 @@ export interface RawLink {
   via?: string;
   reason?: string;
   location?: SourceLocation;
+  provenance?: GraphProvenance;
 }
 
 export interface RawGraph {

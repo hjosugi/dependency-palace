@@ -5,5 +5,6 @@
   "maxFileBytes": 1500000,
   "cache": true,
   "cacheDir": ".dependency-palace/cache",
+  "native": true,
   "watchIntervalMs": 1500
 }

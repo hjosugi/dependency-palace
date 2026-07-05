@@ -42,6 +42,7 @@ Copy [dependency-palace.config.example.json](../dependency-palace.config.example
   "maxFileBytes": 1500000,
   "cache": true,
   "cacheDir": ".dependency-palace/cache",
+  "native": true,
   "watchIntervalMs": 1500
 }
 ```
@@ -54,14 +55,44 @@ Options:
 - `maxFileBytes`: safety cap for huge generated files.
 - `cache`: enable per-file extraction cache.
 - `cacheDir`: cache location. The cache key includes adapter version, relative path, language, module depth, and content hash.
+- `native`: enable native tool/project probing. When a configured tool or project marker is unavailable, the scanner records the reason and uses the first-pass extractor.
 - `watchIntervalMs`: polling interval for `--watch`.
 - `--diagnostics-out`: explicit diagnostics JSON destination.
 - `--clear-cache`: delete cache before a scan.
 - `--no-cache`: run without reading or writing cache.
+- `--no-native`: skip native probing and use first-pass adapters only.
 
-## Supported First-Pass Adapters
+## Adapter Contract
 
-The current scanner is intentionally lightweight and dependency-free. It is meant to make a repository visible immediately.
+Every language adapter implements the same contract:
+
+- stable adapter id and version;
+- supported extensions and optional native backend declarations;
+- async extraction returning `nodes`, `links`, warnings, and provenance;
+- deterministic first-pass fallback when native tooling is missing or fails;
+- validation before output is merged into the graph.
+
+The scanner adds provenance to every emitted node and link:
+
+```json
+{
+  "adapterId": "java-adapter",
+  "adapterVersion": "native-adapter-v0.2.0",
+  "language": "java",
+  "backendId": "first-pass",
+  "backendKind": "first-pass",
+  "backendName": "First-pass structural parser",
+  "path": "src/main/java/com/acme/OrderService.java",
+  "confidence": "medium",
+  "source": "fallback"
+}
+```
+
+Cached extraction is also provenance-tagged with `"source": "cache"` on the second and later unchanged scans.
+
+## Supported Adapters
+
+The current scanner remains dependency-light and is meant to make a repository visible immediately. Native backend entries probe local ecosystem tools and project markers, collect availability/version diagnostics, and fall back to deterministic source extractors when a backend is unavailable or metadata-only.
 
 | Language | Extensions | Extracts now |
 | --- | --- | --- |
@@ -70,24 +101,27 @@ The current scanner is intentionally lightweight and dependency-free. It is mean
 | Kotlin | `.kt`, `.kts` | package, imports, classes, interfaces, objects, enum classes, constructor/type relations |
 | Scala | `.scala` | package, imports, classes, traits, objects, enums, extends |
 | C# | `.cs` | namespace, using, classes, interfaces, enums, structs, records, fields, methods, base types |
-| TypeScript | `.ts`, `.tsx` | imports, classes, interfaces, enums, types, members, extends, implements |
-| JavaScript | `.js`, `.jsx`, `.mjs`, `.cjs` | imports/requires, classes, methods, extends |
-| Go | `.go` | package, imports, structs, interfaces, fields, receiver methods |
-| Rust | `.rs` | `use`, structs, enums, traits, fields, trait methods, impl methods |
-| Python | `.py` | imports, classes, base classes, `self` fields, methods |
+| TypeScript | `.ts`, `.tsx` | TypeScript Compiler API syntax parse, type-only/runtime imports, classes, interfaces, enums, type aliases, members, extends, implements, simple call/create edges |
+| JavaScript | `.js`, `.jsx`, `.mjs`, `.cjs` | TypeScript JavaScript parser, imports/requires where parseable, classes, methods, extends, simple call/create edges |
+| Go | `.go` | `go.mod`-aware package ids, imports, structs, interfaces, fields, embedded fields, receiver methods |
+| Rust | `.rs` | `Cargo.toml`-aware crate ids, `use`, structs, enums, traits, fields, trait methods, impl methods, trait implementation edges |
+| Python | `.py` | Python `ast` when `python3` is available; imports, classes, base classes, dataclass-style fields, `self` fields, methods, best-effort dynamic call edges; regex fallback with syntax diagnostics |
 | Ruby | `.rb` | require, classes, modules, superclass, instance fields, methods |
 | PHP | `.php` | namespace, use, classes, interfaces, traits, enums, fields, methods |
 | Swift | `.swift` | imports, classes, structs, protocols, enums |
-| C/C++ | `.c`, `.h`, `.cpp`, `.cc`, `.cxx`, `.hpp`, `.hh`, `.hxx` | includes, structs/classes/enums, simple members |
+| C/C++ | `.c`, `.h`, `.cpp`, `.cc`, `.cxx`, `.hpp`, `.hh`, `.hxx` | includes, structs/classes/enums, simple members, compile database/CMake marker diagnostics |
 
-## Accuracy Model
+## Native Probe Model
 
-There are two adapter levels:
+Adapters can declare native backend candidates:
 
-1. First-pass adapter: fast text/structure extraction so every major language becomes visible immediately.
-2. Native adapter: compiler, language-server, tree-sitter, or ecosystem-native analyzer with accurate symbols, call edges, generics, overloads, macro handling, and cross-file resolution.
+- `native`: compiler, AST, or ecosystem-native parser.
+- `lsp`: language server or index-based metadata.
+- `compiler-metadata`: project/compiler discovery used to guide future semantic extractors.
 
-The first-pass adapters are in [src/extract/adapters.ts](../src/extract/adapters.ts). Native adapter implementation issues are tracked in [docs/issues](issues).
+The runner probes markers such as `Cargo.toml`, `go.mod`, `tsconfig.json`, `pom.xml`, `compile_commands.json`, and matching tools such as `cargo`, `go`, `tsc`, `javac`, `dotnet`, `clang`, `swift`, `ruby`, and `php`. Marker probing searches polyglot subdirectories as well as the scan root. If markers or tools are missing, the scan continues and records the fallback reason in diagnostics, for example `project marker not found`, `required tool unavailable`, or `native metadata collected; graph extraction uses fallback parser`.
+
+The shared runner lives in [src/extract/framework.ts](../src/extract/framework.ts). Adapter declarations and fallback extractors are in [src/extract/adapters.ts](../src/extract/adapters.ts). Native adapter implementation issues are tracked in [docs/issues](issues).
 
 ## Diagnostics And Quality Gates
 
@@ -95,10 +129,14 @@ Every scan writes machine-readable diagnostics with:
 
 - files scanned and skipped;
 - per-language file/node/link counts;
+- per-language backend counts and warning counts;
+- per-adapter aggregate counts, backend usage, and probed tool versions/errors;
+- per-file adapter run records with cache/native/fallback status;
 - emitted node and link totals;
 - unresolved edge count;
 - output paths and byte sizes;
 - cache hits, misses, writes, and adapter contract version;
+- native probing enabled state, native backend runs, and fallback runs;
 - total scan duration;
 - adapter warnings.
 
@@ -111,7 +149,8 @@ npm test
 ```
 
 This scans [fixtures/polyglot](../fixtures/polyglot), validates the emitted graph
-shape, checks diagnostics consistency, and asserts the P0 Haskell/Java semantic
+shape, checks node/link provenance, runs the scan twice to verify cache reuse,
+checks adapter diagnostics consistency, and asserts the P0 Haskell/Java semantic
 relations: records, typeclasses, instances, FP composition, Java interfaces,
 records, service fields, and implementation edges.
 

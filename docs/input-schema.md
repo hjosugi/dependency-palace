@@ -20,6 +20,7 @@ type Node = {
   methods?: CodeMember[];
   members?: CodeMember[];
   source?: SourceLocation;
+  provenance?: Provenance;
 };
 
 type CodeMember = {
@@ -42,6 +43,19 @@ type SourceLocation = {
   startColumn?: number;
   endColumn?: number;
 };
+
+type Provenance = {
+  adapterId: string;
+  adapterVersion: string;
+  language: string;
+  backendId: string;
+  backendKind: "first-pass" | "native" | "lsp" | "compiler-metadata" | "external";
+  backendName: string;
+  path: string;
+  confidence?: "high" | "medium" | "low";
+  source?: "native" | "fallback" | "cache";
+  notes?: string[];
+};
 ```
 
 Notes:
@@ -53,6 +67,9 @@ Notes:
 - `fields`, `methods`, or `members` make focus view semantic instead of just structural.
 - `source` carries the relative file path and line range for selected-panel and
   open-in-editor workflows. Omit it when a source range is not known.
+- `provenance` is optional for hand-authored input, but scanner output includes
+  it on every emitted node and link so downstream tools can see which adapter,
+  backend, confidence level, and cache/fallback path produced the data.
 - Unknown link endpoints are added as `external` nodes.
 
 ## Links
@@ -78,6 +95,7 @@ type Link = {
   weight?: number;
   via?: string;
   reason?: string;
+  provenance?: Provenance;
 };
 ```
 

@@ -43,7 +43,9 @@ Use watch mode while editing a scanned repository:
 npm run scan -- /path/to/repo --watch
 ```
 
-The scanner caches per-file extraction under `.dependency-palace/cache` by default. To also emit the compact graph format:
+The scanner caches per-file extraction under `.dependency-palace/cache` by default. It also probes native compiler/tool metadata when project markers and tools are present, then falls back to deterministic source extraction when they are not. Use `--no-native` for fallback-only scans.
+
+To also emit the compact graph format:
 
 ```bash
 npm run scan -- /path/to/repo --format both
@@ -56,7 +58,7 @@ You can still write an explicit graph file and upload it manually:
 npm run scan -- /path/to/repo --out dependency-palace.graph.json
 ```
 
-The first-pass scanner supports Java, Kotlin, Scala, C#, TypeScript, JavaScript, Go, Rust, Python, Ruby, PHP, Swift, C, and C++. See [docs/adapters.md](docs/adapters.md).
+The adapter framework supports Java, Kotlin, Scala, C#, TypeScript, JavaScript, Go, Rust, Python, Ruby, PHP, Swift, C, and C++. Scanner output includes adapter provenance on nodes and links plus per-file adapter diagnostics. See [docs/adapters.md](docs/adapters.md).
 
 Haskell and Java are the P0 languages:
 
@@ -123,4 +125,4 @@ The mental model is in [docs/mental-model.md](docs/mental-model.md), the renderi
 
 ## Current Limits
 
-This now includes a first-pass source scanner. The next step is compiler/tree-sitter/language-server native adapters for high-accuracy extraction. The issue plan is in [docs/issues](docs/issues).
+This includes a source scanner with native tool probing, provenance, diagnostics, and cache-aware fallback extraction. The next step is full compiler/tree-sitter/language-server semantic extraction for each native adapter. The issue plan is in [docs/issues](docs/issues).

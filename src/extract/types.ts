@@ -1,4 +1,4 @@
-import type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode, SourceLocation } from "../types";
+import type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode, SourceLocation, Visibility } from "../types";
 
 export type SourceLanguage =
   | "c"
@@ -25,23 +25,80 @@ export interface SourceFile {
   contentHash?: string;
 }
 
+export type AdapterBackendKind = "first-pass" | "native" | "lsp" | "compiler-metadata" | "external";
+
+export interface AdapterToolProbe {
+  name: string;
+  command: string;
+  args?: string[];
+  available: boolean;
+  version?: string;
+  error?: string;
+}
+
+export interface AdapterProvenance {
+  adapterId: string;
+  adapterVersion: string;
+  language: SourceLanguage;
+  backendId: string;
+  backendKind: AdapterBackendKind;
+  backendName: string;
+  path: string;
+  confidence: "high" | "medium" | "low";
+  source: "native" | "fallback" | "cache";
+  tools?: AdapterToolProbe[];
+  notes?: string[];
+}
+
+export interface AdapterWarning {
+  path: string;
+  language?: SourceLanguage;
+  adapterId?: string;
+  backendId?: string;
+  message: string;
+  line?: number;
+}
+
 export interface ExtractedFile {
   nodes: RawNode[];
   links: RawLink[];
   warnings?: AdapterWarning[];
+  provenance?: AdapterProvenance;
+  projectMetadata?: Record<string, unknown>;
 }
 
 export interface ExtractContext {
   root: string;
   moduleDepth: number;
+  native: boolean;
+}
+
+export type MaybePromise<T> = T | Promise<T>;
+
+export interface NativeAdapterBackend {
+  id: string;
+  name: string;
+  kind: Exclude<AdapterBackendKind, "first-pass">;
+  confidence: AdapterProvenance["confidence"];
+  tools: Array<{
+    name: string;
+    command: string;
+    args?: string[];
+  }>;
+  markers?: string[];
+  collectMetadata?: (file: SourceFile, context: ExtractContext) => MaybePromise<Record<string, unknown>>;
+  extract?: (file: SourceFile, context: ExtractContext) => MaybePromise<ExtractedFile>;
 }
 
 export interface LanguageAdapter {
+  id: string;
   language: SourceLanguage;
   extensions: string[];
-  level?: "first-pass" | "native" | "external";
+  version: string;
+  level?: AdapterBackendKind;
   limitations?: string[];
-  extract(file: SourceFile, context: ExtractContext): ExtractedFile;
+  nativeBackends?: NativeAdapterBackend[];
+  extract(file: SourceFile, context: ExtractContext): MaybePromise<ExtractedFile>;
 }
 
 export interface ScanOptions {
@@ -57,6 +114,7 @@ export interface ScanOptions {
   cache: boolean;
   cacheDir: string;
   clearCache: boolean;
+  native: boolean;
   format: "json" | "compact" | "both";
   watch: boolean;
   watchIntervalMs: number;
@@ -69,14 +127,8 @@ export interface ScanConfig {
   maxFileBytes?: number;
   cache?: boolean;
   cacheDir?: string;
+  native?: boolean;
   watchIntervalMs?: number;
-}
-
-export interface AdapterWarning {
-  path: string;
-  language?: SourceLanguage;
-  message: string;
-  line?: number;
 }
 
 export interface SkippedFile {
@@ -90,6 +142,38 @@ export interface LanguageScanDiagnostics {
   cached: number;
   nodes: number;
   links: number;
+  warnings: number;
+  backends: Record<string, number>;
+}
+
+export interface AdapterFileDiagnostics {
+  path: string;
+  language: SourceLanguage;
+  adapterId: string;
+  adapterVersion: string;
+  backendId: string;
+  backendKind: AdapterBackendKind;
+  backendName: string;
+  cached: boolean;
+  durationMs: number;
+  nodes: number;
+  links: number;
+  warnings: number;
+  tools: AdapterToolProbe[];
+  fallbackReason?: string;
+}
+
+export interface AdapterScanDiagnostics {
+  adapterId: string;
+  language: SourceLanguage;
+  version: string;
+  files: number;
+  cached: number;
+  nodes: number;
+  links: number;
+  warnings: number;
+  backends: Record<string, number>;
+  tools: AdapterToolProbe[];
 }
 
 export interface ScanDiagnostics {
@@ -119,9 +203,16 @@ export interface ScanDiagnostics {
     misses: number;
     writes: number;
   };
+  native: {
+    enabled: boolean;
+    availableBackends: number;
+    fallbackRuns: number;
+  };
   languages: Partial<Record<SourceLanguage, LanguageScanDiagnostics>>;
+  adapters: Record<string, AdapterScanDiagnostics>;
+  adapterRuns: AdapterFileDiagnostics[];
   skipped: SkippedFile[];
   warnings: AdapterWarning[];
 }
 
-export type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode, SourceLocation };
+export type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode, SourceLocation, Visibility };

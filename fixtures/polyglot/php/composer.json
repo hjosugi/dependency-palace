@@ -1,0 +1,8 @@
+{
+  "name": "dependency-palace/polyglot-php",
+  "autoload": {
+    "psr-4": {
+      "Acme\\Orders\\": "src/Orders/"
+    }
+  }
+}
