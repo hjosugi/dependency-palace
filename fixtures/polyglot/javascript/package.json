@@ -1,5 +1,6 @@
 {
   "name": "polyglot-javascript",
   "type": "commonjs",
-  "private": true
+  "private": true,
+  "license": "0BSD"
 }

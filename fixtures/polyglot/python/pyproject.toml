@@ -1,3 +1,4 @@
 [project]
+license = "0BSD"
 name = "dependency-palace-polyglot-python"
 version = "0.1.0"

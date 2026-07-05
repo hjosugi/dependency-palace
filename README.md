@@ -126,3 +126,7 @@ The mental model is in [docs/mental-model.md](docs/mental-model.md), the renderi
 ## Current Limits
 
 This includes a source scanner with native tool probing, provenance, diagnostics, and cache-aware fallback extraction. The next step is full compiler/tree-sitter/language-server semantic extraction for each native adapter. The issue plan is in [docs/issues](docs/issues).
+
+## License
+
+0BSD. You can use, copy, modify, and distribute this project for almost any purpose.
