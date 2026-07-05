@@ -72,6 +72,7 @@ npm run generate:examples
 ```
 
 See [docs/examples.md](docs/examples.md).
+For real-world source scans, see [docs/real-world-corpus.md](docs/real-world-corpus.md).
 
 ## Input Format
 

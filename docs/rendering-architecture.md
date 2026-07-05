@@ -73,6 +73,7 @@ Done:
 - Edge density presets for quiet, balanced, and full views.
 - Package-level edge bundling in Map view.
 - Selected-node direct edges are prioritized during link budgeting.
+- `npm run verify:large-view` checks a synthetic 10k-node / 100k-edge graph against overview and focus budgets.
 
 ### Phase 2: Worker Layout
 
