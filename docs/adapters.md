@@ -13,12 +13,22 @@ By default, the scanner writes `public/dependency-palace.graph.json`. The app fe
 The scanner also writes a diagnostics sidecar at
 `public/dependency-palace.graph.json.diagnostics.json` unless
 `--diagnostics-out` is provided.
+The app polls both files in development, so `--watch` gives a scan-open-refresh loop without manual JSON uploads.
 
 The scanner reads everything below the requested root. You can point it at a whole repository or a narrower subtree:
 
 ```bash
 npm run scan -- ~/work/my-service/src/main --out my-service.graph.json --module-depth 2
 ```
+
+Watch and compact output:
+
+```bash
+npm run scan -- ~/work/my-service --watch
+npm run scan -- ~/work/my-service --format both
+```
+
+`--format both` writes JSON plus `public/dependency-palace.graph.dpg`, a compact string-table graph. JSON remains the portable baseline; `.dpg` is meant for large local graphs and can be loaded from the app's File button.
 
 ## Config
 
@@ -29,7 +39,10 @@ Copy [dependency-palace.config.example.json](../dependency-palace.config.example
   "include": ["**/*"],
   "exclude": ["generated", "fixtures", "migrations"],
   "moduleDepth": 1,
-  "maxFileBytes": 1500000
+  "maxFileBytes": 1500000,
+  "cache": true,
+  "cacheDir": ".dependency-palace/cache",
+  "watchIntervalMs": 1500
 }
 ```
 
@@ -39,7 +52,12 @@ Options:
 - `exclude`: path fragments or glob-ish patterns to skip.
 - `moduleDepth`: how many path segments become the 3D module district.
 - `maxFileBytes`: safety cap for huge generated files.
+- `cache`: enable per-file extraction cache.
+- `cacheDir`: cache location. The cache key includes adapter version, relative path, language, module depth, and content hash.
+- `watchIntervalMs`: polling interval for `--watch`.
 - `--diagnostics-out`: explicit diagnostics JSON destination.
+- `--clear-cache`: delete cache before a scan.
+- `--no-cache`: run without reading or writing cache.
 
 ## Supported First-Pass Adapters
 
@@ -79,6 +97,9 @@ Every scan writes machine-readable diagnostics with:
 - per-language file/node/link counts;
 - emitted node and link totals;
 - unresolved edge count;
+- output paths and byte sizes;
+- cache hits, misses, writes, and adapter contract version;
+- total scan duration;
 - adapter warnings.
 
 The CLI also prints a short human-readable diagnostics line after each scan.
@@ -107,3 +128,13 @@ Every native adapter should output the same normalized graph:
 - Incremental-friendly metadata: file path, package/module, symbol ranges, and content hash.
 
 The viewer should not need to know whether data came from Java, Rust, Go, or Python.
+
+## Compact Graph Benchmark
+
+Run:
+
+```bash
+npm run benchmark:graph-format -- public/examples/stress-dense-cycles.json 5
+```
+
+On the checked-in stress graph, the compact file is about one third of the JSON size and decodes faster in the local benchmark. This benchmark is intentionally narrow: it measures graph parse/decode cost, not rendering or layout.

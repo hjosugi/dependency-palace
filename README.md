@@ -35,9 +35,22 @@ npm run scan -- /path/to/repo
 npm run dev
 ```
 
-By default this writes `public/dependency-palace.graph.json`, and the app loads it automatically on startup.
+By default this writes `public/dependency-palace.graph.json`, and the app loads it automatically on startup. The app also refreshes that generated graph and its diagnostics sidecar while the dev server is open.
 
-You can still write an explicit JSON file and upload it manually:
+Use watch mode while editing a scanned repository:
+
+```bash
+npm run scan -- /path/to/repo --watch
+```
+
+The scanner caches per-file extraction under `.dependency-palace/cache` by default. To also emit the compact graph format:
+
+```bash
+npm run scan -- /path/to/repo --format both
+npm run benchmark:graph-format -- public/examples/stress-dense-cycles.json 5
+```
+
+You can still write an explicit graph file and upload it manually:
 
 ```bash
 npm run scan -- /path/to/repo --out dependency-palace.graph.json
@@ -62,7 +75,7 @@ See [docs/examples.md](docs/examples.md).
 
 ## Input Format
 
-Load a JSON file from the left panel. The minimal shape is:
+Load a JSON or `.dpg` compact graph file from the left panel. The minimal JSON shape is:
 
 ```json
 {

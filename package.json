@@ -11,6 +11,7 @@
     "test": "tsx scripts/verify-adapter-fixtures.ts",
     "verify:adapters": "tsx scripts/verify-adapter-fixtures.ts",
     "generate:examples": "node scripts/generate-examples.mjs",
+    "benchmark:graph-format": "tsx scripts/benchmark-graph-format.ts",
     "issues:dry-run": "node scripts/sync-github-issues.mjs",
     "issues:sync": "node scripts/sync-github-issues.mjs --apply",
     "typecheck": "tsc --noEmit",

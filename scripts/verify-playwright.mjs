@@ -91,7 +91,7 @@ try {
       throw error;
     });
 
-    await page.goto(baseUrl, { waitUntil: "networkidle" });
+    await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("canvas.graph-canvas", { state: "visible" });
     await page.waitForFunction(() => {
       const canvas = document.querySelector("canvas.graph-canvas");

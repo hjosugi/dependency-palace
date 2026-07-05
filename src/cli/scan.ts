@@ -1,8 +1,12 @@
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import crypto from "node:crypto";
 import path from "node:path";
 import { adapterForPath, supportedLanguages } from "../extract/adapters";
 import type { AdapterWarning, RawGraph, RawLink, RawNode, ScanConfig, ScanDiagnostics, ScanOptions, SkippedFile, SourceLanguage } from "../extract/types";
+import { encodeCompactGraph } from "../graph/compact";
+
+const adapterVersion = "adapter-contract-v1.1.0";
 
 const defaultExclude = [
   ".git",
@@ -37,11 +41,20 @@ Options:
   --out <path>           Output JSON path. Defaults to public/dependency-palace.graph.json.
   --diagnostics-out <path>
                          Diagnostics JSON path. Defaults to <out>.diagnostics.json.
+  --format <json|compact|both>
+                         Output format. Defaults to json.
+  --compact-out <path>   Compact graph path. Defaults to <out basename>.dpg.
   --config <path>        Optional config JSON. Defaults to dependency-palace.config.json when present.
   --include <pattern>    Include path substring/glob-ish pattern. Repeatable.
   --exclude <pattern>    Exclude path substring/glob-ish pattern. Repeatable.
   --module-depth <n>     Number of path segments used as module. Defaults to 1.
   --max-file-bytes <n>   Skip larger files. Defaults to 1500000.
+  --cache-dir <path>     Per-file extraction cache. Defaults to .dependency-palace/cache.
+  --no-cache             Disable extraction cache.
+  --clear-cache          Delete cache before scanning.
+  --watch                Rescan repeatedly so the viewer can refresh.
+  --watch-interval-ms <n>
+                         Watch polling interval. Defaults to 1500.
   --languages            Print supported languages.
   --help                 Print this message.
 `;
@@ -60,7 +73,7 @@ function readArgs(argv: string[]) {
       continue;
     }
     const key = item.slice(2);
-    if (key === "help" || key === "languages") {
+    if (key === "help" || key === "languages" || key === "watch" || key === "no-cache" || key === "clear-cache") {
       values.set(key, ["true"]);
       continue;
     }
@@ -162,6 +175,18 @@ function mergeGraph(nodes: RawNode[], links: RawLink[]) {
   return { nodes: Array.from(nodeMap.values()), links: Array.from(linkMap.values()) };
 }
 
+function hashText(text: string) {
+  return crypto.createHash("sha256").update(text).digest("hex");
+}
+
+function cachePathForFile(options: ScanOptions, relativePath: string, contentHash: string, language: SourceLanguage) {
+  const key = crypto
+    .createHash("sha256")
+    .update([adapterVersion, language, options.moduleDepth, relativePath, contentHash].join("\u0000"))
+    .digest("hex");
+  return path.join(options.cacheDir, `${key}.json`);
+}
+
 function endpointId(endpoint: RawLink["source"]) {
   return typeof endpoint === "string" ? endpoint : endpoint.id;
 }
@@ -179,16 +204,174 @@ function optionsFromArgs(values: Map<string, string[]>, positionals: string[], c
   const root = path.resolve(values.get("root")?.at(-1) ?? positionals[0] ?? ".");
   const out = path.resolve(values.get("out")?.at(-1) ?? "public/dependency-palace.graph.json");
   const diagnosticsOut = path.resolve(values.get("diagnostics-out")?.at(-1) ?? `${out}.diagnostics.json`);
+  const formatValue = values.get("format")?.at(-1) ?? "json";
+  if (!["json", "compact", "both"].includes(formatValue)) throw new Error(`Unsupported --format: ${formatValue}`);
+  const compactOut =
+    values.get("compact-out")?.at(-1) ??
+    path.join(path.dirname(out), `${path.basename(out).replace(/\.json$/u, "")}.dpg`);
   return {
     root,
     out,
     diagnosticsOut,
+    compactOut: path.resolve(compactOut),
     configPath: values.get("config")?.at(-1),
     include: [...(config.include ?? []), ...(values.get("include") ?? [])],
     exclude: [...defaultExclude, ...(config.exclude ?? []), ...(values.get("exclude") ?? [])],
     moduleDepth: Number(values.get("module-depth")?.at(-1) ?? config.moduleDepth ?? 1),
-    maxFileBytes: Number(values.get("max-file-bytes")?.at(-1) ?? config.maxFileBytes ?? 1_500_000)
+    maxFileBytes: Number(values.get("max-file-bytes")?.at(-1) ?? config.maxFileBytes ?? 1_500_000),
+    cache: !values.has("no-cache") && (config.cache ?? true),
+    cacheDir: path.resolve(values.get("cache-dir")?.at(-1) ?? config.cacheDir ?? ".dependency-palace/cache"),
+    clearCache: values.has("clear-cache"),
+    format: formatValue as ScanOptions["format"],
+    watch: values.has("watch"),
+    watchIntervalMs: Number(values.get("watch-interval-ms")?.at(-1) ?? config.watchIntervalMs ?? 1500)
   };
+}
+
+async function extractFile(
+  absolutePath: string,
+  options: ScanOptions,
+  languageDiagnostics: ScanDiagnostics["languages"]
+) {
+  const adapter = adapterForPath(absolutePath);
+  if (!adapter) return null;
+  const text = await readFile(absolutePath, "utf8");
+  const relativePath = path.relative(options.root, absolutePath);
+  const contentHash = hashText(text);
+  const language = adapter.language as SourceLanguage;
+  const current = languageDiagnostics[language] ?? { files: 0, cached: 0, nodes: 0, links: 0 };
+  current.files += 1;
+  languageDiagnostics[language] = current;
+
+  if (options.cache) {
+    const cachePath = cachePathForFile(options, relativePath, contentHash, language);
+    if (existsSync(cachePath)) {
+      const cached = JSON.parse(await readFile(cachePath, "utf8")) as {
+        nodes: RawNode[];
+        links: RawLink[];
+        warnings?: AdapterWarning[];
+      };
+      current.cached += 1;
+      current.nodes += cached.nodes.length;
+      current.links += cached.links.length;
+      return { ...cached, language, cacheHit: true };
+    }
+  }
+
+  const extracted = adapter.extract(
+    {
+      absolutePath,
+      relativePath,
+      language,
+      text,
+      contentHash
+    },
+    { root: options.root, moduleDepth: options.moduleDepth }
+  );
+  current.nodes += extracted.nodes.length;
+  current.links += extracted.links.length;
+
+  if (options.cache) {
+    const cachePath = cachePathForFile(options, relativePath, contentHash, language);
+    await mkdir(path.dirname(cachePath), { recursive: true });
+    await writeFile(cachePath, `${JSON.stringify(extracted)}\n`, "utf8");
+  }
+
+  return { ...extracted, language, cacheHit: false };
+}
+
+async function scanOnce(options: ScanOptions) {
+  const started = performance.now();
+  const { files, skipped } = await walk(options.root, options);
+  const allNodes: RawNode[] = [];
+  const allLinks: RawLink[] = [];
+  const languages = new Set<string>();
+  const warnings: AdapterWarning[] = [];
+  const languageDiagnostics: ScanDiagnostics["languages"] = {};
+  let cacheHits = 0;
+  let cacheMisses = 0;
+  let cacheWrites = 0;
+
+  for (const absolutePath of files) {
+    const extracted = await extractFile(absolutePath, options, languageDiagnostics);
+    if (!extracted) continue;
+    languages.add(extracted.language);
+    allNodes.push(...extracted.nodes);
+    allLinks.push(...extracted.links);
+    warnings.push(...(extracted.warnings ?? []));
+    if (extracted.cacheHit) cacheHits += 1;
+    else {
+      cacheMisses += 1;
+      if (options.cache) cacheWrites += 1;
+    }
+  }
+
+  const merged = mergeGraph(allNodes, allLinks);
+  const unresolvedEdges = countUnresolvedEdges(merged.nodes, merged.links);
+  const graph: RawGraph = {
+    nodes: merged.nodes,
+    links: merged.links,
+    meta: {
+      name: path.basename(options.root),
+      generatedAt: new Date().toISOString(),
+      language: Array.from(languages).sort().join(", ") || "unknown"
+    }
+  };
+
+  let jsonBytes: number | undefined;
+  let compactBytes: number | undefined;
+  if (options.format === "json" || options.format === "both") {
+    const json = `${JSON.stringify(graph, null, 2)}\n`;
+    await mkdir(path.dirname(options.out), { recursive: true });
+    await writeFile(options.out, json, "utf8");
+    jsonBytes = Buffer.byteLength(json);
+  }
+  if (options.format === "compact" || options.format === "both") {
+    const compact = encodeCompactGraph(graph);
+    await mkdir(path.dirname(options.compactOut), { recursive: true });
+    await writeFile(options.compactOut, compact);
+    compactBytes = compact.byteLength;
+  }
+
+  const diagnostics: ScanDiagnostics = {
+    schemaVersion: 1,
+    root: options.root,
+    generatedAt: graph.meta?.generatedAt ?? new Date().toISOString(),
+    durationMs: Math.round(performance.now() - started),
+    filesScanned: files.length,
+    filesSkipped: skipped.length,
+    nodesEmitted: graph.nodes.length,
+    linksEmitted: (graph.links ?? []).length,
+    unresolvedEdges,
+    outputs: {
+      json: options.format === "json" || options.format === "both" ? options.out : undefined,
+      compact: options.format === "compact" || options.format === "both" ? options.compactOut : undefined,
+      diagnostics: options.diagnosticsOut
+    },
+    bytes: {
+      json: jsonBytes,
+      compact: compactBytes
+    },
+    cache: {
+      enabled: options.cache,
+      dir: options.cache ? options.cacheDir : undefined,
+      adapterVersion,
+      hits: cacheHits,
+      misses: cacheMisses,
+      writes: cacheWrites
+    },
+    languages: languageDiagnostics,
+    skipped,
+    warnings
+  };
+  await mkdir(path.dirname(options.diagnosticsOut), { recursive: true });
+  await writeFile(options.diagnosticsOut, `${JSON.stringify(diagnostics, null, 2)}\n`, "utf8");
+
+  const destinations = [diagnostics.outputs.json, diagnostics.outputs.compact].filter(Boolean).join(", ");
+  console.log(`Scanned ${files.length} files, wrote ${graph.nodes.length} nodes and ${(graph.links ?? []).length} links to ${destinations}`);
+  console.log(
+    `Diagnostics: ${skipped.length} skipped, ${unresolvedEdges} unresolved edges, ${warnings.length} warnings, ${cacheHits} cache hits -> ${options.diagnosticsOut}`
+  );
 }
 
 async function main() {
@@ -205,75 +388,26 @@ async function main() {
   const config = await loadConfig(values.get("config")?.at(-1));
   const options = optionsFromArgs(values, positionals, config);
   if (!existsSync(options.root)) throw new Error(`Scan root does not exist: ${options.root}`);
-
-  const { files, skipped } = await walk(options.root, options);
-  const allNodes: RawNode[] = [];
-  const allLinks: RawLink[] = [];
-  const languages = new Set<string>();
-  const warnings: AdapterWarning[] = [];
-  const languageDiagnostics: ScanDiagnostics["languages"] = {};
-
-  for (const absolutePath of files) {
-    const adapter = adapterForPath(absolutePath);
-    if (!adapter) continue;
-    const text = await readFile(absolutePath, "utf8");
-    const relativePath = path.relative(options.root, absolutePath);
-    languages.add(adapter.language);
-    const extracted = adapter.extract(
-      {
-        absolutePath,
-        relativePath,
-        language: adapter.language,
-        text
-      },
-      { root: options.root, moduleDepth: options.moduleDepth }
-    );
-    allNodes.push(...extracted.nodes);
-    allLinks.push(...extracted.links);
-    warnings.push(...(extracted.warnings ?? []));
-    const language = adapter.language as SourceLanguage;
-    const current = languageDiagnostics[language] ?? { files: 0, nodes: 0, links: 0 };
-    current.files += 1;
-    current.nodes += extracted.nodes.length;
-    current.links += extracted.links.length;
-    languageDiagnostics[language] = current;
+  if (options.clearCache && existsSync(options.cacheDir)) {
+    await rm(options.cacheDir, { recursive: true, force: true });
   }
 
-  const merged = mergeGraph(allNodes, allLinks);
-  const unresolvedEdges = countUnresolvedEdges(merged.nodes, merged.links);
-  const graph: RawGraph = {
-    nodes: merged.nodes,
-    links: merged.links,
-    meta: {
-      name: path.basename(options.root),
-      generatedAt: new Date().toISOString(),
-      language: Array.from(languages).sort().join(", ") || "unknown"
-    }
-  };
+  await scanOnce(options);
+  if (!options.watch) return;
 
-  await mkdir(path.dirname(options.out), { recursive: true });
-  await writeFile(options.out, `${JSON.stringify(graph, null, 2)}\n`, "utf8");
-  const diagnostics: ScanDiagnostics = {
-    root: options.root,
-    generatedAt: graph.meta?.generatedAt ?? new Date().toISOString(),
-    filesScanned: files.length,
-    filesSkipped: skipped.length,
-    nodesEmitted: graph.nodes.length,
-    linksEmitted: (graph.links ?? []).length,
-    unresolvedEdges,
-    languages: languageDiagnostics,
-    skipped,
-    warnings
-  };
-  await mkdir(path.dirname(options.diagnosticsOut), { recursive: true });
-  await writeFile(options.diagnosticsOut, `${JSON.stringify(diagnostics, null, 2)}\n`, "utf8");
-
-  console.log(
-    `Scanned ${files.length} files, wrote ${graph.nodes.length} nodes and ${(graph.links ?? []).length} links to ${options.out}`
-  );
-  console.log(
-    `Diagnostics: ${skipped.length} skipped, ${unresolvedEdges} unresolved edges, ${warnings.length} warnings -> ${options.diagnosticsOut}`
-  );
+  console.log(`Watching ${options.root} every ${options.watchIntervalMs}ms. Press Ctrl+C to stop.`);
+  let running = false;
+  setInterval(() => {
+    if (running) return;
+    running = true;
+    scanOnce(options)
+      .catch((error) => {
+        console.error(error instanceof Error ? error.message : String(error));
+      })
+      .finally(() => {
+        running = false;
+      });
+  }, options.watchIntervalMs);
 }
 
 main().catch((error) => {

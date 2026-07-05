@@ -1,8 +1,8 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import type { WebGPURenderer } from "three/webgpu";
-import type { DisplayLink, DisplayNode } from "./types";
+import type { DisplayLink, DisplayNode, RenderStats } from "./types";
 
 export interface GraphSceneHandle {
   frameGraph: () => void;
@@ -14,6 +14,7 @@ interface GraphSceneProps {
   autoRotate: boolean;
   onHover: (node: DisplayNode | null, point: { x: number; y: number } | null) => void;
   onSelect: (nodeId: string | null) => void;
+  onRenderStats?: (stats: RenderStats) => void;
 }
 
 const background = new THREE.Color("#11100e");
@@ -130,7 +131,7 @@ function pushCurvedLine(
 }
 
 export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function GraphScene(
-  { nodes, links, autoRotate, onHover, onSelect },
+  { nodes, links, autoRotate, onHover, onSelect, onRenderStats },
   ref
 ) {
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -144,7 +145,10 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
   const autoRotateRef = useRef(autoRotate);
   const hoverRef = useRef(onHover);
   const selectRef = useRef(onSelect);
+  const statsRef = useRef(onRenderStats);
+  const backendRef = useRef<RenderStats["backend"]>("unknown");
   const boundsRef = useRef<THREE.Sphere>(new THREE.Sphere(new THREE.Vector3(), 420));
+  const [sceneReady, setSceneReady] = useState(false);
 
   useEffect(() => {
     autoRotateRef.current = autoRotate;
@@ -157,6 +161,10 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
   useEffect(() => {
     selectRef.current = onSelect;
   }, [onSelect]);
+
+  useEffect(() => {
+    statsRef.current = onRenderStats;
+  }, [onRenderStats]);
 
   const frameGraph = () => {
     const camera = cameraRef.current;
@@ -197,6 +205,15 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
       }
       renderer.domElement.className = "graph-canvas";
       renderer.domElement.dataset.backend = backend;
+      backendRef.current = backend;
+      statsRef.current?.({
+        backend,
+        nodeInstances: 0,
+        links: 0,
+        lineSegments: 0,
+        bufferBytes: 0,
+        uploadMs: 0
+      });
       mount.appendChild(renderer.domElement);
 
       const controls = new OrbitControls(camera, renderer.domElement);
@@ -225,6 +242,7 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
       cameraRef.current = camera;
       rendererRef.current = renderer;
       controlsRef.current = controls;
+      setSceneReady(true);
 
       const resize = () => {
         const rect = mount.getBoundingClientRect();
@@ -309,7 +327,8 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
 
   useEffect(() => {
     const world = worldRef.current;
-    if (!world) return;
+    if (!sceneReady || !world) return;
+    const started = performance.now();
 
     for (const child of [...world.children]) {
       if (child.userData.dynamicGraph) {
@@ -337,6 +356,7 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
       groups.get(node.visualKind)?.push(node);
     }
 
+    let instanceMatrixBytes = 0;
     for (const [kind, groupNodes] of groups) {
       const geometry = geometryForKind(kind);
       const material = materialForKind(kind);
@@ -360,6 +380,7 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
       if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
       world.add(mesh);
       pickablesRef.current.push(mesh);
+      instanceMatrixBytes += groupNodes.length * 16 * 4;
     }
 
     const segments: number[] = [];
@@ -386,6 +407,16 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
       lines.userData.dynamicGraph = true;
       world.add(lines);
     }
+
+    const lineBytes = (segments.length + colors.length) * 4;
+    statsRef.current?.({
+      backend: backendRef.current,
+      nodeInstances: nodes.length,
+      links: links.length,
+      lineSegments: segments.length / 6,
+      bufferBytes: instanceMatrixBytes + lineBytes,
+      uploadMs: Math.round(performance.now() - started)
+    });
 
     const selected = nodes.find((node) => node.isSelected);
     if (selected) {
@@ -422,7 +453,7 @@ export const GraphScene = forwardRef<GraphSceneHandle, GraphSceneProps>(function
     }
 
     frameGraph();
-  }, [nodes, links]);
+  }, [nodes, links, sceneReady]);
 
   return <div ref={mountRef} className="graph-scene" />;
 });

@@ -38,6 +38,16 @@ The app loads the index automatically and shows the examples in the left panel.
 
 Each example also carries a recommended starting view, form, focus depth, and degree filter. Loading an example should put the viewer into a useful first pose immediately.
 
+## Performance Notes
+
+- The starter graph stays tiny; large examples load only after an explicit click.
+- `public/examples/index.json` is intentionally small. It is currently under 20 KB uncompressed.
+- Graph normalization, SCC analysis, filtering, and layout run through the graph worker when the browser allows module workers.
+- The stage shows model timing, renderer backend, and estimated upload buffer size.
+- The Edge density presets reduce visible link upload before rendering. Selected-node direct edges are kept visible where possible.
+- For large generated graphs, use `npm run scan -- /path/to/repo --format both` and load the `.dpg` file or let the app pick up `public/dependency-palace.graph.dpg`.
+- Production hosting should serve JSON and `.dpg` files with gzip or brotli enabled. The stress JSON is multi-megabyte; compression matters.
+
 The recommendations are intentionally opinionated:
 
 - Haskell-local examples open in Atomic or Space so typeclasses, records, and composition remain close to the selected symbol.

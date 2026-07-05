@@ -21,14 +21,36 @@ import {
 } from "lucide-react";
 import { GraphScene, type GraphSceneHandle } from "./GraphScene";
 import { createDemoGraph, createStarterGraph, demoSizes, type DemoSize } from "./data/sampleGraph";
+import type { ScanDiagnostics } from "./extract/types";
+import { decodeCompactGraph } from "./graph/compact";
 import { analyzeGraph, buildViewGraph, normalizeGraph } from "./graph/model";
 import { edgePalette, layoutViewGraph } from "./graph/layout";
-import type { DependencyKind, DisplayNode, RawGraph, ViewMode, VisualizationMetaphor } from "./types";
+import type {
+  DependencyKind,
+  DisplayLink,
+  DisplayNode,
+  EdgeDensity,
+  GraphAnalysis,
+  GraphData,
+  GraphWorkerTimings,
+  RawGraph,
+  RenderStats,
+  ViewGraph,
+  ViewMode,
+  VisualizationMetaphor
+} from "./types";
 
 const numberFormat = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 
 function formatNumber(value: number) {
   return numberFormat.format(value);
+}
+
+function formatBytes(value: number | undefined) {
+  if (!value) return "0 B";
+  if (value < 1024) return `${value} B`;
+  if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
+  return `${(value / 1024 / 1024).toFixed(1)} MB`;
 }
 
 function viewLabel(mode: ViewMode) {
@@ -53,6 +75,16 @@ function sourceLabel(node: DisplayNode | NonNullable<ReturnType<typeof normalize
   if (!source) return null;
   const end = source.endLine && source.endLine !== source.startLine ? `-${source.endLine}` : "";
   return `${source.path}:${source.startLine}${end}`;
+}
+
+function relationPriorityScore(type: DependencyKind) {
+  if (type === "implements" || type === "instance" || type === "constrains") return 6;
+  if (type === "inherits" || type === "derives") return 5;
+  if (type === "contains" || type === "composes") return 4;
+  if (type === "calls") return 3;
+  if (type === "creates" || type === "uses") return 2;
+  if (type === "imports") return 1;
+  return 0;
 }
 
 const metaphorOptions: Array<{ id: VisualizationMetaphor; label: string; icon: typeof Box }> = [
@@ -82,6 +114,83 @@ type ExampleDescriptor = {
   };
 };
 
+interface GraphWorkerResult {
+  id: number;
+  graph: GraphData;
+  analysis: GraphAnalysis;
+  view: ViewGraph;
+  displayGraph: {
+    nodes: DisplayNode[];
+    links: DisplayLink[];
+  };
+  timings: GraphWorkerTimings;
+}
+
+function graphFingerprint(graph: RawGraph) {
+  return [
+    graph.meta?.generatedAt ?? "",
+    graph.meta?.name ?? "",
+    graph.nodes.length,
+    graph.links?.length ?? graph.edges?.length ?? 0
+  ].join("|");
+}
+
+async function fetchGraphResource(url: string) {
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) return null;
+  if (url.endsWith(".dpg")) return decodeCompactGraph(await response.arrayBuffer());
+  return (await response.json()) as RawGraph;
+}
+
+async function fetchGeneratedGraph() {
+  return (await fetchGraphResource("/dependency-palace.graph.dpg")) ?? (await fetchGraphResource("/dependency-palace.graph.json"));
+}
+
+function computeGraphResult(
+  id: number,
+  rawGraph: RawGraph,
+  options: {
+    mode: ViewMode;
+    query: string;
+    module: string;
+    minDegree: number;
+    selectedId: string | null;
+    focusDepth: number;
+    edgeTypes: Set<DependencyKind>;
+    edgeDensity: EdgeDensity;
+  },
+  metaphor: VisualizationMetaphor
+): GraphWorkerResult {
+  const started = performance.now();
+  const normalizeStart = performance.now();
+  const graph = normalizeGraph(rawGraph);
+  const normalizeMs = performance.now() - normalizeStart;
+  const analyzeStart = performance.now();
+  const analysis = analyzeGraph(graph);
+  const analyzeMs = performance.now() - analyzeStart;
+  const filterStart = performance.now();
+  const view = buildViewGraph(graph, options);
+  const filterMs = performance.now() - filterStart;
+  const layoutStart = performance.now();
+  const displayGraph = layoutViewGraph(view, options.selectedId, metaphor);
+  const layoutMs = performance.now() - layoutStart;
+
+  return {
+    id,
+    graph,
+    analysis,
+    view,
+    displayGraph,
+    timings: {
+      normalizeMs: Math.round(normalizeMs),
+      analyzeMs: Math.round(analyzeMs),
+      filterMs: Math.round(filterMs),
+      layoutMs: Math.round(layoutMs),
+      totalMs: Math.round(performance.now() - started)
+    }
+  };
+}
+
 export default function App() {
   const [rawGraph, setRawGraph] = useState<RawGraph>(() => createStarterGraph());
   const [mode, setModeState] = useState<ViewMode>("focus");
@@ -95,29 +204,139 @@ export default function App() {
   const [autoRotate, setAutoRotate] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [edgeTypes, setEdgeTypes] = useState<Set<DependencyKind>>(new Set());
+  const [edgeDensity, setEdgeDensity] = useState<EdgeDensity>("balanced");
   const [examples, setExamples] = useState<ExampleDescriptor[]>([]);
   const [loadingExample, setLoadingExample] = useState<string | null>(null);
+  const [diagnostics, setDiagnostics] = useState<ScanDiagnostics | null>(null);
+  const [renderStats, setRenderStats] = useState<RenderStats>({
+    backend: "unknown",
+    nodeInstances: 0,
+    links: 0,
+    lineSegments: 0,
+    bufferBytes: 0,
+    uploadMs: 0
+  });
+  const [workerResult, setWorkerResult] = useState<GraphWorkerResult | null>(null);
+  const [workerReady, setWorkerReady] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const sceneRef = useRef<GraphSceneHandle | null>(null);
+  const generatedFingerprintRef = useRef(graphFingerprint(rawGraph));
+  const workerRef = useRef<Worker | null>(null);
+  const requestIdRef = useRef(0);
 
-  const graph = useMemo(() => normalizeGraph(rawGraph), [rawGraph]);
-  const analysis = useMemo(() => analyzeGraph(graph), [graph]);
+  const workerOptions = useMemo(
+    () => ({
+      mode,
+      query,
+      module: moduleFilter,
+      minDegree,
+      selectedId,
+      focusDepth,
+      edgeTypes,
+      edgeDensity
+    }),
+    [edgeDensity, edgeTypes, focusDepth, minDegree, mode, moduleFilter, query, selectedId]
+  );
+
+  const syncResult = useMemo(
+    () => computeGraphResult(requestIdRef.current, rawGraph, workerOptions, metaphor),
+    [metaphor, rawGraph, workerOptions]
+  );
+  const currentResult = workerReady && workerResult ? workerResult : syncResult;
+  const graph = currentResult.graph;
+  const analysis = currentResult.analysis;
+  const view = currentResult.view;
+  const displayGraph = currentResult.displayGraph;
+
+  useEffect(() => {
+    try {
+      const worker = new Worker(new URL("./graph/worker.ts", import.meta.url), { type: "module" });
+      workerRef.current = worker;
+      worker.onmessage = (event: MessageEvent<GraphWorkerResult>) => {
+        if (event.data.id !== requestIdRef.current) return;
+        setWorkerResult(event.data);
+        setWorkerReady(true);
+      };
+      worker.onerror = () => {
+        setWorkerReady(false);
+        workerRef.current = null;
+        worker.terminate();
+      };
+      return () => {
+        worker.terminate();
+        workerRef.current = null;
+      };
+    } catch {
+      setWorkerReady(false);
+      return undefined;
+    }
+  }, []);
+
+  useEffect(() => {
+    const worker = workerRef.current;
+    if (!worker) {
+      setWorkerReady(false);
+      return;
+    }
+    const id = requestIdRef.current + 1;
+    requestIdRef.current = id;
+    setWorkerReady(false);
+    worker.postMessage({
+      id,
+      rawGraph,
+      options: {
+        ...workerOptions,
+        edgeTypes: Array.from(workerOptions.edgeTypes)
+      },
+      metaphor
+    });
+  }, [metaphor, rawGraph, workerOptions]);
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/dependency-palace.graph.json", { cache: "no-store" })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((loaded: RawGraph | null) => {
+
+    async function refreshGeneratedGraph() {
+      try {
+        const loaded = await fetchGeneratedGraph();
         if (cancelled || !loaded?.nodes?.length) return;
+        const fingerprint = graphFingerprint(loaded);
+        if (fingerprint === generatedFingerprintRef.current) return;
+        generatedFingerprintRef.current = fingerprint;
         setRawGraph(loaded);
         setModeState("focus");
-        setSelectedId(null);
-      })
-      .catch(() => {
+        setSelectedId((current) => (current && loaded.nodes.some((node) => node.id === current) ? current : null));
+      } catch {
         // No generated graph is present; keep the built-in demo.
-      });
+      }
+    }
+
+    void refreshGeneratedGraph();
+    const timer = window.setInterval(() => void refreshGeneratedGraph(), 2500);
     return () => {
       cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function refreshDiagnostics() {
+      try {
+        const response = await fetch("/dependency-palace.graph.json.diagnostics.json", { cache: "no-store" });
+        if (!response.ok) return;
+        const loaded = (await response.json()) as ScanDiagnostics;
+        if (!cancelled) setDiagnostics(loaded);
+      } catch {
+        // Diagnostics are optional until the scanner has written them.
+      }
+    }
+
+    void refreshDiagnostics();
+    const timer = window.setInterval(() => void refreshDiagnostics(), 2500);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
     };
   }, []);
 
@@ -188,30 +407,49 @@ export default function App() {
           : selectedNode.degree >= 10
             ? "busy local hub"
             : "local symbol";
+    const contractPressure =
+      (counts.get("implements") ?? 0) + (counts.get("instance") ?? 0) + (counts.get("constrains") ?? 0);
+    const statePressure = (counts.get("contains") ?? 0) + selectedNode.fields.length;
+    const behaviorPressure =
+      (counts.get("calls") ?? 0) + (counts.get("composes") ?? 0) + (counts.get("creates") ?? 0) + selectedNode.methods.length;
+    const cyclePressure = selectedNode.sccSize > 1 ? selectedNode.sccSize : 0;
+    const incoming = linksForNode
+      .filter((link) => link.target === selectedNode.id)
+      .sort((a, b) => relationPriorityScore(b.type) - relationPriorityScore(a.type) || b.weight - a.weight)
+      .slice(0, 3);
+    const outgoing = linksForNode
+      .filter((link) => link.source === selectedNode.id)
+      .sort((a, b) => relationPriorityScore(b.type) - relationPriorityScore(a.type) || b.weight - a.weight)
+      .slice(0, 3);
+    const summary =
+      selectedNode.kind === "typeclass"
+        ? "typeclass contract"
+        : selectedNode.kind === "datatype"
+          ? "data body with field composition"
+          : selectedNode.kind === "function"
+            ? "function pipeline and constraints"
+            : selectedNode.role === "behavior"
+              ? "behavior surface with collaborators"
+              : selectedNode.role === "state"
+                ? "state model and owned data"
+                : "local dependency role";
 
     return {
       voice: nodeVoice(selectedNode),
       members: `${formatNumber(selectedNode.fields.length)} state / ${formatNumber(selectedNode.methods.length)} behavior`,
       pressure: `${cycleText} / ${selectedNode.inbound} in / ${selectedNode.outbound} out`,
-      strongest
+      strongest,
+      summary,
+      pressures: [
+        ["contract", contractPressure],
+        ["state", statePressure],
+        ["behavior", behaviorPressure],
+        ["cycle", cyclePressure]
+      ] as Array<[string, number]>,
+      incoming,
+      outgoing
     };
   }, [graph.links, selectedNode]);
-
-  const view = useMemo(
-    () =>
-      buildViewGraph(graph, {
-        mode,
-        query,
-        module: moduleFilter,
-        minDegree,
-        selectedId,
-        focusDepth,
-        edgeTypes
-      }),
-    [edgeTypes, focusDepth, graph, minDegree, mode, moduleFilter, query, selectedId]
-  );
-
-  const displayGraph = useMemo(() => layoutViewGraph(view, selectedId, metaphor), [metaphor, selectedId, view]);
 
   function setMode(nextMode: ViewMode) {
     if (nextMode === "focus" && !selectedId) {
@@ -221,7 +459,9 @@ export default function App() {
   }
 
   function loadDemo(size: DemoSize) {
-    setRawGraph(createDemoGraph(size));
+    const nextGraph = createDemoGraph(size);
+    generatedFingerprintRef.current = graphFingerprint(nextGraph);
+    setRawGraph(nextGraph);
     setSelectedId(null);
     setModeState("focus");
     setQuery("");
@@ -242,9 +482,11 @@ export default function App() {
   async function onFileSelected(file: File | undefined) {
     if (!file) return;
     try {
-      const text = await file.text();
-      const parsed = JSON.parse(text) as RawGraph;
+      const parsed = file.name.endsWith(".dpg")
+        ? decodeCompactGraph(await file.arrayBuffer())
+        : (JSON.parse(await file.text()) as RawGraph);
       if (!Array.isArray(parsed.nodes)) throw new Error("JSON must contain a nodes array.");
+      generatedFingerprintRef.current = graphFingerprint(parsed);
       setRawGraph(parsed);
       setModeState("focus");
       setSelectedId(null);
@@ -262,11 +504,11 @@ export default function App() {
   async function loadExample(example: ExampleDescriptor) {
     try {
       setLoadingExample(example.id);
-      const response = await fetch(example.file, { cache: "no-store" });
-      if (!response.ok) throw new Error(`Could not load ${example.title}.`);
-      const parsed = (await response.json()) as RawGraph;
+      const parsed = await fetchGraphResource(example.file);
+      if (!parsed) throw new Error(`Could not load ${example.title}.`);
       if (!Array.isArray(parsed.nodes)) throw new Error("Example JSON must contain a nodes array.");
       const recommended = example.recommended;
+      generatedFingerprintRef.current = graphFingerprint(parsed);
       setRawGraph(parsed);
       setModeState(recommended?.view ?? "focus");
       setSelectedId(null);
@@ -386,6 +628,19 @@ export default function App() {
             <SlidersHorizontal size={16} />
             Edges
           </div>
+          <div className="segmented compact" role="group" aria-label="Edge density">
+            {(["quiet", "balanced", "full"] as EdgeDensity[]).map((item) => (
+              <button
+                key={item}
+                className={edgeDensity === item ? "is-active" : ""}
+                type="button"
+                onClick={() => setEdgeDensity(item)}
+                title={`${item} edge density`}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
           <div className="edge-list">
             {analysis.edgeTypes.map((type) => (
               <label key={type} className="edge-toggle">
@@ -406,6 +661,7 @@ export default function App() {
             />
             <strong>{focusDepth}</strong>
           </label>
+          {view.hiddenLinks ? <p className="muted-copy">{formatNumber(view.hiddenLinks)} edges hidden by density</p> : null}
         </section>
 
         <section className="panel-section">
@@ -414,9 +670,9 @@ export default function App() {
             Data
           </div>
           <div className="button-row">
-            <button type="button" onClick={() => fileInputRef.current?.click()} title="Load dependency JSON">
+            <button type="button" onClick={() => fileInputRef.current?.click()} title="Load dependency graph">
               <FileUp size={16} />
-              JSON
+              File
             </button>
             {demoSizes.map((size) => (
               <button key={size} type="button" onClick={() => loadDemo(size)} title={`Load ${size} class demo`}>
@@ -428,7 +684,7 @@ export default function App() {
           <input
             ref={fileInputRef}
             className="file-input"
-            accept="application/json,.json"
+            accept="application/json,.json,.dpg"
             type="file"
             onChange={(event) => onFileSelected(event.target.files?.[0])}
           />
@@ -472,6 +728,7 @@ export default function App() {
             if (nodeId && mode === "overview") setModeState("focus");
           }}
           onHover={(node, point) => setHovered(node && point ? { node, point } : null)}
+          onRenderStats={setRenderStats}
         />
 
         <div className="stage-bar">
@@ -490,6 +747,15 @@ export default function App() {
             </span>
             <span>
               <strong>{metaphor}</strong> form
+            </span>
+            <span>
+              <strong>{renderStats.backend}</strong> renderer
+            </span>
+            <span>
+              <strong>{currentResult.timings.totalMs}ms</strong> worker
+            </span>
+            <span>
+              <strong>{formatBytes(renderStats.bufferBytes)}</strong> buffers
             </span>
           </div>
           <div className="stage-actions">
@@ -536,6 +802,42 @@ export default function App() {
             </div>
           </dl>
         </section>
+
+        {diagnostics ? (
+          <section className="panel-section stat-section">
+            <div className="section-title">
+              <Braces size={16} />
+              Scan
+            </div>
+            <dl className="stats-grid">
+              <div>
+                <dt>Files</dt>
+                <dd>{formatNumber(diagnostics.filesScanned)}</dd>
+              </div>
+              <div>
+                <dt>Skipped</dt>
+                <dd>{formatNumber(diagnostics.filesSkipped)}</dd>
+              </div>
+              <div>
+                <dt>Unresolved</dt>
+                <dd>{formatNumber(diagnostics.unresolvedEdges)}</dd>
+              </div>
+              <div>
+                <dt>Cache</dt>
+                <dd>{formatNumber(diagnostics.cache?.hits ?? 0)}</dd>
+              </div>
+            </dl>
+            <div className="diagnostic-list">
+              {Object.entries(diagnostics.languages).map(([language, stats]) =>
+                stats ? (
+                  <span key={language}>
+                    {language}: {stats.files} files / {stats.nodes} nodes
+                  </span>
+                ) : null
+              )}
+            </div>
+          </section>
+        ) : null}
 
         <section className="panel-section selected-section">
           <div className="section-title">
@@ -590,6 +892,21 @@ export default function App() {
                     <span>Pressure</span>
                     <strong>{selectedSignal.pressure}</strong>
                   </div>
+                  <div>
+                    <span>Signal</span>
+                    <strong>{selectedSignal.summary}</strong>
+                  </div>
+                  <div>
+                    <span>Load</span>
+                    <ul>
+                      {selectedSignal.pressures.map(([label, count]) => (
+                        <li key={label}>
+                          <b />
+                          {label} {formatNumber(count)}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   {selectedSignal.strongest.length > 0 ? (
                     <div>
                       <span>Edges</span>
@@ -598,6 +915,32 @@ export default function App() {
                           <li key={type}>
                             <b style={{ background: edgePalette[type] }} />
                             {type} {count}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {selectedSignal.incoming.length > 0 ? (
+                    <div>
+                      <span>Incoming</span>
+                      <ul>
+                        {selectedSignal.incoming.map((link) => (
+                          <li key={link.id}>
+                            <b style={{ background: edgePalette[link.type] }} />
+                            {link.type} {link.via ?? ""}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {selectedSignal.outgoing.length > 0 ? (
+                    <div>
+                      <span>Outgoing</span>
+                      <ul>
+                        {selectedSignal.outgoing.map((link) => (
+                          <li key={link.id}>
+                            <b style={{ background: edgePalette[link.type] }} />
+                            {link.type} {link.via ?? ""}
                           </li>
                         ))}
                       </ul>

@@ -9,6 +9,7 @@ import type {
   RawGraph,
   RawLink,
   RawNode,
+  EdgeDensity,
   ViewGraph,
   ViewMode
 } from "../types";
@@ -21,12 +22,14 @@ export interface BuildViewOptions {
   selectedId: string | null;
   focusDepth: number;
   edgeTypes: Set<DependencyKind>;
+  edgeDensity: EdgeDensity;
 }
 
 const classNodeBudget = 4000;
 const classLinkBudget = 14000;
 const focusNodeBudget = 260;
 const focusLinkBudget = 1600;
+const overviewLinkBudget = 900;
 
 const nodeKinds: NodeKind[] = [
   "class",
@@ -348,13 +351,22 @@ function filteredLinks(graph: GraphData, edgeTypes: Set<DependencyKind>) {
   return graph.links.filter((link) => edgeTypes.size === 0 || edgeTypes.has(link.type));
 }
 
-function buildSubgraph(nodes: GraphNode[], links: GraphLink[], mode: ViewMode, title: string): ViewGraph {
+function linkBudgetFor(base: number, edgeDensity: EdgeDensity) {
+  if (edgeDensity === "quiet") return Math.max(80, Math.round(base * 0.35));
+  if (edgeDensity === "full") return Math.round(base * 2.5);
+  return base;
+}
+
+function buildSubgraph(nodes: GraphNode[], links: GraphLink[], mode: ViewMode, title: string, edgeDensity: EdgeDensity): ViewGraph {
   const nodeIds = new Set(nodes.map((node) => node.id));
+  const visibleLinks = links.filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target));
   return {
     nodes,
-    links: links.filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target)),
+    links: visibleLinks,
     mode,
-    title
+    title,
+    hiddenLinks: 0,
+    budget: { edgeDensity }
   };
 }
 
@@ -381,13 +393,15 @@ function budgetNodes(nodes: GraphNode[], limit: number, selectedId: string | nul
 
 function budgetLinks(links: GraphLink[], limit: number, selectedId: string | null) {
   if (links.length <= limit) return links;
-  return [...links]
+  const directSelected =
+    selectedId === null ? [] : links.filter((link) => link.source === selectedId || link.target === selectedId);
+  const directIds = new Set(directSelected.map((link) => link.id));
+  const sortedRest = links
+    .filter((link) => !directIds.has(link.id))
     .sort((a, b) => {
-      const aSelected = a.source === selectedId || a.target === selectedId ? 1 : 0;
-      const bSelected = b.source === selectedId || b.target === selectedId ? 1 : 0;
-      return bSelected - aSelected || b.weight - a.weight || relationPriority(b.type) - relationPriority(a.type);
-    })
-    .slice(0, limit);
+      return relationPriority(b.type) - relationPriority(a.type) || b.weight - a.weight;
+    });
+  return [...directSelected, ...sortedRest.slice(0, Math.max(0, limit - directSelected.length))];
 }
 
 function buildBudgetedSubgraph(
@@ -397,25 +411,26 @@ function buildBudgetedSubgraph(
   title: string,
   selectedId: string | null,
   nodeBudget: number,
-  linkBudget: number
+  linkBudget: number,
+  edgeDensity: EdgeDensity
 ): ViewGraph {
   const visibleNodes = budgetNodes(nodes, nodeBudget, selectedId);
   const nodeIds = new Set(visibleNodes.map((node) => node.id));
-  const visibleLinks = budgetLinks(
-    links.filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target)),
-    linkBudget,
-    selectedId
-  );
+  const candidateLinks = links.filter((link) => nodeIds.has(link.source) && nodeIds.has(link.target));
+  const linkLimit = linkBudgetFor(linkBudget, edgeDensity);
+  const visibleLinks = budgetLinks(candidateLinks, linkLimit, selectedId);
 
   return {
     nodes: visibleNodes,
     links: visibleLinks,
     mode,
-    title
+    title,
+    hiddenLinks: Math.max(0, candidateLinks.length - visibleLinks.length),
+    budget: { edgeDensity, nodeLimit: nodeBudget, linkLimit }
   };
 }
 
-function aggregateByPackage(graph: GraphData, links: GraphLink[], allowedNodeIds?: Set<string>): ViewGraph {
+function aggregateByPackage(graph: GraphData, links: GraphLink[], edgeDensity: EdgeDensity, allowedNodeIds?: Set<string>): ViewGraph {
   const packages = new Map<string, GraphNode>();
   const sourceNodes = allowedNodeIds ? graph.nodes.filter((node) => allowedNodeIds.has(node.id)) : graph.nodes;
 
@@ -475,6 +490,7 @@ function aggregateByPackage(graph: GraphData, links: GraphLink[], allowedNodeIds
     const weights = typeWeights.get(key);
     const strongestType = Array.from(weights?.entries() ?? []).sort((a, b) => b[1] - a[1])[0]?.[0];
     if (strongestType) link.type = strongestType;
+    link.reason = `${link.weight} bundled package relations`;
   }
 
   const visibleLinkIds = new Set<string>();
@@ -487,13 +503,15 @@ function aggregateByPackage(graph: GraphData, links: GraphLink[], allowedNodeIds
   for (const sourceLinks of bySource.values()) {
     sourceLinks
       .sort((a, b) => b.weight - a.weight)
-      .slice(0, 8)
+      .slice(0, edgeDensity === "quiet" ? 4 : edgeDensity === "full" ? 16 : 8)
       .forEach((link) => visibleLinkIds.add(link.id));
   }
 
-  const visibleLinks = Array.from(aggregateLinks.values())
+  const candidateLinks = Array.from(aggregateLinks.values())
     .filter((link) => visibleLinkIds.has(link.id))
     .sort((a, b) => b.weight - a.weight);
+  const linkLimit = linkBudgetFor(overviewLinkBudget, edgeDensity);
+  const visibleLinks = budgetLinks(candidateLinks, linkLimit, null);
 
   const packageNodes = Array.from(packages.values());
   const byId = new Map(packageNodes.map((node) => [node.id, node]));
@@ -510,7 +528,9 @@ function aggregateByPackage(graph: GraphData, links: GraphLink[], allowedNodeIds
     nodes: packageNodes.sort((a, b) => a.packageName.localeCompare(b.packageName)),
     links: visibleLinks,
     mode: "overview",
-    title: "Package overview"
+    title: "Package overview",
+    hiddenLinks: Math.max(0, aggregateLinks.size - visibleLinks.length),
+    budget: { edgeDensity, linkLimit }
   };
 }
 
@@ -579,7 +599,7 @@ export function buildViewGraph(graph: GraphData, options: BuildViewOptions): Vie
   }
 
   if (options.mode === "overview") {
-    return aggregateByPackage(graph, links, allowed);
+    return aggregateByPackage(graph, links, options.edgeDensity, allowed);
   }
 
   if (options.mode === "focus" && options.selectedId && byId.has(options.selectedId)) {
@@ -597,12 +617,22 @@ export function buildViewGraph(graph: GraphData, options: BuildViewOptions): Vie
       "Focused neighborhood",
       options.selectedId,
       focusNodeBudget,
-      focusLinkBudget
+      focusLinkBudget,
+      options.edgeDensity
     );
   }
   if (options.mode === "classes") {
-    return buildBudgetedSubgraph(nodes, links, options.mode, "Class graph", options.selectedId, classNodeBudget, classLinkBudget);
+    return buildBudgetedSubgraph(
+      nodes,
+      links,
+      options.mode,
+      "Class graph",
+      options.selectedId,
+      classNodeBudget,
+      classLinkBudget,
+      options.edgeDensity
+    );
   }
 
-  return buildSubgraph(nodes, links, options.mode, "Class graph");
+  return buildSubgraph(nodes, links, options.mode, "Class graph", options.edgeDensity);
 }

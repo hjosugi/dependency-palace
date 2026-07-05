@@ -141,6 +141,11 @@ button {
   border-radius: 8px;
 }
 
+.segmented.compact button {
+  min-height: 30px;
+  padding: 6px 7px;
+}
+
 .metaphor-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -478,6 +483,22 @@ button {
   font-weight: 700;
 }
 
+.diagnostic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.diagnostic-list span {
+  min-height: 24px;
+  padding: 4px 7px;
+  color: #d8d1c3;
+  font-size: 11px;
+  background: #11100e;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
 .selected-node {
   display: grid;
   gap: 12px;
@@ -541,6 +562,7 @@ button {
 .signal-card b {
   width: 8px;
   height: 8px;
+  background: var(--accent);
   border-radius: 50%;
 }
 

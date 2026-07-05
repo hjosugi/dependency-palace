@@ -22,6 +22,7 @@ export interface SourceFile {
   relativePath: string;
   language: SourceLanguage;
   text: string;
+  contentHash?: string;
 }
 
 export interface ExtractedFile {
@@ -38,6 +39,8 @@ export interface ExtractContext {
 export interface LanguageAdapter {
   language: SourceLanguage;
   extensions: string[];
+  level?: "first-pass" | "native" | "external";
+  limitations?: string[];
   extract(file: SourceFile, context: ExtractContext): ExtractedFile;
 }
 
@@ -45,11 +48,18 @@ export interface ScanOptions {
   root: string;
   out: string;
   diagnosticsOut: string;
+  compactOut: string;
   configPath?: string;
   include: string[];
   exclude: string[];
   moduleDepth: number;
   maxFileBytes: number;
+  cache: boolean;
+  cacheDir: string;
+  clearCache: boolean;
+  format: "json" | "compact" | "both";
+  watch: boolean;
+  watchIntervalMs: number;
 }
 
 export interface ScanConfig {
@@ -57,6 +67,9 @@ export interface ScanConfig {
   exclude?: string[];
   moduleDepth?: number;
   maxFileBytes?: number;
+  cache?: boolean;
+  cacheDir?: string;
+  watchIntervalMs?: number;
 }
 
 export interface AdapterWarning {
@@ -74,18 +87,38 @@ export interface SkippedFile {
 
 export interface LanguageScanDiagnostics {
   files: number;
+  cached: number;
   nodes: number;
   links: number;
 }
 
 export interface ScanDiagnostics {
+  schemaVersion: 1;
   root: string;
   generatedAt: string;
+  durationMs: number;
   filesScanned: number;
   filesSkipped: number;
   nodesEmitted: number;
   linksEmitted: number;
   unresolvedEdges: number;
+  outputs: {
+    json?: string;
+    compact?: string;
+    diagnostics: string;
+  };
+  bytes: {
+    json?: number;
+    compact?: number;
+  };
+  cache: {
+    enabled: boolean;
+    dir?: string;
+    adapterVersion: string;
+    hits: number;
+    misses: number;
+    writes: number;
+  };
   languages: Partial<Record<SourceLanguage, LanguageScanDiagnostics>>;
   skipped: SkippedFile[];
   warnings: AdapterWarning[];

@@ -1,8 +1,12 @@
 node_modules/
 dist/
 artifacts/
+.dependency-palace/
 *.log
 .DS_Store
 dependency-palace.graph.json
+dependency-palace.graph.dpg
 dependency-palace.config.json
 public/dependency-palace.graph.json
+public/dependency-palace.graph.dpg
+public/dependency-palace.graph.json.diagnostics.json

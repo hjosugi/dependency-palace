@@ -162,11 +162,19 @@ export type ViewMode = "overview" | "classes" | "focus";
 
 export type VisualizationMetaphor = "palace" | "tree" | "blocks" | "organism" | "space" | "atomic";
 
+export type EdgeDensity = "quiet" | "balanced" | "full";
+
 export interface ViewGraph {
   nodes: GraphNode[];
   links: GraphLink[];
   mode: ViewMode;
   title: string;
+  hiddenLinks?: number;
+  budget?: {
+    edgeDensity: EdgeDensity;
+    nodeLimit?: number;
+    linkLimit?: number;
+  };
 }
 
 export interface GraphAnalysis {
@@ -180,4 +188,22 @@ export interface GraphAnalysis {
   totalMethods: number;
   kinds: Record<NodeKind, number>;
   topHubs: GraphNode[];
+}
+
+export interface GraphWorkerTimings {
+  parseMs?: number;
+  normalizeMs: number;
+  analyzeMs: number;
+  filterMs: number;
+  layoutMs: number;
+  totalMs: number;
+}
+
+export interface RenderStats {
+  backend: "webgpu" | "webgl" | "unknown";
+  nodeInstances: number;
+  links: number;
+  lineSegments: number;
+  bufferBytes: number;
+  uploadMs: number;
 }

@@ -6,10 +6,8 @@ Dependency Palace uses a WebGPU-first rendering architecture with WebGL fallback
 
 ```text
 RawGraph JSON
-  -> normalizeGraph
-  -> analyzeGraph
-  -> buildViewGraph
-  -> layoutViewGraph
+  -> graph worker
+  -> normalizeGraph / analyzeGraph / buildViewGraph / layoutViewGraph
   -> GraphScene
   -> WebGPURenderer when available
   -> WebGLRenderer fallback otherwise
@@ -21,6 +19,7 @@ The renderer is initialized in [GraphScene.tsx](../src/GraphScene.tsx):
 - Use `WebGPURenderer` when `navigator.gpu` is present and initialization succeeds.
 - Fall back to `WebGLRenderer` when WebGPU is unavailable.
 - Keep the same scene graph and interaction model for both backends.
+- Report the active backend, estimated buffer bytes, and upload time in the stage metric strip.
 
 The dynamic import keeps the app shell smaller and avoids loading the WebGPU backend in browsers that cannot use it.
 
@@ -71,10 +70,13 @@ Done:
 - Backend marker on canvas for verification.
 - Existing instanced node meshes and batched edge lines.
 - Focus/class view budgets in the graph model layer before layout/render upload.
+- Edge density presets for quiet, balanced, and full views.
+- Package-level edge bundling in Map view.
+- Selected-node direct edges are prioritized during link budgeting.
 
 ### Phase 2: Worker Layout
 
-Move these off the UI thread:
+Done for the current JSON/compact graph boundary:
 
 - SCC detection.
 - Query filtering.
@@ -82,7 +84,7 @@ Move these off the UI thread:
 - Package aggregation.
 - Semantic layout.
 
-Use transferable typed arrays for large outputs.
+Next step: use transferable typed arrays for very large outputs.
 
 ### Phase 3: Render Buffer Model
 
