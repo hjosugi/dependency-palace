@@ -10,6 +10,9 @@ npm run dev
 ```
 
 By default, the scanner writes `public/dependency-palace.graph.json`. The app fetches that file on startup and opens it automatically.
+The scanner also writes a diagnostics sidecar at
+`public/dependency-palace.graph.json.diagnostics.json` unless
+`--diagnostics-out` is provided.
 
 The scanner reads everything below the requested root. You can point it at a whole repository or a narrower subtree:
 
@@ -36,6 +39,7 @@ Options:
 - `exclude`: path fragments or glob-ish patterns to skip.
 - `moduleDepth`: how many path segments become the 3D module district.
 - `maxFileBytes`: safety cap for huge generated files.
+- `--diagnostics-out`: explicit diagnostics JSON destination.
 
 ## Supported First-Pass Adapters
 
@@ -66,6 +70,29 @@ There are two adapter levels:
 2. Native adapter: compiler, language-server, tree-sitter, or ecosystem-native analyzer with accurate symbols, call edges, generics, overloads, macro handling, and cross-file resolution.
 
 The first-pass adapters are in [src/extract/adapters.ts](../src/extract/adapters.ts). Native adapter implementation issues are tracked in [docs/issues](issues).
+
+## Diagnostics And Quality Gates
+
+Every scan writes machine-readable diagnostics with:
+
+- files scanned and skipped;
+- per-language file/node/link counts;
+- emitted node and link totals;
+- unresolved edge count;
+- adapter warnings.
+
+The CLI also prints a short human-readable diagnostics line after each scan.
+
+Run the fixture contract check with:
+
+```bash
+npm test
+```
+
+This scans [fixtures/polyglot](../fixtures/polyglot), validates the emitted graph
+shape, checks diagnostics consistency, and asserts the P0 Haskell/Java semantic
+relations: records, typeclasses, instances, FP composition, Java interfaces,
+records, service fields, and implementation edges.
 
 ## Desired Native Adapter Behavior
 

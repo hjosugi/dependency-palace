@@ -224,6 +224,7 @@ export function normalizeGraph(raw: RawGraph): GraphData {
       sccSize: 1,
       fields: members.fields,
       methods: members.methods,
+      source: rawNode.source,
       role: roleFromNode(rawNode, kind)
     });
   }
@@ -253,6 +254,7 @@ export function normalizeGraph(raw: RawGraph): GraphData {
           sccSize: 1,
           fields: [],
           methods: [],
+          source: undefined,
           role: "unknown"
         });
       }
@@ -271,7 +273,8 @@ export function normalizeGraph(raw: RawGraph): GraphData {
         type,
         weight: Math.max(1, rawLink.weight ?? 1),
         via: rawLink.via,
-        reason: rawLink.reason
+        reason: rawLink.reason,
+        location: rawLink.location
       });
     }
   }

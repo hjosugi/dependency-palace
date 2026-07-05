@@ -19,6 +19,7 @@ type Node = {
   fields?: CodeMember[];
   methods?: CodeMember[];
   members?: CodeMember[];
+  source?: SourceLocation;
 };
 
 type CodeMember = {
@@ -31,6 +32,15 @@ type CodeMember = {
   signature?: string;
   calls?: string[];
   uses?: string[];
+  source?: SourceLocation;
+};
+
+type SourceLocation = {
+  path: string;
+  startLine: number;
+  endLine?: number;
+  startColumn?: number;
+  endColumn?: number;
 };
 ```
 
@@ -41,6 +51,8 @@ Notes:
 - `package` or `namespace` controls local clustering.
 - `layer` is optional. Use low numbers for core/domain code and higher numbers for API/UI edges.
 - `fields`, `methods`, or `members` make focus view semantic instead of just structural.
+- `source` carries the relative file path and line range for selected-panel and
+  open-in-editor workflows. Omit it when a source range is not known.
 - Unknown link endpoints are added as `external` nodes.
 
 ## Links

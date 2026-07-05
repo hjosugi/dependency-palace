@@ -48,6 +48,13 @@ function nodeVoice(node: DisplayNode | NonNullable<ReturnType<typeof normalizeGr
   return node.kind;
 }
 
+function sourceLabel(node: DisplayNode | NonNullable<ReturnType<typeof normalizeGraph>["nodes"][number]>) {
+  const source = node.source;
+  if (!source) return null;
+  const end = source.endLine && source.endLine !== source.startLine ? `-${source.endLine}` : "";
+  return `${source.path}:${source.startLine}${end}`;
+}
+
 const metaphorOptions: Array<{ id: VisualizationMetaphor; label: string; icon: typeof Box }> = [
   { id: "palace", label: "Palace", icon: Box },
   { id: "tree", label: "Tree", icon: TreePine },
@@ -143,6 +150,7 @@ export default function App() {
     () => graph.nodes.find((node) => node.id === selectedId) ?? null,
     [graph.nodes, selectedId]
   );
+  const selectedSource = selectedNode ? sourceLabel(selectedNode) : null;
 
   useEffect(() => {
     if (mode === "focus" && !selectedId && analysis.topHubs[0]) {
@@ -557,6 +565,12 @@ export default function App() {
                   <dt>loc</dt>
                   <dd>{formatNumber(selectedNode.loc)}</dd>
                 </div>
+                {selectedSource ? (
+                  <div>
+                    <dt>source</dt>
+                    <dd>{selectedSource}</dd>
+                  </div>
+                ) : null}
                 <div>
                   <dt>members</dt>
                   <dd>{selectedNode.fields.length + selectedNode.methods.length}</dd>
@@ -635,6 +649,11 @@ export default function App() {
                 <button type="button" onClick={() => setSelectedId(null)}>
                   Clear
                 </button>
+                {selectedSource ? (
+                  <button type="button" onClick={() => void navigator.clipboard?.writeText(selectedSource)}>
+                    Copy source
+                  </button>
+                ) : null}
               </div>
             </div>
           ) : (

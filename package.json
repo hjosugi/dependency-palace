@@ -8,6 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "scan": "tsx src/cli/scan.ts",
+    "test": "tsx scripts/verify-adapter-fixtures.ts",
+    "verify:adapters": "tsx scripts/verify-adapter-fixtures.ts",
     "generate:examples": "node scripts/generate-examples.mjs",
     "issues:dry-run": "node scripts/sync-github-issues.mjs",
     "issues:sync": "node scripts/sync-github-issues.mjs --apply",

@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { CodeMember, DependencyKind, ExtractedFile, RawLink, RawNode, SourceFile } from "./types";
+import type { CodeMember, DependencyKind, ExtractedFile, RawLink, RawNode, SourceFile, SourceLocation } from "./types";
 
 const visibilityPattern = "(?:public|private|protected|internal|package|pub|open|final|static|abstract|override|async|export|readonly|mut|const|let|var|val|def|func|fn|fun|virtual|sealed|partial|unsafe|extern|inline|suspend|data|case|class|struct|trait|impl|interface|enum)\\s+";
 
@@ -23,6 +23,26 @@ export function stripComments(text: string) {
 
 export function countLoc(text: string) {
   return text.split(/\r?\n/).filter((line) => line.trim() && !line.trim().startsWith("//")).length;
+}
+
+export function lineAt(text: string, index: number) {
+  if (index <= 0) return 1;
+  let line = 1;
+  const end = Math.min(index, text.length);
+  for (let offset = 0; offset < end; offset += 1) {
+    if (text[offset] === "\n") line += 1;
+  }
+  return line;
+}
+
+export function sourceLocation(file: SourceFile, startIndex: number, endIndex?: number): SourceLocation {
+  const startLine = lineAt(file.text, startIndex);
+  const endLine = typeof endIndex === "number" ? lineAt(file.text, Math.max(startIndex, endIndex)) : startLine;
+  return {
+    path: file.relativePath,
+    startLine,
+    endLine: endLine === startLine ? undefined : endLine
+  };
 }
 
 export function simpleComplexity(text: string) {
@@ -140,6 +160,7 @@ export function importTargets(text: string, patterns: RegExp[]) {
 
 export function createFileNode(file: SourceFile, moduleDepth: number): RawNode {
   const packageName = packageFromPath(file.relativePath);
+  const totalLines = Math.max(1, file.text.split(/\r?\n/).length);
   return {
     id: `file:${file.relativePath}`,
     label: path.basename(file.relativePath),
@@ -147,7 +168,8 @@ export function createFileNode(file: SourceFile, moduleDepth: number): RawNode {
     package: packageName,
     kind: "module",
     loc: countLoc(file.text),
-    complexity: simpleComplexity(file.text)
+    complexity: simpleComplexity(file.text),
+    source: { path: file.relativePath, startLine: 1, endLine: totalLines }
   };
 }
 

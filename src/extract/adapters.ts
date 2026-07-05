@@ -13,6 +13,7 @@ import {
   qualifiedName,
   simpleComplexity,
   simpleTypeName,
+  sourceLocation,
   stripComments,
   visibilityFromLine
 } from "./utils";
@@ -87,6 +88,7 @@ function braceLanguageAdapter(options: BraceLanguageOptions): LanguageAdapter {
         if (!name) continue;
         const openIndex = text.indexOf("{", match.index ?? 0);
         const body = extractBraceBody(text, openIndex);
+        const declarationEnd = openIndex >= 0 ? openIndex + body.length + 2 : (match.index ?? 0) + match[0].length;
         const members = extractMembersFromBraceBody(body);
         const id = qualifiedName(namespace, name);
         const kind = options.kindMap[rawKind] ?? "class";
@@ -99,7 +101,8 @@ function braceLanguageAdapter(options: BraceLanguageOptions): LanguageAdapter {
           loc: countLoc(body || text),
           complexity: simpleComplexity(body || text),
           fields: members.fields,
-          methods: members.methods
+          methods: members.methods,
+          source: sourceLocation(file, match.index ?? 0, declarationEnd)
         };
         addNode(nodes, seenNodes, node);
         addLink(links, seenLinks, fileNode.id, id, "uses", undefined, "declares type");
@@ -173,7 +176,8 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
   }
 
   function addConstraints(sourceId: string, signature: string | undefined, via: string) {
-    const constraints = signature?.match(/^(?:\(([^)]+)\)|([A-Z][\w'.]*\s+[a-z]))\s*=>/)?.[1];
+    const constraintMatch = signature?.match(/^(?:\(([^)]+)\)|([A-Z][\w'.]*\s+[a-z]))\s*=>/);
+    const constraints = constraintMatch?.[1] ?? constraintMatch?.[2];
     for (const constraint of typeWords(constraints)) {
       addLink(links, seenLinks, sourceId, resolveImportedType(constraint, imports, namespace), "constrains", via, "typeclass constraint");
     }
@@ -207,6 +211,8 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
       });
     }
     const id = qualifiedName(namespace, name);
+    const start = match.index ?? 0;
+    const end = start + declaration.length;
     addNode(nodes, seenNodes, {
       id,
       label: name,
@@ -216,7 +222,8 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
       loc: countLoc(declaration),
       complexity: simpleComplexity(declaration),
       fields,
-      methods: []
+      methods: [],
+      source: sourceLocation(file, start, end)
     });
     addLink(links, seenLinks, fileNode.id, id, "contains", undefined, `declares ${rawKind}`);
     for (const field of fields) {
@@ -232,6 +239,7 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
   for (const match of text.matchAll(/^\s*type\s+([A-Z][\w']*)\b[^\n=]*=\s*(.+)$/gm)) {
     const name = match[1];
     const id = qualifiedName(namespace, name);
+    const start = match.index ?? 0;
     const aliased = match[2].trim();
     addNode(nodes, seenNodes, {
       id,
@@ -242,7 +250,8 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
       loc: 1,
       complexity: 1,
       fields: [{ name: "alias", kind: "field", type: aliased, visibility: "public" }],
-      methods: []
+      methods: [],
+      source: sourceLocation(file, start, start + match[0].length)
     });
     addLink(links, seenLinks, fileNode.id, id, "contains", undefined, "declares type alias");
     addTypeRefs(id, aliased, "alias", "type alias target");
@@ -263,6 +272,7 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
       })
     );
     const id = qualifiedName(namespace, name);
+    const start = match.index ?? 0;
     addNode(nodes, seenNodes, {
       id,
       label: name,
@@ -272,7 +282,8 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
       loc: countLoc(body),
       complexity: simpleComplexity(body),
       fields: [],
-      methods
+      methods,
+      source: sourceLocation(file, start, start + body.length)
     });
     addLink(links, seenLinks, fileNode.id, id, "contains", undefined, "declares typeclass");
     const superclassPart = header.includes("=>") ? header.split("=>")[0] : undefined;
@@ -301,7 +312,7 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
 
   for (const [name, signature] of signatures) {
     const id = qualifiedName(namespace, name);
-    const definition = text.match(new RegExp(`^\\s*${name}\\b[^=]*=\\s*(.+)$`, "m"))?.[1] ?? "";
+    const definition = text.match(new RegExp(`^\\s*${name}(?!\\s*::)\\b[^=\\n]*=\\s*(.+)$`, "m"))?.[1] ?? "";
     addNode(nodes, seenNodes, {
       id,
       label: name,
@@ -311,7 +322,8 @@ function extractHaskell(file: SourceFile, context: ExtractContext): ExtractedFil
       loc: 1,
       complexity: simpleComplexity(definition),
       fields: [],
-      methods: [{ name, kind: "method", visibility: "public", signature: `${name} :: ${signature}` }]
+      methods: [{ name, kind: "method", visibility: "public", signature: `${name} :: ${signature}` }],
+      source: sourceLocation(file, text.indexOf(`${name} ::`), text.indexOf(`${name} ::`) + `${name} :: ${signature}`.length)
     });
     addLink(links, seenLinks, fileNode.id, id, "contains", name, "declares top-level function");
     addTypeRefs(id, signature, name, "function signature type reference");
@@ -590,8 +602,8 @@ const adapters: LanguageAdapter[] = [
     extensions: [".java"],
     namespacePatterns: [/^\s*package\s+([\w.]+)\s*;/m],
     importPatterns: [/^\s*import\s+(?:static\s+)?([\w.*]+)\s*;/gm],
-    typePattern: /\b(class|interface|enum)\s+([A-Za-z_$][\w$]*)[^{;]*\{/g,
-    kindMap: { class: "class", interface: "interface", enum: "enum" },
+    typePattern: /\b(class|interface|enum|record)\s+([A-Za-z_$][\w$]*)[^{;]*\{/g,
+    kindMap: { class: "class", interface: "interface", enum: "enum", record: "datatype" },
     inheritance(match) {
       const header = match[0];
       return {

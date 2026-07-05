@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { adapterForPath, supportedLanguages } from "../extract/adapters";
-import type { RawGraph, RawLink, RawNode, ScanConfig, ScanOptions } from "../extract/types";
+import type { AdapterWarning, RawGraph, RawLink, RawNode, ScanConfig, ScanDiagnostics, ScanOptions, SkippedFile, SourceLanguage } from "../extract/types";
 
 const defaultExclude = [
   ".git",
@@ -35,6 +35,8 @@ Usage:
 Options:
   --root <path>          Directory to scan. Defaults to first positional argument or current directory.
   --out <path>           Output JSON path. Defaults to public/dependency-palace.graph.json.
+  --diagnostics-out <path>
+                         Diagnostics JSON path. Defaults to <out>.diagnostics.json.
   --config <path>        Optional config JSON. Defaults to dependency-palace.config.json when present.
   --include <pattern>    Include path substring/glob-ish pattern. Repeatable.
   --exclude <pattern>    Exclude path substring/glob-ish pattern. Repeatable.
@@ -96,7 +98,12 @@ function shouldInclude(relativePath: string, options: ScanOptions) {
   return options.include.some((pattern) => globishMatch(pattern, normalized));
 }
 
-async function walk(root: string, options: ScanOptions, current = root): Promise<string[]> {
+async function walk(
+  root: string,
+  options: ScanOptions,
+  current = root,
+  skipped: SkippedFile[] = []
+): Promise<{ files: string[]; skipped: SkippedFile[] }> {
   const entries = await readdir(current, { withFileTypes: true });
   const files: string[] = [];
 
@@ -106,17 +113,25 @@ async function walk(root: string, options: ScanOptions, current = root): Promise
     if (!shouldInclude(relative, options)) continue;
 
     if (entry.isDirectory()) {
-      files.push(...(await walk(root, options, absolute)));
+      const nested = await walk(root, options, absolute, skipped);
+      files.push(...nested.files);
       continue;
     }
     if (!entry.isFile()) continue;
     if (!adapterForPath(absolute)) continue;
     const stats = await stat(absolute);
-    if (stats.size > options.maxFileBytes) continue;
+    if (stats.size > options.maxFileBytes) {
+      skipped.push({
+        path: relative.replaceAll("\\", "/"),
+        reason: `larger than maxFileBytes (${options.maxFileBytes})`,
+        bytes: stats.size
+      });
+      continue;
+    }
     files.push(absolute);
   }
 
-  return files;
+  return { files, skipped };
 }
 
 function mergeGraph(nodes: RawNode[], links: RawLink[]) {
@@ -147,12 +162,27 @@ function mergeGraph(nodes: RawNode[], links: RawLink[]) {
   return { nodes: Array.from(nodeMap.values()), links: Array.from(linkMap.values()) };
 }
 
+function endpointId(endpoint: RawLink["source"]) {
+  return typeof endpoint === "string" ? endpoint : endpoint.id;
+}
+
+function countUnresolvedEdges(nodes: RawNode[], links: RawLink[]) {
+  const ids = new Set(nodes.map((node) => node.id));
+  let count = 0;
+  for (const link of links) {
+    if (!ids.has(endpointId(link.source)) || !ids.has(endpointId(link.target))) count += 1;
+  }
+  return count;
+}
+
 function optionsFromArgs(values: Map<string, string[]>, positionals: string[], config: ScanConfig): ScanOptions {
   const root = path.resolve(values.get("root")?.at(-1) ?? positionals[0] ?? ".");
   const out = path.resolve(values.get("out")?.at(-1) ?? "public/dependency-palace.graph.json");
+  const diagnosticsOut = path.resolve(values.get("diagnostics-out")?.at(-1) ?? `${out}.diagnostics.json`);
   return {
     root,
     out,
+    diagnosticsOut,
     configPath: values.get("config")?.at(-1),
     include: [...(config.include ?? []), ...(values.get("include") ?? [])],
     exclude: [...defaultExclude, ...(config.exclude ?? []), ...(values.get("exclude") ?? [])],
@@ -176,10 +206,12 @@ async function main() {
   const options = optionsFromArgs(values, positionals, config);
   if (!existsSync(options.root)) throw new Error(`Scan root does not exist: ${options.root}`);
 
-  const files = await walk(options.root, options);
+  const { files, skipped } = await walk(options.root, options);
   const allNodes: RawNode[] = [];
   const allLinks: RawLink[] = [];
   const languages = new Set<string>();
+  const warnings: AdapterWarning[] = [];
+  const languageDiagnostics: ScanDiagnostics["languages"] = {};
 
   for (const absolutePath of files) {
     const adapter = adapterForPath(absolutePath);
@@ -198,9 +230,17 @@ async function main() {
     );
     allNodes.push(...extracted.nodes);
     allLinks.push(...extracted.links);
+    warnings.push(...(extracted.warnings ?? []));
+    const language = adapter.language as SourceLanguage;
+    const current = languageDiagnostics[language] ?? { files: 0, nodes: 0, links: 0 };
+    current.files += 1;
+    current.nodes += extracted.nodes.length;
+    current.links += extracted.links.length;
+    languageDiagnostics[language] = current;
   }
 
   const merged = mergeGraph(allNodes, allLinks);
+  const unresolvedEdges = countUnresolvedEdges(merged.nodes, merged.links);
   const graph: RawGraph = {
     nodes: merged.nodes,
     links: merged.links,
@@ -213,9 +253,26 @@ async function main() {
 
   await mkdir(path.dirname(options.out), { recursive: true });
   await writeFile(options.out, `${JSON.stringify(graph, null, 2)}\n`, "utf8");
+  const diagnostics: ScanDiagnostics = {
+    root: options.root,
+    generatedAt: graph.meta?.generatedAt ?? new Date().toISOString(),
+    filesScanned: files.length,
+    filesSkipped: skipped.length,
+    nodesEmitted: graph.nodes.length,
+    linksEmitted: (graph.links ?? []).length,
+    unresolvedEdges,
+    languages: languageDiagnostics,
+    skipped,
+    warnings
+  };
+  await mkdir(path.dirname(options.diagnosticsOut), { recursive: true });
+  await writeFile(options.diagnosticsOut, `${JSON.stringify(diagnostics, null, 2)}\n`, "utf8");
 
   console.log(
     `Scanned ${files.length} files, wrote ${graph.nodes.length} nodes and ${(graph.links ?? []).length} links to ${options.out}`
+  );
+  console.log(
+    `Diagnostics: ${skipped.length} skipped, ${unresolvedEdges} unresolved edges, ${warnings.length} warnings -> ${options.diagnosticsOut}`
   );
 }
 

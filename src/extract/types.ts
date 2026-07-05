@@ -1,4 +1,4 @@
-import type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode } from "../types";
+import type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode, SourceLocation } from "../types";
 
 export type SourceLanguage =
   | "c"
@@ -27,6 +27,7 @@ export interface SourceFile {
 export interface ExtractedFile {
   nodes: RawNode[];
   links: RawLink[];
+  warnings?: AdapterWarning[];
 }
 
 export interface ExtractContext {
@@ -43,6 +44,7 @@ export interface LanguageAdapter {
 export interface ScanOptions {
   root: string;
   out: string;
+  diagnosticsOut: string;
   configPath?: string;
   include: string[];
   exclude: string[];
@@ -57,4 +59,36 @@ export interface ScanConfig {
   maxFileBytes?: number;
 }
 
-export type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode };
+export interface AdapterWarning {
+  path: string;
+  language?: SourceLanguage;
+  message: string;
+  line?: number;
+}
+
+export interface SkippedFile {
+  path: string;
+  reason: string;
+  bytes?: number;
+}
+
+export interface LanguageScanDiagnostics {
+  files: number;
+  nodes: number;
+  links: number;
+}
+
+export interface ScanDiagnostics {
+  root: string;
+  generatedAt: string;
+  filesScanned: number;
+  filesSkipped: number;
+  nodesEmitted: number;
+  linksEmitted: number;
+  unresolvedEdges: number;
+  languages: Partial<Record<SourceLanguage, LanguageScanDiagnostics>>;
+  skipped: SkippedFile[];
+  warnings: AdapterWarning[];
+}
+
+export type { CodeMember, DependencyKind, NodeKind, RawGraph, RawLink, RawNode, SourceLocation };

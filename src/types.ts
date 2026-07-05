@@ -28,6 +28,14 @@ export type MemberKind = "field" | "method" | "constructor" | "property";
 
 export type Visibility = "public" | "protected" | "private" | "package" | "internal";
 
+export interface SourceLocation {
+  path: string;
+  startLine: number;
+  endLine?: number;
+  startColumn?: number;
+  endColumn?: number;
+}
+
 export interface CodeMember {
   name: string;
   kind: MemberKind;
@@ -38,6 +46,7 @@ export interface CodeMember {
   signature?: string;
   calls?: string[];
   uses?: string[];
+  source?: SourceLocation;
 }
 
 export interface RawNode {
@@ -54,6 +63,7 @@ export interface RawNode {
   fields?: CodeMember[];
   methods?: CodeMember[];
   members?: CodeMember[];
+  source?: SourceLocation;
 }
 
 export interface RawLink {
@@ -64,6 +74,7 @@ export interface RawLink {
   weight?: number;
   via?: string;
   reason?: string;
+  location?: SourceLocation;
 }
 
 export interface RawGraph {
@@ -92,6 +103,7 @@ export interface GraphNode {
   sccSize: number;
   fields: CodeMember[];
   methods: CodeMember[];
+  source?: SourceLocation;
   childCount?: number;
   role?: "state" | "behavior" | "contract" | "data" | "boundary" | "adapter" | "composition" | "test" | "unknown";
 }
@@ -104,6 +116,7 @@ export interface GraphLink {
   weight: number;
   via?: string;
   reason?: string;
+  location?: SourceLocation;
 }
 
 export interface GraphData {
