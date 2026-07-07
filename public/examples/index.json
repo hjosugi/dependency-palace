@@ -111,8 +111,8 @@
     "language": "Java",
     "description": "bounded contexts with dense service/repository/entity relationships",
     "recommended": {
-      "view": "overview",
-      "form": "blocks",
+      "view": "focus",
+      "form": "city",
       "focusDepth": 1,
       "minDegree": 2,
       "module": "all"

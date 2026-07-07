@@ -175,7 +175,7 @@ export interface DisplayLink extends GraphLink {
 
 export type ViewMode = "overview" | "classes" | "focus";
 
-export type VisualizationMetaphor = "palace" | "tree" | "blocks" | "organism" | "space" | "atomic";
+export type VisualizationMetaphor = "palace" | "tree" | "blocks" | "organism" | "space" | "atomic" | "city";
 
 export type EdgeDensity = "quiet" | "balanced" | "full";
 

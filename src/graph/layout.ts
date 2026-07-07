@@ -566,10 +566,103 @@ function applyFocusMetaphor(
     setGroupRadial("lineage", 156, -48, 1.6, "#ffa94d");
   }
 
+  if (metaphor === "city") {
+    // Every symbol becomes a building standing on a shared ground plane (y = 0),
+    // so relative height reads as a skyline. Districts spread across the ground
+    // by relation, packages/modules cluster like neighborhoods, and distant
+    // context rings the city as low suburbs.
+    const buildingHeight = (node: DisplayNode) => {
+      if (node.isSynthetic) return node.visualKind === "field" || node.visualKind === "property" ? 9 : 15;
+      const members = node.fields.length + node.methods.length;
+      return Math.max(16, Math.min(148, 18 + members * 3.6 + node.complexity * 1.9 + Math.log2(node.degree + 1) * 7));
+    };
+    const buildingFootprint = (node: DisplayNode) => {
+      if (node.isSynthetic) return 6.5;
+      return Math.max(11, Math.min(44, 11 + Math.log2(node.loc + 1) * 3.1 + Math.log2(node.degree + 1) * 1.8));
+    };
+    const raise = (node: DisplayNode, x: number, z: number, color?: string) => {
+      const height = buildingHeight(node);
+      const footprint = buildingFootprint(node);
+      setNode(node, {
+        x,
+        y: height / 2,
+        z,
+        color: color ?? node.color,
+        dimensions: { x: footprint, y: height, z: footprint }
+      });
+    };
+
+    // Downtown landmark: the selected type as the central tower / city hall.
+    const hallHeight = Math.max(96, buildingHeight(selected) * 1.5);
+    const hallFootprint = Math.max(30, buildingFootprint(selected) * 1.1);
+    setNode(selected, {
+      x: 0,
+      y: hallHeight / 2,
+      z: 0,
+      color: "#ffe8a3",
+      dimensions: { x: hallFootprint, y: hallHeight, z: hallFootprint },
+      subtitle: `${selected.subtitle ?? selected.kind} / city hall`
+    });
+
+    // Plaza ring: owned members hug downtown — fields as cottages, methods as shops.
+    const plaza = [...(groups.get("field") ?? []), ...(groups.get("method") ?? [])];
+    plaza.forEach((node, index) => {
+      const position = placeRadial(index, plaza.length, 58 + (index % 2) * 12, 0, 0.35);
+      raise(node, position.x, position.z, node.visualKind === "field" || node.visualKind === "property" ? "#20c997" : "#ffd43b");
+    });
+
+    // Named districts laid out across the ground plane around downtown, each a city block.
+    const districts: Array<{ group: string; anchor: [number, number]; color: string }> = [
+      { group: "contract", anchor: [150, -158], color: "#b197fc" },
+      { group: "lineage", anchor: [0, -196], color: "#ffa94d" },
+      { group: "composition", anchor: [196, 8], color: "#20c997" },
+      { group: "pipeline", anchor: [150, 158], color: "#f06595" },
+      { group: "outgoing", anchor: [0, 196], color: "#63e6be" },
+      { group: "incoming", anchor: [-196, 8], color: "#74c0fc" }
+    ];
+
+    for (const district of districts) {
+      const blockNodes = groups.get(district.group) ?? [];
+      if (blockNodes.length === 0) continue;
+      const columns = Math.max(1, Math.ceil(Math.sqrt(blockNodes.length)));
+      const rows = Math.ceil(blockNodes.length / columns);
+      const spacing = 52;
+      const [ax, az] = district.anchor;
+      // Push larger districts outward so their inner edge stays clear of downtown.
+      const outward = Math.hypot(ax, az) || 1;
+      const push = ((rows - 1) / 2) * spacing;
+      const cx = ax + (ax / outward) * push;
+      const cz = az + (az / outward) * push;
+      blockNodes.forEach((node, index) => {
+        const column = index % columns;
+        const row = Math.floor(index / columns);
+        const x = cx + (column - (columns - 1) / 2) * spacing + (stableUnit(node.id) - 0.5) * 6;
+        const z = cz + (row - (rows - 1) / 2) * spacing + (stableUnit(`${node.id}:z`) - 0.5) * 6;
+        raise(node, x, z, district.color);
+      });
+    }
+
+    // Outskirts: distant context as a low suburb ring around the city.
+    const outskirts = groups.get("context") ?? [];
+    outskirts.forEach((node, index) => {
+      const position = placeRadial(index, outskirts.length, 340 + (index % 4) * 26, 0, 0.12);
+      const height = buildingHeight(node) * 0.68;
+      const footprint = buildingFootprint(node) * 0.82;
+      setNode(node, {
+        x: position.x,
+        y: height / 2,
+        z: position.z,
+        dimensions: { x: footprint, y: height, z: footprint }
+      });
+    });
+  }
+
   graph.links.forEach((link) => {
     if (metaphor === "tree") link.opacity *= link.type === "contains" || link.type === "inherits" ? 1.2 : 0.82;
     if (metaphor === "space") link.opacity *= link.type === "composes" ? 1.35 : 0.92;
     if (metaphor === "atomic") link.opacity *= link.type === "contains" || link.type === "composes" ? 1.25 : 0.76;
+    // City reads dependency edges as traffic: emphasize behavioral routes between buildings.
+    if (metaphor === "city") link.opacity *= link.type === "calls" || link.type === "creates" || link.type === "uses" ? 1.25 : 0.82;
   });
 
   return graph;

@@ -86,7 +86,7 @@ const specs = [
     fanOut: 5,
     cycles: 14,
     description: "bounded contexts with dense service/repository/entity relationships",
-    recommended: { view: "overview", form: "blocks", focusDepth: 1, minDegree: 2, module: "all" }
+    recommended: { view: "focus", form: "city", focusDepth: 1, minDegree: 2, module: "all" }
   },
   {
     id: "large-fp-event-system",
