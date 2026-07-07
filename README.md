@@ -121,7 +121,7 @@ The mental model is in [docs/mental-model.md](docs/mental-model.md), the renderi
 - Use WebGPU-first rendering with WebGL fallback.
 - Avoid an always-on force simulation for the main view; large class graphs should stay stable and navigable.
 - Avoid the hairball. The focus view must show state, behavior, contracts, and dependency reasons.
-- Switch between Palace, Tree, Blocks, Life, Space, and Atomic forms for different mental models. See [docs/metaphors.md](docs/metaphors.md).
+- Switch between Palace, Tree, Blocks, Life, Space, Atomic, and City forms for different mental models. See [docs/metaphors.md](docs/metaphors.md).
 
 ## Current Limits
 

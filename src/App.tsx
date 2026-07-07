@@ -4,6 +4,7 @@ import {
   Box,
   Boxes,
   Braces,
+  Building2,
   Camera,
   CircleDot,
   Crosshair,
@@ -93,7 +94,8 @@ const metaphorOptions: Array<{ id: VisualizationMetaphor; label: string; icon: t
   { id: "blocks", label: "Blocks", icon: Boxes },
   { id: "organism", label: "Life", icon: Dna },
   { id: "space", label: "Space", icon: Orbit },
-  { id: "atomic", label: "Atomic", icon: Atom }
+  { id: "atomic", label: "Atomic", icon: Atom },
+  { id: "city", label: "City", icon: Building2 }
 ];
 
 type ExampleDescriptor = {

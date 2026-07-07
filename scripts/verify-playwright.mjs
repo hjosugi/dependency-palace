@@ -17,7 +17,8 @@ const forms = [
   { label: "Blocks", id: "blocks" },
   { label: "Life", id: "organism" },
   { label: "Space", id: "space" },
-  { label: "Atomic", id: "atomic" }
+  { label: "Atomic", id: "atomic" },
+  { label: "City", id: "city" }
 ];
 
 const desktopExamples = [
