@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](010-secondary-language-native-adapters.md) | [日本語](010-secondary-language-native-adapters.ja.md)
+
 # Native Adapters: Kotlin, Scala, Swift, Ruby, PHP
 
 Labels: `adapter`, `kotlin`, `scala`, `swift`, `ruby`, `php`, `priority:P2`, `status:ready`

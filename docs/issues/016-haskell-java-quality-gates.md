@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](016-haskell-java-quality-gates.md) | [日本語](016-haskell-java-quality-gates.ja.md)
+
 # Haskell/Java Quality Gates
 
 Labels: `haskell`, `java`, `adapters`, `testing`, `priority:P0`, `status:ready`

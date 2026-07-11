@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](014-startup-example-payload-performance.md) | [日本語](014-startup-example-payload-performance.ja.md)
+
 # Startup And Example Payload Performance
 
 Labels: `performance`, `viewer`, `examples`, `priority:P0`, `status:ready`

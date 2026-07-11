@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](008-csharp-roslyn-native-adapter.md) | [日本語](008-csharp-roslyn-native-adapter.ja.md)
+
 # Native Adapter: C# / .NET
 
 Labels: `adapter`, `csharp`, `dotnet`, `priority:P2`, `status:ready`

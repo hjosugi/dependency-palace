@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](013-webgpu-render-pipeline.md) | [日本語](013-webgpu-render-pipeline.ja.md)
+
 # WebGPU Render Pipeline And Worker Layout
 
 Labels: `rendering`, `webgpu`, `performance`, `architecture`, `priority:P0`, `status:ready`

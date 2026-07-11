@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](009-c-cpp-native-adapter.md) | [日本語](009-c-cpp-native-adapter.ja.md)
+
 # Native Adapter: C And C++
 
 Labels: `adapter`, `c`, `cpp`, `priority:P2`, `status:ready`

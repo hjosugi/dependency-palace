@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](real-world-corpus.md) | [日本語](real-world-corpus.ja.md)
+
 # Real-World Corpus
 
 Dependency Palace keeps third-party source outside the repository. The corpus script checks out upstream projects into `.dependency-palace/real-world`, scans selected subtrees, and writes generated graph artifacts under `artifacts/real-world`.

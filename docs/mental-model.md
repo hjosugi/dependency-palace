@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](mental-model.md) | [日本語](mental-model.ja.md)
+
 # Mental Model
 
 Dependency Palace should not be a 3D hairball. A dependency graph only says "A touches B"; it does not say what the code means.

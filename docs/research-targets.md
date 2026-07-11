@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](research-targets.md) | [日本語](research-targets.ja.md)
+
 # Research Targets
 
 このプロジェクトで深く見るべき調査対象を、実装判断に使いやすい形で整理する。

@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](006-typescript-javascript-native-adapter.md) | [日本語](006-typescript-javascript-native-adapter.ja.md)
+
 # Native Adapter: TypeScript And JavaScript
 
 Labels: `adapter`, `typescript`, `javascript`, `priority:P1`, `status:ready`

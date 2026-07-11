@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](004-rust-native-adapter.md) | [日本語](004-rust-native-adapter.ja.md)
+
 # Native Adapter: Rust
 
 Labels: `adapter`, `rust`, `priority:P1`, `status:ready`

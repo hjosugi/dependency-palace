@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](adapters.md) | [日本語](adapters.ja.md)
+
 # Source Adapters
 
 Dependency Palace can now scan source trees directly and emit the viewer JSON.

@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](001-adapter-contract-fixtures-diagnostics.md) | [日本語](001-adapter-contract-fixtures-diagnostics.ja.md)
+
 # Adapter Contract, Golden Fixtures, And Diagnostics
 
 Labels: `adapters`, `testing`, `developer-experience`, `priority:P0`, `status:ready`

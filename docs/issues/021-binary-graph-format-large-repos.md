@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](021-binary-graph-format-large-repos.md) | [日本語](021-binary-graph-format-large-repos.ja.md)
+
 # Binary Graph Format For Large Repositories
 
 Labels: `performance`, `graph-format`, `large-repos`, `priority:P1`, `status:ready`

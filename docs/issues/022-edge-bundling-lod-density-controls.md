@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](022-edge-bundling-lod-density-controls.md) | [日本語](022-edge-bundling-lod-density-controls.ja.md)
+
 # Edge Bundling, LOD, And Density Controls
 
 Labels: `rendering`, `performance`, `ux`, `priority:P1`, `status:ready`

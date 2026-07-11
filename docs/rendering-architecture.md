@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](rendering-architecture.md) | [日本語](rendering-architecture.ja.md)
+
 # Rendering Architecture
 
 Dependency Palace uses a WebGPU-first rendering architecture with WebGL fallback.

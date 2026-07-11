@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](019-visual-regression-matrix.md) | [日本語](019-visual-regression-matrix.ja.md)
+
 # Visual Regression Matrix
 
 Labels: `testing`, `visual-regression`, `viewer`, `priority:P1`, `status:ready`

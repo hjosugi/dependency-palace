@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](README.md) | [日本語](README.ja.md)
+
 # Dependency Palace
 
 Dependency Palace is an interactive 3D class-dependency viewer for codebases that are too dense for a flat UML diagram.

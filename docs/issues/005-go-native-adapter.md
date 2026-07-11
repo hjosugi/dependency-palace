@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](005-go-native-adapter.md) | [日本語](005-go-native-adapter.ja.md)
+
 # Native Adapter: Go
 
 Labels: `adapter`, `go`, `priority:P1`, `status:ready`

@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](012-viewer-native-scan-workflow.md) | [日本語](012-viewer-native-scan-workflow.ja.md)
+
 # Viewer Workflow: Scan, Open, Refresh
 
 Labels: `viewer`, `workflow`, `developer-experience`, `priority:P1`, `status:ready`
