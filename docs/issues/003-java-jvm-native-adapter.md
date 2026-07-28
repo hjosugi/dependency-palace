@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](003-java-jvm-native-adapter.md) | [日本語](003-java-jvm-native-adapter.ja.md)
+
 # Native Adapter: Java/JVM
 
 Labels: `adapter`, `java`, `jvm`, `priority:P0`, `status:ready`

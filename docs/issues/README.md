@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](README.md) | [日本語](README.ja.md)
+
 # Issue Backlog
 
 This directory mirrors GitHub Issue-ready work items.

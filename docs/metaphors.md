@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](metaphors.md) | [日本語](metaphors.ja.md)
+
 # Visualization Metaphors
 
 Dependency Palace supports multiple 3D metaphors because code understanding is not one shape.

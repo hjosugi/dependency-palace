@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](research.md) | [日本語](research.ja.md)
+
 # Research Notes
 
 The goal is not to recreate a 2D UML canvas in 3D. The useful target is the mental model a developer builds after fully understanding the code: state, behavior, contracts, inheritance, callers, callees, and architectural districts.

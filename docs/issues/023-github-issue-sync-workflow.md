@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](023-github-issue-sync-workflow.md) | [日本語](023-github-issue-sync-workflow.ja.md)
+
 # GitHub Issue Sync Workflow
 
 Labels: `github`, `workflow`, `maintenance`, `priority:P2`, `status:ready`

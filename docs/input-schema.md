@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](input-schema.md) | [日本語](input-schema.ja.md)
+
 # Input Schema
 
 Dependency Palace expects a JSON object with `nodes`, `links` or `edges`, and optional `meta`.

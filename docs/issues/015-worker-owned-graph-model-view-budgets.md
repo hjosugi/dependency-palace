@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](015-worker-owned-graph-model-view-budgets.md) | [日本語](015-worker-owned-graph-model-view-budgets.ja.md)
+
 # Worker-Owned Graph Model And View Budgets
 
 Labels: `performance`, `worker`, `graph-model`, `priority:P0`, `status:ready`

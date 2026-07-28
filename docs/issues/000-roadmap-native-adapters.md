@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](000-roadmap-native-adapters.md) | [日本語](000-roadmap-native-adapters.ja.md)
+
 # Roadmap: Native Source Adapters For Major Languages
 
 Labels: `roadmap`, `adapters`, `source-indexing`, `performance`, `priority:P0`, `status:ready`

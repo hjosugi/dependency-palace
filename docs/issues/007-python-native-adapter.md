@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](007-python-native-adapter.md) | [日本語](007-python-native-adapter.ja.md)
+
 # Native Adapter: Python
 
 Labels: `adapter`, `python`, `priority:P2`, `status:ready`

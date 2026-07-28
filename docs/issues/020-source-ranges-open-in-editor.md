@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](020-source-ranges-open-in-editor.md) | [日本語](020-source-ranges-open-in-editor.ja.md)
+
 # Source Ranges And Open-In-Editor Workflow
 
 Labels: `viewer`, `scanner`, `developer-experience`, `priority:P1`, `status:ready`

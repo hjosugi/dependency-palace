@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](017-semantic-signal-panel-next-steps.md) | [日本語](017-semantic-signal-panel-next-steps.ja.md)
+
 # Semantic Signal Panel Next Steps
 
 Labels: `viewer`, `ux`, `semantic-model`, `priority:P1`, `status:ready`

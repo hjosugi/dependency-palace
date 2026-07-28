@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](018-real-world-example-corpus.md) | [日本語](018-real-world-example-corpus.ja.md)
+
 # Real-World Example Corpus
 
 Labels: `examples`, `fixtures`, `research`, `priority:P1`, `status:ready`

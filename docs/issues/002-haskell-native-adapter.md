@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](002-haskell-native-adapter.md) | [日本語](002-haskell-native-adapter.ja.md)
+
 # Native Adapter: Haskell
 
 Labels: `adapter`, `haskell`, `functional-programming`, `priority:P0`, `status:ready`

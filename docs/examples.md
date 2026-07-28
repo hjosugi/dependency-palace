@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](examples.md) | [日本語](examples.ja.md)
+
 # Example Graphs
 
 Dependency Palace includes generated example graphs under [public/examples](../public/examples).

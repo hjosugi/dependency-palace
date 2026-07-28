@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](011-index-cache-watch-mode.md) | [日本語](011-index-cache-watch-mode.ja.md)
+
 # Incremental Index, Cache, And Watch Mode
 
 Labels: `performance`, `indexing`, `developer-experience`, `priority:P1`, `status:ready`
