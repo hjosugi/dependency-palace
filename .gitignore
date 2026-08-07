@@ -10,3 +10,9 @@ dependency-palace.config.json
 public/dependency-palace.graph.json
 public/dependency-palace.graph.dpg
 public/dependency-palace.graph.json.diagnostics.json
+.claude/skills/graphify/
+.claude/settings.local.json
+.copilot/skills/graphify/
+.codex/skills/graphify/
+.codex/hooks.json
+graphify-out/
